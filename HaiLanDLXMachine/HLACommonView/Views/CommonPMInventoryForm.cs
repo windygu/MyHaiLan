@@ -36,7 +36,7 @@ namespace HLACommonView.Views
         public List<HLATagInfo> hlaTagList = null;
         public List<MaterialInfo> materialList = null;
         public Queue<string> boxNoList = new Queue<string>();
-        public ErrorWarnForm mErrorForm = new ErrorWarnForm();
+        public ErrorWarnForm mErrorForm = null;
 
         private List<string> mIgnoreEpcs = new List<string>();
 
@@ -442,6 +442,12 @@ namespace HLACommonView.Views
 
             }
         }
+
+        private void CommonPMInventoryForm_Shown(object sender, EventArgs e)
+        {
+            mErrorForm = new ErrorWarnForm();
+        }
+
         public virtual void StartInventory()
         {
             if (rfid.StartInventory(mComPort, RadioOperationMode.Continuous, 1) != operateResult.ok)

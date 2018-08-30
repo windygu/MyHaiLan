@@ -4689,6 +4689,7 @@ namespace HLACommonLib
         public static CPKCheckHuInfo getPKCheckHuInfo(string hu,out string sapRe,out string sapMsg)
         {
 #if DEBUG
+            /*
             sapRe = "S";
             sapMsg = "";
             CPKCheckHuInfo d = new CPKCheckHuInfo();
@@ -4697,7 +4698,7 @@ namespace HLACommonLib
             d.F_MXBL = "MXBL";
             d.F_PACK = "Y";
             d.HU = hu;
-            return d;
+            return d;*/
 #endif
             sapRe = "";
             sapMsg = "";
@@ -4734,6 +4735,7 @@ namespace HLACommonLib
         public static CPKCheckHuDetailInfo getPKCheckHuDetailInfo(string hu, out string sapRe, out string sapMsg)
         {
 #if DEBUG
+            /*
             sapRe = "S";
             sapMsg = "";
             CPKCheckHuDetailInfo d = new CPKCheckHuDetailInfo();
@@ -4746,7 +4748,7 @@ namespace HLACommonLib
             d.mDetail.Add(new CPKCheckHuDetailInfoData("HWFAD1V003A03001", "HWFAD1V003A", "03L", "165/84A(46)", 3));
             d.mDetail.Add(new CPKCheckHuDetailInfoData("HWFAD1V001A01001", "HWFAD1V001A", "01L", "165/84A(46)", 2));
 
-            return d;
+            return d;*/
 #endif
 
             sapRe = "";
@@ -4783,7 +4785,7 @@ namespace HLACommonLib
                     string ZSATNR = getZiDuan(IrfTable, "ZSATNR");
                     string ZCOLSN = getZiDuan(IrfTable, "ZCOLSN");
                     string ZSIZTX = getZiDuan(IrfTable, "ZSIZTX");
-                    int QTY = myfun.GetInt("QTY");
+                    int QTY = int.Parse(getZiDuan(IrfTable,"QTY"));
 
                     re.mDetail.Add(new CPKCheckHuDetailInfoData(MATNR, ZSATNR, ZCOLSN, ZSIZTX, QTY));
                 }
@@ -4801,9 +4803,10 @@ namespace HLACommonLib
         public static void uploadPKCheck(CPKCheckUpload data,out string sapRe,out string sapMsg)
         {
 #if DEBUG
+            /*
             sapRe = "E";
             sapMsg = "lalala";
-            return;
+            return;*/
 #endif
 
             sapRe = "";

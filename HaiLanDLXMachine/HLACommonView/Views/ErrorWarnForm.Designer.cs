@@ -35,15 +35,15 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.grid = new DMSkin.Metro.Controls.MetroGrid();
-            this.dmButton1_clear = new DMSkin.Controls.DMButton();
-            this.btnClose = new DMSkin.Controls.DMButton();
-            this.btnKeyboard = new DMSkin.Controls.DMLabel();
             this.ZSATNR = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ZCOLSN = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ZSIZTX = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.QTY = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.QTYADD = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ERROR = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dmButton1_clear = new DMSkin.Controls.DMButton();
+            this.btnClose = new DMSkin.Controls.DMButton();
+            this.btnKeyboard = new DMSkin.Controls.DMLabel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -66,8 +66,8 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dmButton1_clear);
             this.splitContainer1.Panel2.Controls.Add(this.btnClose);
-            this.splitContainer1.Size = new System.Drawing.Size(1132, 468);
-            this.splitContainer1.SplitterDistance = 396;
+            this.splitContainer1.Size = new System.Drawing.Size(794, 426);
+            this.splitContainer1.SplitterDistance = 360;
             this.splitContainer1.TabIndex = 10;
             // 
             // grid
@@ -132,71 +132,8 @@
             this.grid.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.grid.RowTemplate.Height = 43;
             this.grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grid.Size = new System.Drawing.Size(1132, 396);
+            this.grid.Size = new System.Drawing.Size(794, 360);
             this.grid.TabIndex = 8;
-            // 
-            // dmButton1_clear
-            // 
-            this.dmButton1_clear.AutoEllipsis = true;
-            this.dmButton1_clear.BackColor = System.Drawing.Color.Transparent;
-            this.dmButton1_clear.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.dmButton1_clear.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
-            this.dmButton1_clear.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(20)))), ((int)(((byte)(0)))));
-            this.dmButton1_clear.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(60)))), ((int)(((byte)(0)))));
-            this.dmButton1_clear.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(0)))));
-            this.dmButton1_clear.DM_Radius = 1;
-            this.dmButton1_clear.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.dmButton1_clear.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.dmButton1_clear.Font = new System.Drawing.Font("微软雅黑", 14F);
-            this.dmButton1_clear.ForeColor = System.Drawing.Color.White;
-            this.dmButton1_clear.Image = null;
-            this.dmButton1_clear.Location = new System.Drawing.Point(0, 0);
-            this.dmButton1_clear.Margin = new System.Windows.Forms.Padding(0);
-            this.dmButton1_clear.Name = "dmButton1_clear";
-            this.dmButton1_clear.Size = new System.Drawing.Size(489, 68);
-            this.dmButton1_clear.TabIndex = 17;
-            this.dmButton1_clear.Text = "清  除";
-            this.dmButton1_clear.UseVisualStyleBackColor = true;
-            this.dmButton1_clear.Click += new System.EventHandler(this.dmButton1_clear_Click);
-            // 
-            // btnClose
-            // 
-            this.btnClose.AutoEllipsis = true;
-            this.btnClose.BackColor = System.Drawing.Color.Transparent;
-            this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnClose.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
-            this.btnClose.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(20)))), ((int)(((byte)(0)))));
-            this.btnClose.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(60)))), ((int)(((byte)(0)))));
-            this.btnClose.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(0)))));
-            this.btnClose.DM_Radius = 1;
-            this.btnClose.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnClose.Font = new System.Drawing.Font("微软雅黑", 14F);
-            this.btnClose.ForeColor = System.Drawing.Color.White;
-            this.btnClose.Image = null;
-            this.btnClose.Location = new System.Drawing.Point(643, -1);
-            this.btnClose.Margin = new System.Windows.Forms.Padding(0);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(489, 68);
-            this.btnClose.TabIndex = 16;
-            this.btnClose.Text = "返    回";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            // 
-            // btnKeyboard
-            // 
-            this.btnKeyboard.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnKeyboard.BackColor = System.Drawing.Color.Transparent;
-            this.btnKeyboard.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnKeyboard.DM_Color = System.Drawing.Color.OrangeRed;
-            this.btnKeyboard.DM_Font_Size = 30F;
-            this.btnKeyboard.DM_Key = DMSkin.Controls.DMLabelKey.圆_叹;
-            this.btnKeyboard.DM_Text = "";
-            this.btnKeyboard.Location = new System.Drawing.Point(438, 18);
-            this.btnKeyboard.Name = "btnKeyboard";
-            this.btnKeyboard.Size = new System.Drawing.Size(46, 39);
-            this.btnKeyboard.TabIndex = 9;
-            this.btnKeyboard.Text = "dmLabel1";
             // 
             // ZSATNR
             // 
@@ -252,11 +189,74 @@
             this.ERROR.ReadOnly = true;
             this.ERROR.Width = 116;
             // 
+            // dmButton1_clear
+            // 
+            this.dmButton1_clear.AutoEllipsis = true;
+            this.dmButton1_clear.BackColor = System.Drawing.Color.Transparent;
+            this.dmButton1_clear.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.dmButton1_clear.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.dmButton1_clear.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(20)))), ((int)(((byte)(0)))));
+            this.dmButton1_clear.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(60)))), ((int)(((byte)(0)))));
+            this.dmButton1_clear.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(0)))));
+            this.dmButton1_clear.DM_Radius = 1;
+            this.dmButton1_clear.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.dmButton1_clear.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dmButton1_clear.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.dmButton1_clear.ForeColor = System.Drawing.Color.White;
+            this.dmButton1_clear.Image = null;
+            this.dmButton1_clear.Location = new System.Drawing.Point(0, 0);
+            this.dmButton1_clear.Margin = new System.Windows.Forms.Padding(0);
+            this.dmButton1_clear.Name = "dmButton1_clear";
+            this.dmButton1_clear.Size = new System.Drawing.Size(219, 68);
+            this.dmButton1_clear.TabIndex = 17;
+            this.dmButton1_clear.Text = "清  除";
+            this.dmButton1_clear.UseVisualStyleBackColor = true;
+            this.dmButton1_clear.Click += new System.EventHandler(this.dmButton1_clear_Click);
+            // 
+            // btnClose
+            // 
+            this.btnClose.AutoEllipsis = true;
+            this.btnClose.BackColor = System.Drawing.Color.Transparent;
+            this.btnClose.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnClose.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.btnClose.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(20)))), ((int)(((byte)(0)))));
+            this.btnClose.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(60)))), ((int)(((byte)(0)))));
+            this.btnClose.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(0)))));
+            this.btnClose.DM_Radius = 1;
+            this.btnClose.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnClose.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnClose.ForeColor = System.Drawing.Color.White;
+            this.btnClose.Image = null;
+            this.btnClose.Location = new System.Drawing.Point(543, -1);
+            this.btnClose.Margin = new System.Windows.Forms.Padding(0);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(251, 68);
+            this.btnClose.TabIndex = 16;
+            this.btnClose.Text = "返    回";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
+            // btnKeyboard
+            // 
+            this.btnKeyboard.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnKeyboard.BackColor = System.Drawing.Color.Transparent;
+            this.btnKeyboard.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnKeyboard.DM_Color = System.Drawing.Color.OrangeRed;
+            this.btnKeyboard.DM_Font_Size = 30F;
+            this.btnKeyboard.DM_Key = DMSkin.Controls.DMLabelKey.圆_叹;
+            this.btnKeyboard.DM_Text = "";
+            this.btnKeyboard.Location = new System.Drawing.Point(269, 18);
+            this.btnKeyboard.Name = "btnKeyboard";
+            this.btnKeyboard.Size = new System.Drawing.Size(46, 39);
+            this.btnKeyboard.TabIndex = 9;
+            this.btnKeyboard.Text = "dmLabel1";
+            // 
             // ErrorWarnForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1172, 548);
+            this.ClientSize = new System.Drawing.Size(834, 506);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.btnKeyboard);
             this.Name = "ErrorWarnForm";

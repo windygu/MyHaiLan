@@ -97,6 +97,7 @@
             this.Name = "CommonPMInventoryForm";
             this.Padding = new System.Windows.Forms.Padding(0, 30, 0, 0);
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Shown += new System.EventHandler(this.CommonPMInventoryForm_Shown);
             this.metroPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

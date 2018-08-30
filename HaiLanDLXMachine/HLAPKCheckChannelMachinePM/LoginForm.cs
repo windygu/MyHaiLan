@@ -63,12 +63,18 @@ namespace HLAPKCheckChannelMachinePM
 
             Thread thread = new Thread(new ThreadStart(() => {
                 ShowLoading("正在从SAP下载设备信息...");
-                SysConfig.DeviceInfo = SAPDataService.GetHLANo(SysConfig.LGNUM, SysConfig.DeviceNO, "01C");
+
+                SysConfig.DeviceInfo = SAPDataService.GetHLANo(SysConfig.LGNUM, SysConfig.DeviceNO, "01D");
+#if DEBUG
+#else
+                
+                
                 if (SysConfig.DeviceInfo == null)
                     ShowRestartButton("SAP未维护设备信息");
                 else if (SysConfig.DeviceInfo.AuthList == null || SysConfig.DeviceInfo.AuthList.Count == 0)
                     ShowRestartButton("SAP未维护权限信息");
                 else
+#endif
                 {
                     LoadLouceng();
                     EnableLoginButton();

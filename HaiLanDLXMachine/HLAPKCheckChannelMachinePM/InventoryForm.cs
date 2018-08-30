@@ -47,6 +47,13 @@ namespace HLAPKCheckChannelMachinePM
         }
         private void InventoryForm_Shown(object sender, EventArgs e)
         {
+#if DEBUG
+            textBox1_boxno.Text = "123456";
+            epcList = new List<string>();
+            epcList.Add("1234");
+            dmButton1_save_Click(null, null);
+            List<string> r = getSaveEpcs("1234567");
+#endif
         }
         public override void onScanBarcode(string barcode)
         {
@@ -89,8 +96,11 @@ namespace HLAPKCheckChannelMachinePM
                 bool closed = false;
 
                 ShowLoading("正在下载物料数据...");
+#if DEBUG
+                materialList = SAPDataService.GetMaterialInfoList(SysConfig.LGNUM);
+#else
                 materialList = LocalDataService.GetMaterialInfoList();
-
+#endif
                 if (materialList == null || materialList.Count <= 0)
                 {
                     this.Invoke(new Action(() =>
@@ -107,7 +117,11 @@ namespace HLAPKCheckChannelMachinePM
                 if (closed) return;
 
                 ShowLoading("正在下载吊牌数据...");
+#if DEBUG
+                hlaTagList = SAPDataService.GetTagInfoList(SysConfig.LGNUM);
+#else
                 hlaTagList = LocalDataService.GetAllRfidHlaTagList();
+#endif
                 if (hlaTagList == null || hlaTagList.Count <= 0)
                 {
                     this.Invoke(new Action(() =>
@@ -122,6 +136,8 @@ namespace HLAPKCheckChannelMachinePM
 
                 if (closed)
                     return;
+
+                CSqliteDataService.delOldData();
 
                 HideLoading();
 
@@ -178,8 +194,29 @@ namespace HLAPKCheckChannelMachinePM
 
                 UpdateView();
 
+                restoreEpc();
+
                 base.StartInventory();
                 isInventory = true;
+            }
+        }
+
+        void restoreEpc()
+        {
+            try
+            {
+                List<string> epcs = getSaveEpcs(textBox1_boxno.Text.Trim());
+                if(epcs!=null)
+                {
+                    foreach(string epc in epcs)
+                    {
+                        reportEpc(epc);
+                    }
+                }
+            }
+            catch(Exception)
+            {
+
             }
         }
         bool hasDJ()
@@ -231,6 +268,7 @@ namespace HLAPKCheckChannelMachinePM
                     {
                         playSound(true);
                     }
+                    clearUi();
                 }
                 else
                 {
@@ -251,6 +289,7 @@ namespace HLAPKCheckChannelMachinePM
                 {
                     playSound(true);
                 }
+                clearUi();
             }
         }
         void saveToLocal(CPKCheckUpload up)
@@ -404,13 +443,8 @@ namespace HLAPKCheckChannelMachinePM
         {
             if (isInventory)
             {
-                Invoke(new Action(() =>
-                {
-                    lblfayunhuadao.Text = "停止扫描";
-                }));
                 isInventory = false;
                 base.StopInventory();
-
             }
         }
 
@@ -443,23 +477,33 @@ namespace HLAPKCheckChannelMachinePM
 #if DEBUG
             StartInventory();
 
+            string epc = hlaTagList.FirstOrDefault(i => i.MATNR == "HKCAD3A379ACP006").RFID_EPC;
+            for(int j=0;j<5;j++)
+            {
+                reportEpc(epc + j.ToString());
+            }
 
-            reportEpc("50000E7C2500010000001");
-            reportEpc("50000E7C2500010000002");
-            reportEpc("50000E7C2500010000003");
-/*
-            reportEpc("500011035500010000002");
-            
-            reportEpc("500011036500010000001");
-            reportEpc("500011036500010000002");
-            reportEpc("500011036500010000003");
+            epc = hlaTagList.FirstOrDefault(i => i.MATNR == "HNTAD1A225AQ1004").RFID_EPC;
+            for (int j = 0; j < 9; j++)
+            {
+                reportEpc(epc + j.ToString());
+            }
 
-            reportEpc("500011037500010000001");
+            epc = hlaTagList.FirstOrDefault(i => i.MATNR == "HNTBD2N301AT1002").RFID_EPC;
+            for (int j = 0; j < 3; j++)
+            {
+                reportEpc(epc + j.ToString());
+            }
 
-            reportEpc("500011038500010000001");
-            */
+            /*            
+                        reportEpc("500011036500010000001");
+                        reportEpc("500011036500010000002");
+                        reportEpc("500011036500010000003");
 
-            StopInventory();
+                        reportEpc("500011037500010000001");
+
+                        reportEpc("500011038500010000001");
+                        */
 
             return;
 #endif
@@ -600,6 +644,58 @@ namespace HLAPKCheckChannelMachinePM
             string re = "";
             string msg = "";
             uploadSAP(ud.Data as CPKCheckUpload, out re, out msg);
+        }
+
+        void clearUi()
+        {
+            textBox1_boxno.Text = "";
+            grid.Rows.Clear();
+            textBox1_boxno.Focus();
+        }
+
+        List<string> getSaveEpcs(string boxNo)
+        {
+            List<string> re = new List<string>();
+            try
+            {
+                string sql = string.Format("select saveEpcs from PkCheckSave where boxNo='{0}'", boxNo);
+                string epcs = DBHelper.GetValue(sql, false)?.ToString();
+                if(!string.IsNullOrEmpty(epcs))
+                {
+                    re = JsonConvert.DeserializeObject<IEnumerable<string>>(epcs) as List<string>;
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return re;
+        }
+        private void dmButton1_save_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string sql = string.Format("select boxNo from PkCheckSave where boxNo='{0}'", textBox1_boxno.Text.Trim());
+                string boxno = DBHelper.GetValue(sql,false)?.ToString();
+                if(string.IsNullOrEmpty(boxno))
+                {
+                    sql = string.Format("insert into PkCheckSave (boxNo,createTime,saveEpcs) values ('{0}',GETDATE(),'{1}')", textBox1_boxno.Text.Trim(), JsonConvert.SerializeObject(epcList));
+                }
+                else
+                {
+                    sql = string.Format("update PkCheckSave set createTime = GETDATE(),saveEpcs='{0}' where boxNo='{1}'", JsonConvert.SerializeObject(epcList), textBox1_boxno.Text.Trim());
+                }
+                DBHelper.ExecuteSql(sql, false);
+
+                MetroMessageBox.Show(this, "保存成功");
+            }
+            catch (Exception ex)
+            {
+                MetroMessageBox.Show(this, "保存失败 " + ex.ToString(), "错误");
+            }
+
+            clearUi();
         }
     }
 

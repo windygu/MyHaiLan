@@ -108,12 +108,6 @@
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // mErrorForm
-            // 
-            this.mErrorForm.ClientSize = new System.Drawing.Size(0, 0);
-            this.mErrorForm.Location = new System.Drawing.Point(-32000, -32000);
-            this.mErrorForm.WindowState = System.Windows.Forms.FormWindowState.Minimized;
-            // 
             // label1
             // 
             this.label1.BackColor = System.Drawing.Color.White;

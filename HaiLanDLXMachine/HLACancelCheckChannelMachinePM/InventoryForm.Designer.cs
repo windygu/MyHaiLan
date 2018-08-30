@@ -74,10 +74,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
             this.SuspendLayout();
             // 
-            // mErrorForm
-            // 
-            this.mErrorForm.Location = new System.Drawing.Point(374, 246);
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;

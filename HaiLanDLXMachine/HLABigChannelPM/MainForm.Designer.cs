@@ -35,6 +35,7 @@
             this.lblSayHello = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.lblDate = new System.Windows.Forms.Label();
+            this.btnDJJ = new DMSkin.Controls.DMButton();
             this.btnDeliver = new DMSkin.Controls.DMButton();
             this.btnReciever = new DMSkin.Controls.DMButton();
             this.manualDownloadButton = new DMSkin.Controls.DMButton();
@@ -42,7 +43,7 @@
             this.netStatusButton = new DMSkin.Controls.DMButton();
             this.dmButton3 = new DMSkin.Controls.DMButton();
             this.label2_IP = new System.Windows.Forms.Label();
-            this.btnDJJ = new DMSkin.Controls.DMButton();
+            this.dmButton1_chukufuhe = new DMSkin.Controls.DMButton();
             this.pnMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,6 +52,7 @@
             this.pnMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnMain.Controls.Add(this.dmButton1_chukufuhe);
             this.pnMain.Controls.Add(this.dmButton9_Cancel);
             this.pnMain.Controls.Add(this.lblTime);
             this.pnMain.Controls.Add(this.lblSayHello);
@@ -140,6 +142,31 @@
             this.lblDate.Text = "2015年12月4日";
             this.lblDate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblDate.Visible = false;
+            // 
+            // btnDJJ
+            // 
+            this.btnDJJ.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnDJJ.AutoEllipsis = true;
+            this.btnDJJ.BackColor = System.Drawing.Color.Transparent;
+            this.btnDJJ.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDJJ.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.btnDJJ.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(124)))), ((int)(((byte)(16)))));
+            this.btnDJJ.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(212)))), ((int)(((byte)(100)))));
+            this.btnDJJ.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.btnDJJ.DM_Radius = 8;
+            this.btnDJJ.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnDJJ.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnDJJ.Font = new System.Drawing.Font("微软雅黑", 24F);
+            this.btnDJJ.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.btnDJJ.Image = null;
+            this.btnDJJ.Location = new System.Drawing.Point(89, 106);
+            this.btnDJJ.Margin = new System.Windows.Forms.Padding(0);
+            this.btnDJJ.Name = "btnDJJ";
+            this.btnDJJ.Size = new System.Drawing.Size(203, 62);
+            this.btnDJJ.TabIndex = 16;
+            this.btnDJJ.Text = "单检机";
+            this.btnDJJ.UseVisualStyleBackColor = true;
+            this.btnDJJ.Click += new System.EventHandler(this.btnYk_Click);
             // 
             // btnDeliver
             // 
@@ -292,30 +319,30 @@
             this.label2_IP.Text = "IP";
             this.label2_IP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // btnDJJ
+            // dmButton1_chukufuhe
             // 
-            this.btnDJJ.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnDJJ.AutoEllipsis = true;
-            this.btnDJJ.BackColor = System.Drawing.Color.Transparent;
-            this.btnDJJ.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDJJ.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
-            this.btnDJJ.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(124)))), ((int)(((byte)(16)))));
-            this.btnDJJ.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(212)))), ((int)(((byte)(100)))));
-            this.btnDJJ.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.btnDJJ.DM_Radius = 8;
-            this.btnDJJ.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnDJJ.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDJJ.Font = new System.Drawing.Font("微软雅黑", 24F);
-            this.btnDJJ.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.btnDJJ.Image = null;
-            this.btnDJJ.Location = new System.Drawing.Point(89, 106);
-            this.btnDJJ.Margin = new System.Windows.Forms.Padding(0);
-            this.btnDJJ.Name = "btnDJJ";
-            this.btnDJJ.Size = new System.Drawing.Size(203, 62);
-            this.btnDJJ.TabIndex = 16;
-            this.btnDJJ.Text = "单检机";
-            this.btnDJJ.UseVisualStyleBackColor = true;
-            this.btnDJJ.Click += new System.EventHandler(this.btnYk_Click);
+            this.dmButton1_chukufuhe.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.dmButton1_chukufuhe.AutoEllipsis = true;
+            this.dmButton1_chukufuhe.BackColor = System.Drawing.Color.Transparent;
+            this.dmButton1_chukufuhe.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.dmButton1_chukufuhe.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.dmButton1_chukufuhe.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(124)))), ((int)(((byte)(16)))));
+            this.dmButton1_chukufuhe.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(212)))), ((int)(((byte)(100)))));
+            this.dmButton1_chukufuhe.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dmButton1_chukufuhe.DM_Radius = 8;
+            this.dmButton1_chukufuhe.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.dmButton1_chukufuhe.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dmButton1_chukufuhe.Font = new System.Drawing.Font("微软雅黑", 24F);
+            this.dmButton1_chukufuhe.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.dmButton1_chukufuhe.Image = null;
+            this.dmButton1_chukufuhe.Location = new System.Drawing.Point(423, 106);
+            this.dmButton1_chukufuhe.Margin = new System.Windows.Forms.Padding(0);
+            this.dmButton1_chukufuhe.Name = "dmButton1_chukufuhe";
+            this.dmButton1_chukufuhe.Size = new System.Drawing.Size(221, 62);
+            this.dmButton1_chukufuhe.TabIndex = 22;
+            this.dmButton1_chukufuhe.Text = "出库复核";
+            this.dmButton1_chukufuhe.UseVisualStyleBackColor = true;
+            this.dmButton1_chukufuhe.Click += new System.EventHandler(this.dmButton1_chukufuhe_Click);
             // 
             // MainForm
             // 
@@ -359,6 +386,7 @@
         private DMSkin.Controls.DMButton dmButton9_Cancel;
         private System.Windows.Forms.Label label2_IP;
         private DMSkin.Controls.DMButton btnDJJ;
+        private DMSkin.Controls.DMButton dmButton1_chukufuhe;
     }
 }
 

@@ -208,5 +208,12 @@ namespace HLABigChannel
         {
         }
 
+        private void dmButton1_chukufuhe_Click(object sender, EventArgs e)
+        {
+            dmButton1_chukufuhe.Enabled = false;
+            StartProgram(sender, "HLAPKCheckChannelMachinePM.exe", "pkcheck");
+            dmButton1_chukufuhe.Enabled = true;
+            this.WindowState = FormWindowState.Maximized;
+        }
     }
 }
