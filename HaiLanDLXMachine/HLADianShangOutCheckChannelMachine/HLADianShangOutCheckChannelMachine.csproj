@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{235D4E27-2EDF-4297-97EC-5EFD87A2EE3F}</ProjectGuid>
+    <ProjectGuid>{37C9E34B-B4C0-4FEF-A277-67E824A4D365}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HLACancelCheckChannelMachine</RootNamespace>
-    <AssemblyName>HLACancelCheckChannelMachinePM</AssemblyName>
+    <RootNamespace>HLADianShangOutCheckChannelMachine</RootNamespace>
+    <AssemblyName>HLADianShangOutCheckChannelMachine</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -53,6 +53,10 @@
     <Reference Include="DMSkin">
       <HintPath>..\packages\DMSkin.dll</HintPath>
     </Reference>
+    <Reference Include="MercuryAPI, Version=1.23.0.18, Culture=neutral, PublicKeyToken=3b7d0c33b1517ad9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MercuryAPI.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -78,22 +82,23 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="UARTRfidLink">
-      <HintPath>..\packages\UARTRfidLink.dll</HintPath>
+    <Reference Include="Xindeco.Device">
+      <HintPath>..\packages\Xindeco.Device.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DocSel.cs">
+    <Compile Include="AppConfig.cs" />
+    <Compile Include="ClearDataForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DocSel.Designer.cs">
-      <DependentUpon>DocSel.cs</DependentUpon>
+    <Compile Include="ClearDataForm.Designer.cs">
+      <DependentUpon>ClearDataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="InventoryForm.cs">
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InventoryForm.Designer.cs">
-      <DependentUpon>InventoryForm.cs</DependentUpon>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
@@ -103,19 +108,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UploadMsgForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UploadMsgForm.Designer.cs">
-      <DependentUpon>UploadMsgForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Utils\AppConfig.cs" />
-    <Compile Include="Utils\PrintHelper.cs" />
-    <EmbeddedResource Include="DocSel.resx">
-      <DependentUpon>DocSel.cs</DependentUpon>
+    <EmbeddedResource Include="ClearDataForm.resx">
+      <DependentUpon>ClearDataForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InventoryForm.resx">
-      <DependentUpon>InventoryForm.cs</DependentUpon>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -127,17 +124,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="UploadMsgForm.resx">
-      <DependentUpon>UploadMsgForm.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="DB\HLA.sqlite">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="LabelMultiSku.mrt">
+    <None Include="LabelOk.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="LabelMultiSkuCancel.mrt">
+    <None Include="LabelError.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">

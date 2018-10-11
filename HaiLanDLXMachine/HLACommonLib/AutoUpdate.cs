@@ -110,7 +110,8 @@ namespace HLACommonLib
         BigChannelPM = 31,
         退货复核PM = 32,
         电商采购退复核 = 33,
-        发货复核_单检机 = 34
+        发货复核_单检机 = 34,
+        电商发货复核 = 35
 
     }
 }

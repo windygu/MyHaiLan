@@ -29,7 +29,7 @@ namespace HLACommonView.Views
     public partial class CommonInventoryFormYZ : MetroForm
     {
         ProcessDialog mPd = new ProcessDialog();
-        private ErrorWarnForm mErrorForm = new ErrorWarnForm();
+        private ErrorWarnForm mErrorForm = null;
 
         public CReader mReader = null;
         public PLCController mPlc = null;
@@ -336,6 +336,22 @@ namespace HLACommonView.Views
                 }
             }
         }
+        public void showErrorInfo(List<TagDetailInfo> tags, string errormsg)
+        {
+            Invoke(new System.Action(() =>
+            {
+                if (mErrorForm != null)
+                    mErrorForm.showErrorInfo(tags, errormsg);
+            }));
+        }
+        public void showErrorInfo(string epc, TagDetailInfo tag, string errormsg)
+        {
+            Invoke(new System.Action(() =>
+            {
+                if (mErrorForm != null)
+                    mErrorForm.showErrorInfo(epc, tag, errormsg);
+            }));
+        }
 
         public virtual void Reader_OnTagReportedPMBar(string bar)
         {
@@ -344,7 +360,7 @@ namespace HLACommonView.Views
             string errorMsg = "";
             if (!checkTagOK(tag, out errorMsg))
             {
-                mErrorForm.showErrorInfo(bar, tag, errorMsg);
+                showErrorInfo(bar, tag, errorMsg);
                 return;
             }
 
@@ -376,7 +392,7 @@ namespace HLACommonView.Views
                 string errorMsg = "";
                 if (!checkTagOK(tag, out errorMsg))
                 {
-                    mErrorForm.showErrorInfo(tag.EPC, tag, errorMsg);
+                    showErrorInfo(tag.EPC, tag, errorMsg);
                     return;
                 }
 
@@ -503,6 +519,13 @@ namespace HLACommonView.Views
             mBarcode1.Connect();
             mBarcode2.OnBarcodeReported += OnBarcodeReported;
             mBarcode2.Connect();
+        }
+
+        private void CommonInventoryFormYZ_Shown(object sender, EventArgs e)
+        {
+            mErrorForm = new ErrorWarnForm();
+            mErrorForm.Show();
+            mErrorForm.Hide();
         }
 
         private void DisconnectBarcode()

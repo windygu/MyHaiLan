@@ -1780,21 +1780,19 @@ namespace HLAChannelMachine
         {
             this.btnStop.Enabled = false;
             this.btnSetBoxQty.Enabled = true;
-            lblBoxNo.Text = "";
 
             StopInventory();
             try
             {
-                this.Invoke(new Action(() =>
-                {
-                    this.lblWorkStatus.Text = "停止";
-                }));
+                lblWorkStatus.Text = "停止";
 
                 CheckResult result = CheckData();
                 EnqueueErrorRecord();
                 ResultDataInfo rdi = GetResultData(result);
 
                 EnqueueUploadData(rdi);
+
+                lblBoxNo.Text = "";
             }
             catch (Exception ex)
             {

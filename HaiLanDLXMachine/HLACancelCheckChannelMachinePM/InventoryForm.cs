@@ -22,7 +22,7 @@ using System.Data.SqlClient;
 
 namespace HLACancelCheckChannelMachine
 {
-    public partial class InventoryForm : CommonPMInventoryForm,UploadMsgFormMethod
+    public partial class InventoryForm : CommonPMInventoryForm, HLACancelCheckChannelMachine.UploadMsgFormMethod
     {
         CLogManager mLog = new CLogManager(true);
 
@@ -319,7 +319,7 @@ namespace HLACancelCheckChannelMachine
                 result.InventoryResult = false;
             }
 
-            if (result.Message.Contains(HU_IS_NULL) || result.Message.Contains(Consts.Default.XIANG_MA_BU_YI_ZHI))
+            if (result.Message.Contains(HU_IS_NULL))
             {
                 //直接返回
                 addGrid(result);
@@ -648,14 +648,17 @@ namespace HLACancelCheckChannelMachine
         }
         void addGrid(List<CChaYi> chayi)
         {
-            foreach (var v in chayi)
+            Invoke(new Action(() =>
             {
-                grid.Rows.Insert(0, v.hu, v.bar, v.barAdd, v.shouldQty, v.barChaYiQty, v.barAddChaYiQty, v.msg + " SAP:" + v.sapMsg);
-                if (!v.inventoryRe || v.sapRe != "S")
+                foreach (var v in chayi)
                 {
-                    grid.Rows[0].DefaultCellStyle.BackColor = Color.OrangeRed;
+                    grid.Rows.Insert(0, v.hu, v.bar, v.barAdd, v.shouldQty, v.barChaYiQty, v.barAddChaYiQty, v.msg + " SAP:" + v.sapMsg);
+                    if (!v.inventoryRe || v.sapRe != "S")
+                    {
+                        grid.Rows[0].DefaultCellStyle.BackColor = Color.OrangeRed;
+                    }
                 }
-            }
+            }));
         }
 
         private void ComboBox_Boci_SelectionChangeCommitted(object sender, EventArgs e)

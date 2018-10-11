@@ -29,7 +29,7 @@ namespace HLAPKCheckChannelMachinePM
         CPKCheckHuDetailInfo mBoxDetailInfo = new CPKCheckHuDetailInfo();
 
         const string HU_IS_NULL = "箱号为空";
-
+        bool mReSaoMiao = false;
         public InventoryForm()
         {
             InitializeComponent();
@@ -46,7 +46,7 @@ namespace HLAPKCheckChannelMachinePM
             }));
         }
         private void InventoryForm_Shown(object sender, EventArgs e)
-        {
+        {            
 #if DEBUG
             textBox1_boxno.Text = "123456";
             epcList = new List<string>();
@@ -172,15 +172,18 @@ namespace HLAPKCheckChannelMachinePM
         {
             btnStart.Enabled = false;
             btn_tijiao.Enabled = true;
+            dmButton1_save.Enabled = true;
         }
         private void Reset()
         {
             btnStart.Enabled = true;
             btn_tijiao.Enabled = false;
+            dmButton1_save.Enabled = false;
         }
         void tijiao()
         {
             btn_tijiao.Enabled = false;
+            dmButton1_save.Enabled = false;
         }
         public override void StartInventory()
         {
@@ -194,15 +197,21 @@ namespace HLAPKCheckChannelMachinePM
 
                 UpdateView();
 
-                restoreEpc();
-
                 base.StartInventory();
                 isInventory = true;
+
+                restoreEpc();
+
             }
         }
 
         void restoreEpc()
         {
+            if(mReSaoMiao)
+            {
+                mReSaoMiao = false;
+                return;
+            }
             try
             {
                 List<string> epcs = getSaveEpcs(textBox1_boxno.Text.Trim());
@@ -214,9 +223,9 @@ namespace HLAPKCheckChannelMachinePM
                     }
                 }
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-
+                MessageBox.Show(ex.ToString());
             }
         }
         bool hasDJ()
@@ -243,8 +252,7 @@ namespace HLAPKCheckChannelMachinePM
             CheckResult cr = CheckData();
             if (!cr.InventoryResult)
             {
-                mErrorForm.showErrorInfo(tagDetailList, cr.Message);
-
+                showErrorInfo(tagDetailList, cr.Message);
                 return;
             }
 
@@ -273,6 +281,7 @@ namespace HLAPKCheckChannelMachinePM
                 else
                 {
                     btn_tijiao.Enabled = true;
+                    dmButton1_save.Enabled = true;
                 }
             }
             else
@@ -543,6 +552,8 @@ namespace HLAPKCheckChannelMachinePM
             }
 
             onBarcodeScan();
+
+            textBox1_bar.Text = "";
         }
 
         void onBarcodeScan()
@@ -601,6 +612,11 @@ namespace HLAPKCheckChannelMachinePM
             {
                 showBoxDetailInfo();
             }
+            else
+            {
+                textBox1_boxno.Text = "";
+                textBox1_boxno.Focus();
+            }
         }
 
         void showBoxDetailInfo()
@@ -629,6 +645,7 @@ namespace HLAPKCheckChannelMachinePM
 
         private void dmButton1_reset_Click(object sender, EventArgs e)
         {
+            mReSaoMiao = true;
             Reset();
             stopReader();
         }
@@ -649,8 +666,10 @@ namespace HLAPKCheckChannelMachinePM
         void clearUi()
         {
             textBox1_boxno.Text = "";
+            textBox1_bar.Text = "";
             grid.Rows.Clear();
             textBox1_boxno.Focus();
+            lblMainNumber.Text = "0";
         }
 
         List<string> getSaveEpcs(string boxNo)
@@ -674,6 +693,11 @@ namespace HLAPKCheckChannelMachinePM
         }
         private void dmButton1_save_Click(object sender, EventArgs e)
         {
+            dmButton1_save.Enabled = false;
+            btn_tijiao.Enabled = false;
+
+            stopReader();
+
             try
             {
                 string sql = string.Format("select boxNo from PkCheckSave where boxNo='{0}'", textBox1_boxno.Text.Trim());

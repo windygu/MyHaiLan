@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.pnMain = new System.Windows.Forms.Panel();
+            this.dmButton2_dianshang = new DMSkin.Controls.DMButton();
             this.dmButton9_jiaojiedan = new DMSkin.Controls.DMButton();
             this.dmButton9_jiehuodan = new DMSkin.Controls.DMButton();
             this.dmButton9_Cancel = new DMSkin.Controls.DMButton();
@@ -50,7 +51,7 @@
             this.netStatusButton = new DMSkin.Controls.DMButton();
             this.dmButton3 = new DMSkin.Controls.DMButton();
             this.label2_IP = new System.Windows.Forms.Label();
-            this.dmButton2_dianshang = new DMSkin.Controls.DMButton();
+            this.dmButton2 = new DMSkin.Controls.DMButton();
             this.pnMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,6 +60,7 @@
             this.pnMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnMain.Controls.Add(this.dmButton2);
             this.pnMain.Controls.Add(this.dmButton2_dianshang);
             this.pnMain.Controls.Add(this.dmButton9_jiaojiedan);
             this.pnMain.Controls.Add(this.dmButton9_jiehuodan);
@@ -78,6 +80,31 @@
             this.pnMain.Name = "pnMain";
             this.pnMain.Size = new System.Drawing.Size(1044, 343);
             this.pnMain.TabIndex = 12;
+            // 
+            // dmButton2_dianshang
+            // 
+            this.dmButton2_dianshang.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.dmButton2_dianshang.AutoEllipsis = true;
+            this.dmButton2_dianshang.BackColor = System.Drawing.Color.Transparent;
+            this.dmButton2_dianshang.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.dmButton2_dianshang.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.dmButton2_dianshang.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(124)))), ((int)(((byte)(16)))));
+            this.dmButton2_dianshang.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(212)))), ((int)(((byte)(100)))));
+            this.dmButton2_dianshang.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dmButton2_dianshang.DM_Radius = 8;
+            this.dmButton2_dianshang.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.dmButton2_dianshang.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dmButton2_dianshang.Font = new System.Drawing.Font("微软雅黑", 24F);
+            this.dmButton2_dianshang.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.dmButton2_dianshang.Image = null;
+            this.dmButton2_dianshang.Location = new System.Drawing.Point(753, 182);
+            this.dmButton2_dianshang.Margin = new System.Windows.Forms.Padding(0);
+            this.dmButton2_dianshang.Name = "dmButton2_dianshang";
+            this.dmButton2_dianshang.Size = new System.Drawing.Size(246, 62);
+            this.dmButton2_dianshang.TabIndex = 24;
+            this.dmButton2_dianshang.Text = "电商采购退复核";
+            this.dmButton2_dianshang.UseVisualStyleBackColor = true;
+            this.dmButton2_dianshang.Click += new System.EventHandler(this.dmButton2_dianshang_Click);
             // 
             // dmButton9_jiaojiedan
             // 
@@ -272,10 +299,10 @@
             this.btnYk.Font = new System.Drawing.Font("微软雅黑", 24F);
             this.btnYk.ForeColor = System.Drawing.Color.RoyalBlue;
             this.btnYk.Image = null;
-            this.btnYk.Location = new System.Drawing.Point(753, 98);
+            this.btnYk.Location = new System.Drawing.Point(423, 98);
             this.btnYk.Margin = new System.Windows.Forms.Padding(0);
             this.btnYk.Name = "btnYk";
-            this.btnYk.Size = new System.Drawing.Size(246, 62);
+            this.btnYk.Size = new System.Drawing.Size(221, 62);
             this.btnYk.TabIndex = 16;
             this.btnYk.Text = "移库装箱";
             this.btnYk.UseVisualStyleBackColor = true;
@@ -372,7 +399,7 @@
             this.btnPacking.Font = new System.Drawing.Font("微软雅黑", 24F);
             this.btnPacking.ForeColor = System.Drawing.Color.RoyalBlue;
             this.btnPacking.Image = null;
-            this.btnPacking.Location = new System.Drawing.Point(753, 182);
+            this.btnPacking.Location = new System.Drawing.Point(753, 98);
             this.btnPacking.Margin = new System.Windows.Forms.Padding(0);
             this.btnPacking.Name = "btnPacking";
             this.btnPacking.Size = new System.Drawing.Size(246, 62);
@@ -507,31 +534,30 @@
             this.label2_IP.Text = "IP";
             this.label2_IP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // dmButton2_dianshang
+            // dmButton2
             // 
-            this.dmButton2_dianshang.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.dmButton2_dianshang.AutoEllipsis = true;
-            this.dmButton2_dianshang.BackColor = System.Drawing.Color.Transparent;
-            this.dmButton2_dianshang.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.dmButton2_dianshang.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
-            this.dmButton2_dianshang.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(124)))), ((int)(((byte)(16)))));
-            this.dmButton2_dianshang.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(212)))), ((int)(((byte)(100)))));
-            this.dmButton2_dianshang.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dmButton2_dianshang.DM_Radius = 8;
-            this.dmButton2_dianshang.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.dmButton2_dianshang.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.dmButton2_dianshang.Font = new System.Drawing.Font("微软雅黑", 24F);
-            this.dmButton2_dianshang.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.dmButton2_dianshang.Image = null;
-            this.dmButton2_dianshang.Location = new System.Drawing.Point(753, 264);
-            this.dmButton2_dianshang.Margin = new System.Windows.Forms.Padding(0);
-            this.dmButton2_dianshang.Name = "dmButton2_dianshang";
-            this.dmButton2_dianshang.Size = new System.Drawing.Size(246, 62);
-            this.dmButton2_dianshang.TabIndex = 24;
-            this.dmButton2_dianshang.Text = "电商采购退复核";
-            this.dmButton2_dianshang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.dmButton2_dianshang.UseVisualStyleBackColor = true;
-            this.dmButton2_dianshang.Click += new System.EventHandler(this.dmButton2_dianshang_Click);
+            this.dmButton2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.dmButton2.AutoEllipsis = true;
+            this.dmButton2.BackColor = System.Drawing.Color.Transparent;
+            this.dmButton2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.dmButton2.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.dmButton2.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(124)))), ((int)(((byte)(16)))));
+            this.dmButton2.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(212)))), ((int)(((byte)(100)))));
+            this.dmButton2.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dmButton2.DM_Radius = 8;
+            this.dmButton2.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.dmButton2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dmButton2.Font = new System.Drawing.Font("微软雅黑", 24F);
+            this.dmButton2.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.dmButton2.Image = null;
+            this.dmButton2.Location = new System.Drawing.Point(753, 264);
+            this.dmButton2.Margin = new System.Windows.Forms.Padding(0);
+            this.dmButton2.Name = "dmButton2";
+            this.dmButton2.Size = new System.Drawing.Size(246, 62);
+            this.dmButton2.TabIndex = 25;
+            this.dmButton2.Text = "电商拣货复核";
+            this.dmButton2.UseVisualStyleBackColor = true;
+            this.dmButton2.Click += new System.EventHandler(this.dmButton2_Click);
             // 
             // MainForm
             // 
@@ -583,6 +609,7 @@
         private DMSkin.Controls.DMButton dmButton9_jiehuodan;
         private DMSkin.Controls.DMButton dmButton9_jiaojiedan;
         private DMSkin.Controls.DMButton dmButton2_dianshang;
+        private DMSkin.Controls.DMButton dmButton2;
     }
 }
 

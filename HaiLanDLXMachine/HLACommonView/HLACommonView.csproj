@@ -138,6 +138,12 @@
     <Compile Include="Views\CommonLoginFormPM.Designer.cs">
       <DependentUpon>CommonLoginFormPM.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\CommonPMDanJieJiInventoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CommonPMDanJieJiInventoryForm.Designer.cs">
+      <DependentUpon>CommonPMDanJieJiInventoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ConfigFormYZ.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -241,6 +247,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\CommonLoginFormPM.resx">
       <DependentUpon>CommonLoginFormPM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CommonPMDanJieJiInventoryForm.resx">
+      <DependentUpon>CommonPMDanJieJiInventoryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ConfigFormYZ.resx">
       <DependentUpon>ConfigFormYZ.cs</DependentUpon>

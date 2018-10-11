@@ -75,10 +75,6 @@ namespace HLACommonLib
                     //SysConfig.UseGroupLogon = "0";
                 }
 
-#if DEBUG
-                SysConfig.UseGroupLogon = "0";
-#endif
-
                 if (SysConfig.UseGroupLogon == "1")
                 {
                     if (SysConfig.LGNUM == "ET01")
@@ -108,13 +104,6 @@ namespace HLACommonLib
                 }
                 else
                 {
-#if DEBUG
-                    SysConfig.AppServerHost = "172.18.200.14";
-                    SysConfig.SystemNumber = "00";
-                    SysConfig.User = "069675";
-                    SysConfig.Password = "121212";
-                    SysConfig.Client = "300";
-#endif
                     rfcParams.Add(RfcConfigParameters.AppServerHost, SysConfig.AppServerHost);   //SAP主机IP
                     rfcParams.Add(RfcConfigParameters.SystemNumber, SysConfig.SystemNumber);  //SAP实例
                     rfcParams.Add(RfcConfigParameters.User, SysConfig.User);  //用户名
@@ -930,8 +919,10 @@ namespace HLACommonLib
         /// <param name="lgnum"></param>
         /// <param name="docno"></param>
         /// <returns></returns>
-        public static List<DocDetailInfo> GetDocDetailInfoList(string lgnum, string docno, out List<MaterialInfo> materialList, out List<HLATagInfo> tagList)
+        public static List<DocDetailInfo> GetDocDetailInfoList(string lgnum, string docno, out List<MaterialInfo> materialList, out List<HLATagInfo> tagList,out string sapRe,out string sapMsg)
         {
+            sapRe = "";
+            sapMsg = "";
             materialList = new List<MaterialInfo>();
             tagList = new List<HLATagInfo>();
             try
@@ -972,6 +963,9 @@ namespace HLACommonLib
                 myfun.SetValue("IV_LGNUM", lgnum);//仓库编号
                 myfun.SetValue("IV_DOCNO", docno);//交货单号
                 myfun.Invoke(dest);
+
+                sapRe = myfun.GetString("EV_STATUS");
+                sapMsg = myfun.GetString("EV_MSG");
 
                 IRfcTable IrfTable = myfun.GetTable("ET_OUTPUT");
                 //MessageBox.Show(IrfTable.ToString());
@@ -1366,6 +1360,7 @@ namespace HLACommonLib
             {
                 if (SysConfig.IsTest)
                 {
+                    
                     DeviceTable result = new DeviceTable();
                     result.EQUIP_HLA = "HLA98720";
                     result.LOUCENG = "XXX";
@@ -1392,7 +1387,6 @@ namespace HLACommonLib
                     result.AuthList.Add(new AuthInfo() { AUTH_CODE = "E0001", AUTH_VALUE = "TH03", EQUIP_HLA = "HLA98720", AUTH_VALUE_DES = "TH" });
                     return result;
                 }
-                //MessageBox.Show(JsonConvert.SerializeObject(rfcParams));
                 RfcDestination dest = RfcDestinationManager.GetDestination(rfcParams);
                 RfcRepository rfcrep = dest.Repository;
                 IRfcFunction myfun = null;
@@ -1429,7 +1423,6 @@ namespace HLACommonLib
 
                     if (deviceInfo == null) return null;
                     IRfcTable IrfTable_GX = myfun.GetTable("ET_DATA_GX");
-                    //MessageBox.Show(IrfTable_GX.ToString());
                     if (IrfTable_GX.Count > 0)
                     {
                         deviceInfo.GxList = new List<GxInfo>();
@@ -1451,8 +1444,6 @@ namespace HLACommonLib
                     }
 
                     IRfcTable AuthTable = myfun.GetTable("ET_DATA_AUTH");
-                    //MessageBox.Show(AuthTable.ToString());
-                    //LogHelper.WriteLine(AuthTable.ToString());
                     if(AuthTable.Count>0)
                     {
                         deviceInfo.AuthList = new List<AuthInfo>();
@@ -1475,7 +1466,7 @@ namespace HLACommonLib
                     }
                     return deviceInfo;
                 }
-                return null; ;//表示错误信息
+                return null;//表示错误信息
             }
             catch (Exception ex)
             {
@@ -4874,8 +4865,8 @@ namespace HLACommonLib
                 myfun.SetValue("PASSWORD", pw);
 
                 myfun.Invoke(dest);
-                sapRe = myfun.GetString("STATUS");
-                sapMsg = myfun.GetString("MSG");
+                sapRe = myfun.GetString("STATUS_OUT");
+                sapMsg = myfun.GetString("MSG_OUT");
 
                 RfcSessionManager.EndContext(dest);
             }
@@ -4883,6 +4874,190 @@ namespace HLACommonLib
             {
 
             }
+        }
+
+        public static CDianShangOutDocInfo getDianShangOutInfo(string hu,out string msg)
+        {
+            CDianShangOutDocInfo re = new CDianShangOutDocInfo();
+            msg = "";
+
+            if(SysConfig.IsTest)
+            {
+                re.mDoc = "888";
+                re.mDocTime = "2015-01-04";
+
+                List<string> huList = new List<string>();
+                huList.Add("123456");
+                huList.Add("123455");
+                huList.Add("123454");
+                huList.Add("123453");
+                huList.Add("123452");
+                huList.Add("123451");
+                huList.Add("123450");
+
+                re.mHu = huList;
+
+                List<CMatQty> mq = new List<CMatQty>();
+                mq.Add(new CMatQty("FKCAJ38001A01001", 12));//50002A232508C0000000
+                mq.Add(new CMatQty("FKCAJ38001A01002", 9));//50002A233508C0000000
+                mq.Add(new CMatQty("HTXAD3A011Y11004", 5));//500009D7750001000000 500009D7750315
+                re.mMatQtyList = mq;
+
+                re.OrigBillId = "12345";
+                re.WHAreaId = "234";
+
+                return re;
+            }
+
+            try
+            {
+                CPPInfo pi = new CPPInfo(SysConfig.HttpKey, SysConfig.HttpUrl, SysConfig.HttpSec);
+                string postData = "";
+                postData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><root><boxId>{0}</boxId></root>", hu.Trim());
+                string reData = HttpWebResponseUtility.Submit(postData, "SyncPickInfoSearch", pi);
+
+                XmlDocument xmldoc = new XmlDocument();
+                xmldoc.LoadXml(reData.Replace(xmlhead, ""));
+
+                XmlNode nodeRep = xmldoc.SelectSingleNode("/ewmsResponseRoot/response/bizData");
+                if (nodeRep != null)
+                {
+                    string flag = nodeRep.SelectSingleNode("flag").InnerText;
+                    if (flag == SUCCESS)
+                    {
+                        XmlNode data = nodeRep.SelectSingleNode("data/Inner_syncpickinfosearch");
+                        XmlNode doc = data.SelectSingleNode("BillId");
+                        if (doc != null)
+                        {
+                            re.mDoc = doc.InnerText.Trim();
+                        }
+
+                        XmlNode docTime = data.SelectSingleNode("BillDate");
+                        if(docTime!=null)
+                        {
+                            re.mDocTime = docTime.InnerText.Trim();
+                        }
+
+                        XmlNode WHAreaId = data.SelectSingleNode("WHAreaId");
+                        if (WHAreaId != null)
+                        {
+                            re.WHAreaId = WHAreaId.InnerText.Trim();
+                        }
+
+                        XmlNode OrigBillId = data.SelectSingleNode("OrigBillId");
+                        if (OrigBillId != null)
+                        {
+                            re.OrigBillId = OrigBillId.InnerText.Trim();
+                        }
+
+                        XmlNodeList boxIdList = data.SelectNodes("item/boxIds/boxId");
+                        if (boxIdList != null)
+                        {
+                            foreach (XmlNode v in boxIdList)
+                            {
+                                if(v!=null)
+                                {
+                                    re.mHu.Add(v.InnerText.Trim());
+                                }
+                            }
+                        }
+
+                        XmlNodeList productList = data.SelectNodes("item/products/product");
+                        if (productList != null)
+                        {
+                            foreach (XmlNode v in productList)
+                            {
+                                XmlNode pro = v.SelectSingleNode("SapBarcode");
+                                XmlNode qty = v.SelectSingleNode("QtyOut");
+                                if (pro != null && qty != null && !string.IsNullOrEmpty(pro.InnerText) && !string.IsNullOrEmpty(qty.InnerText))
+                                {
+                                    CMatQty barQty = new CMatQty(pro.InnerText.Trim(), int.Parse(qty.InnerText.Trim()));
+                                    re.mMatQtyList.Add(barQty);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                msg = ex.ToString();
+            }
+
+            return re;
+        }
+
+        public static bool dianShangLogin(string user,string pwd,out string msg)
+        {
+            msg = "";
+            bool re = false;
+            try
+            {
+                CPPInfo pi = new CPPInfo(SysConfig.HttpKey, SysConfig.HttpUrl, SysConfig.HttpSec);
+                string postData = "";
+                postData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><root><userId>{0}</userId><userPwd>{1}</userPwd></root>", user.Trim(), pwd.Trim());
+                string reData = HttpWebResponseUtility.Submit(postData, "SyncUserLogin", pi);
+
+                XmlDocument xmldoc = new XmlDocument();
+                xmldoc.LoadXml(reData.Replace(xmlhead, ""));
+
+                XmlNode nodeRep = xmldoc.SelectSingleNode("/ewmsResponseRoot/response/bizData");
+                if (nodeRep != null)
+                {
+                    string flag = nodeRep.SelectSingleNode("flag").InnerText;
+                    if (flag == SUCCESS)
+                    {
+                        re = true;
+                    }
+                    else
+                    {
+                        re = false;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                re = false;
+                MessageBox.Show(ex.ToString());
+            }
+            return re;
+        }
+        public static bool dianShangCGTDelHu(string hu,out string msg)
+        {
+            msg = "";
+            bool re = false;
+            try
+            {
+                CPPInfo pi = new CPPInfo(SysConfig.HttpKey, SysConfig.HttpUrl, SysConfig.HttpSec);
+                string postData = "";
+                postData = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?><root><boxId>{0}</boxId></root>", hu.Trim());
+                string reData = HttpWebResponseUtility.Submit(postData, "SyncPurchaseinfoDel", pi);
+
+                XmlDocument xmldoc = new XmlDocument();
+                xmldoc.LoadXml(reData.Replace(xmlhead, ""));
+
+                XmlNode nodeRep = xmldoc.SelectSingleNode("/ewmsResponseRoot/response/bizData");
+                if (nodeRep != null)
+                {
+                    string flag = nodeRep.SelectSingleNode("flag").InnerText;
+                    if (flag == SUCCESS)
+                    {
+                        re = true;
+                    }
+                    else
+                    {
+                        re = false;
+                        msg = nodeRep.SelectSingleNode("errorDescription").InnerText;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+            return re;
         }
     }
     public class HttpWebResponseUtility

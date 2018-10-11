@@ -337,5 +337,15 @@ namespace HLABigChannel
             this.dmButton2_dianshang.Enabled = true;
             this.WindowState = FormWindowState.Maximized;
         }
+
+        private void dmButton2_Click(object sender, EventArgs e)
+        {
+            dmButton2.Enabled = false;
+
+            StartProgram(sender, "HLADianShangOutCheckChannelMachine.exe", "dianshangjiehuo");
+
+            this.dmButton2.Enabled = true;
+            this.WindowState = FormWindowState.Maximized;
+        }
     }
 }

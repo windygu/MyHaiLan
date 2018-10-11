@@ -170,9 +170,12 @@ namespace HLAChannelMachine
                     List<HLATagInfo> hlaTagList = new List<HLATagInfo>();
                     List<DocDetailInfo> docDetailList = null;
                     lastDateTime = DateTime.Now;
+                    string sapRe = "";
+                    string sapMsg = "";
+
                     if (type == ReceiveType.交货单收货)
                     {
-                        docDetailList = SAPDataService.GetDocDetailInfoList(SysConfig.LGNUM, docNo, out materialList, out hlaTagList);
+                        docDetailList = SAPDataService.GetDocDetailInfoList(SysConfig.LGNUM, docNo, out materialList, out hlaTagList,out sapRe,out sapMsg);
                         loginfo+= string.Format("SAPDataService.GetDocDetailInfoList，耗时{0}ms", (DateTime.Now - lastDateTime).TotalMilliseconds);
                     }
                     else if (type == ReceiveType.交接单收货)
@@ -184,6 +187,13 @@ namespace HLAChannelMachine
                     else
                     {
                         ShowMessageBox("未知的收获类型，无法继续收货！");
+                        OnThreadReturn();
+                        return;
+                    }
+
+                    if (sapRe == "E")
+                    {
+                        ShowMessageBox(sapMsg);
                         OnThreadReturn();
                         return;
                     }

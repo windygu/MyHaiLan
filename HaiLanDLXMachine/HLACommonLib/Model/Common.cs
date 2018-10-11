@@ -18,6 +18,16 @@ namespace HLACommonLib.Model
             qty = q;
         }
     }
+    public class CMatQty
+    {
+        public string mat;
+        public int qty;
+        public CMatQty(string m, int q)
+        {
+            mat = m;
+            qty = q;
+        }
+    }
     public class CCancelDocData
     {
         public string hu;
@@ -376,6 +386,60 @@ namespace HLACommonLib.Model
         public string charg;
         public int quan;
     }
+    public class CTagSum
+    {
+        public string mat;
+        public string bar;
+        public string barAdd = "";
+        public string zsatnr;
+        public string zcolsn;
+        public string zsiztx;
+        public int qty;
+        public int qty_add = 0;
+
+        public CTagSum(string m,string b,string badd,string zsa,string zcol,string zsize,int q,int q_a)
+        {
+            mat = m;
+            bar = b;
+            barAdd = badd;
+            zsatnr = zsa;
+            zcolsn = zcol;
+            zsiztx = zsize;
+            qty = q;
+            qty_add = q_a;
+        }
+        public CTagSum()
+        {
+
+        }
+    }
+    public class CTagSumDif
+    {
+        public string mat;
+        public string bar;
+        public string barAdd = "";
+        public string zsatnr;
+        public string zcolsn;
+        public string zsiztx;
+        public int qty;
+        public int qty_diff = 0;
+        public int qty_add = 0;
+        public int qty_add_diff = 0;
+
+        public CTagSumDif(string m, string b, string badd, string zsa, string zcol, string zsize, int q, int q_a,int q_d,int q_a_d)
+        {
+            mat = m;
+            bar = b;
+            barAdd = badd;
+            zsatnr = zsa;
+            zcolsn = zcol;
+            zsiztx = zsize;
+            qty = q;
+            qty_add = q_a;
+            qty_diff = q_d;
+            qty_add_diff = q_a_d;
+        }
+    }
 
 
     public class CPKCheckUpload
@@ -434,4 +498,23 @@ namespace HLACommonLib.Model
         }
     }
 
+
+    public class CDianShangOutCheckUploadData
+    {
+        public string inventoryRe;
+        public string sapRe;
+    }
+
+    public class CDianShangOutDocInfo
+    {
+        public string mDoc = "";
+        public string mDocTime = "";
+        public string WHAreaId = "";
+        public string OrigBillId = "";
+        public List<string> mHu = new List<string>();
+
+        public List<CMatQty> mMatQtyList = new List<CMatQty>();
+
+        public Dictionary<string, List<TagDetailInfo>> mHuDetail = new Dictionary<string, List<TagDetailInfo>>();
+    }
 }

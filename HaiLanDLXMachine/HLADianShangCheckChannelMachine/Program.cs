@@ -6,6 +6,7 @@ using HLACommonLib;
 using HLACommonLib.Model;
 using HLACommonView.Views.Dialogs;
 using System.Diagnostics;
+using System.Configuration;
 
 namespace HLAJiaoJieCheckChannelMachine
 {
@@ -55,8 +56,18 @@ namespace HLAJiaoJieCheckChannelMachine
             }
             else
             {
+                /*
                 MessageBox.Show("请从主界面运行程序", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                return;*/
+                SysConfig.DBUrl = ConfigurationManager.ConnectionStrings["ConnStr"]?.ConnectionString;
+                SysConfig.LGNUM = ConfigurationManager.AppSettings["LGNUM"];
+                SysConfig.DeviceNO = ConfigurationManager.AppSettings["DeviceNO"];
+
+                if (string.IsNullOrEmpty(SysConfig.LGNUM) || string.IsNullOrEmpty(SysConfig.DeviceNO) || string.IsNullOrEmpty(SysConfig.DBUrl))
+                {
+                    MessageBox.Show("请从主界面运行程序", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
             }
 #endif
 
@@ -66,7 +77,7 @@ namespace HLAJiaoJieCheckChannelMachine
                 SAPDataService.Init();
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new Form1());
+                Application.Run(new LoginForm());
             }
         }
     }

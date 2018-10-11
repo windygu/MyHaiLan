@@ -33,6 +33,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.dmButton1_save = new DMSkin.Controls.DMButton();
             this.dmButton1_reset = new DMSkin.Controls.DMButton();
             this.label9_dema = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -65,7 +66,6 @@
             this.QTY = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.should_count = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.real_count = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dmButton1_save = new DMSkin.Controls.DMButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -117,6 +117,31 @@
             this.splitContainer1.SplitterDistance = 226;
             this.splitContainer1.TabIndex = 1;
             // 
+            // dmButton1_save
+            // 
+            this.dmButton1_save.AutoEllipsis = true;
+            this.dmButton1_save.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.dmButton1_save.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.dmButton1_save.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.dmButton1_save.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(93)))), ((int)(((byte)(203)))));
+            this.dmButton1_save.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(123)))), ((int)(((byte)(203)))));
+            this.dmButton1_save.DM_NormalColor = System.Drawing.Color.WhiteSmoke;
+            this.dmButton1_save.DM_Radius = 1;
+            this.dmButton1_save.Enabled = false;
+            this.dmButton1_save.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.dmButton1_save.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dmButton1_save.Font = new System.Drawing.Font("微软雅黑", 14F, System.Drawing.FontStyle.Bold);
+            this.dmButton1_save.ForeColor = System.Drawing.Color.Teal;
+            this.dmButton1_save.Image = null;
+            this.dmButton1_save.Location = new System.Drawing.Point(597, 139);
+            this.dmButton1_save.Margin = new System.Windows.Forms.Padding(0);
+            this.dmButton1_save.Name = "dmButton1_save";
+            this.dmButton1_save.Size = new System.Drawing.Size(120, 30);
+            this.dmButton1_save.TabIndex = 61;
+            this.dmButton1_save.Text = "保存";
+            this.dmButton1_save.UseVisualStyleBackColor = false;
+            this.dmButton1_save.Click += new System.EventHandler(this.dmButton1_save_Click);
+            // 
             // dmButton1_reset
             // 
             this.dmButton1_reset.AutoEllipsis = true;
@@ -132,7 +157,7 @@
             this.dmButton1_reset.Font = new System.Drawing.Font("微软雅黑", 14F, System.Drawing.FontStyle.Bold);
             this.dmButton1_reset.ForeColor = System.Drawing.Color.Teal;
             this.dmButton1_reset.Image = null;
-            this.dmButton1_reset.Location = new System.Drawing.Point(753, 94);
+            this.dmButton1_reset.Location = new System.Drawing.Point(753, 95);
             this.dmButton1_reset.Margin = new System.Windows.Forms.Padding(0);
             this.dmButton1_reset.Name = "dmButton1_reset";
             this.dmButton1_reset.Size = new System.Drawing.Size(120, 30);
@@ -222,7 +247,7 @@
             this.dmButton1_exception_query.Font = new System.Drawing.Font("微软雅黑", 14F, System.Drawing.FontStyle.Bold);
             this.dmButton1_exception_query.ForeColor = System.Drawing.Color.Teal;
             this.dmButton1_exception_query.Image = null;
-            this.dmButton1_exception_query.Location = new System.Drawing.Point(753, 142);
+            this.dmButton1_exception_query.Location = new System.Drawing.Point(753, 139);
             this.dmButton1_exception_query.Margin = new System.Windows.Forms.Padding(0);
             this.dmButton1_exception_query.Name = "dmButton1_exception_query";
             this.dmButton1_exception_query.Size = new System.Drawing.Size(120, 30);
@@ -594,30 +619,6 @@
             this.real_count.Name = "real_count";
             this.real_count.ReadOnly = true;
             this.real_count.Width = 88;
-            // 
-            // dmButton1_save
-            // 
-            this.dmButton1_save.AutoEllipsis = true;
-            this.dmButton1_save.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.dmButton1_save.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.dmButton1_save.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
-            this.dmButton1_save.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(93)))), ((int)(((byte)(203)))));
-            this.dmButton1_save.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(123)))), ((int)(((byte)(203)))));
-            this.dmButton1_save.DM_NormalColor = System.Drawing.Color.WhiteSmoke;
-            this.dmButton1_save.DM_Radius = 1;
-            this.dmButton1_save.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.dmButton1_save.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.dmButton1_save.Font = new System.Drawing.Font("微软雅黑", 14F, System.Drawing.FontStyle.Bold);
-            this.dmButton1_save.ForeColor = System.Drawing.Color.Teal;
-            this.dmButton1_save.Image = null;
-            this.dmButton1_save.Location = new System.Drawing.Point(597, 139);
-            this.dmButton1_save.Margin = new System.Windows.Forms.Padding(0);
-            this.dmButton1_save.Name = "dmButton1_save";
-            this.dmButton1_save.Size = new System.Drawing.Size(120, 30);
-            this.dmButton1_save.TabIndex = 61;
-            this.dmButton1_save.Text = "保存";
-            this.dmButton1_save.UseVisualStyleBackColor = false;
-            this.dmButton1_save.Click += new System.EventHandler(this.dmButton1_save_Click);
             // 
             // InventoryForm
             // 

@@ -81,7 +81,35 @@ namespace HLACommonView.Views
 
             return re;
         }
+        public List<CTagSum> getTagSum()
+        {
+            List<CTagSum> re = new List<CTagSum>();
+            try
+            {
+                List<string> matList = tagDetailList.Select(i => i.MATNR).Distinct().ToList();
+                foreach(var v in matList)
+                {
+                    TagDetailInfo ti = tagDetailList.FirstOrDefault(i => i.MATNR == v);
 
+                    CTagSum t = new CTagSum();
+                    t.mat = v;
+                    t.bar = ti.BARCD;
+                    t.barAdd = ti.BARCD_ADD;
+                    t.zsatnr = ti.ZSATNR;
+                    t.zcolsn = ti.ZCOLSN;
+                    t.zsiztx = ti.ZSIZTX;
+                    t.qty = tagDetailList.Count(i => i.MATNR == v && !i.IsAddEpc);
+                    t.qty_add = tagDetailList.Count(i => i.MATNR == v && i.IsAddEpc);
+
+                    re.Add(t);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return re;
+        }
 
         public virtual CheckResult CheckData()
         {
@@ -91,19 +119,10 @@ namespace HLACommonView.Views
                 result.UpdateMessage(Consts.Default.EPC_WEI_ZHU_CE);
                 result.InventoryResult = false;
             }
-            if (mainEpcNumber != addEpcNumber && addEpcNumber > 0)
+            if (mainEpcNumber != addEpcNumber && tagDetailList.Exists(i => !string.IsNullOrEmpty(i.BARCD_ADD)))
             {
                 result.UpdateMessage(Consts.Default.TWO_NUMBER_ERROR);
                 result.InventoryResult = false;
-            }
-
-            if(addEpcNumber == 0)
-            {
-                if(tagDetailList.Exists(i => !string.IsNullOrEmpty(i.BARCD_ADD)))
-                {
-                    result.UpdateMessage(Consts.Default.TWO_NUMBER_ERROR);
-                    result.InventoryResult = false;
-                }
             }
 
             if (boxNoList.Count > 0)
@@ -121,6 +140,28 @@ namespace HLACommonView.Views
             return result;
         }
 
+        public CheckResult baseCheck()
+        {
+            CheckResult result = new CheckResult();
+            if (errorEpcNumber > 0)
+            {
+                result.UpdateMessage(Consts.Default.EPC_WEI_ZHU_CE);
+                result.InventoryResult = false;
+            }
+            if (boxNoList.Count > 0)
+            {
+                boxNoList.Clear();
+                result.UpdateMessage(Consts.Default.XIANG_MA_BU_YI_ZHI);
+                result.InventoryResult = false;
+            }
+            if (epcList.Count == 0)
+            {
+                result.UpdateMessage(Consts.Default.WEI_SAO_DAO_EPC);
+                result.InventoryResult = false;
+            }
+
+            return result;
+        }
 
         public virtual void UpdateView()
         {

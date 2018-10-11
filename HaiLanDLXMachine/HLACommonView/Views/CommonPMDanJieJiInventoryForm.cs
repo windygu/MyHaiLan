@@ -21,7 +21,7 @@ using Xindeco.Device;
 
 namespace HLACommonView.Views
 {
-    public partial class CommonPMInventoryForm : MetroForm
+    public partial class CommonPMDanJieJiInventoryForm : MetroForm
     {
         public RfidUARTLinkExtend rfid = new RfidUARTLinkExtend();
         string mComPort;
@@ -43,7 +43,7 @@ namespace HLACommonView.Views
         public BarcodeDevice barcodeDevice = null;
         string mBarcodeCom = "";
         
-        public CommonPMInventoryForm()
+        public CommonPMDanJieJiInventoryForm()
         {
             InitializeComponent();
             mIgnoreEpcs = SAPDataService.getIngnoreEpcs();

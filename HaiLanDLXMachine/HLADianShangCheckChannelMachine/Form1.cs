@@ -77,7 +77,9 @@ namespace HLAJiaoJieCheckChannelMachine
 
                 ShowLoading("正在下载物料数据...");
 #if DEBUG
-                materialList = SAPDataService.GetMaterialInfoList(SysConfig.LGNUM);
+                //materialList = SAPDataService.GetMaterialInfoList(SysConfig.LGNUM);
+                materialList = LocalDataService.GetMaterialInfoList();
+
 #else
                 materialList = LocalDataService.GetMaterialInfoList();
 #endif
@@ -98,11 +100,13 @@ namespace HLAJiaoJieCheckChannelMachine
 
                 ShowLoading("正在下载吊牌数据...");
 #if DEBUG
+                /*
                 hlaTagList = SAPDataService.GetTagInfoList(SysConfig.LGNUM);
                 HLATagInfo i1 = hlaTagList.FirstOrDefault(i => i.MATNR == "HKNAD3A212AB2001");
                 HLATagInfo i2 = hlaTagList.FirstOrDefault(i => i.MATNR == "HKNAD3A212AB2002");
                 HLATagInfo i3 = hlaTagList.FirstOrDefault(i => i.MATNR == "HKNAD3A212AB2003");
-                HLATagInfo i4 = hlaTagList.FirstOrDefault(i => i.MATNR == "HKNAD3A212AB2004");
+                HLATagInfo i4 = hlaTagList.FirstOrDefault(i => i.MATNR == "HKNAD3A212AB2004");*/
+                hlaTagList = LocalDataService.GetAllRfidHlaTagList();
 
 #else
                 hlaTagList = LocalDataService.GetAllRfidHlaTagList();

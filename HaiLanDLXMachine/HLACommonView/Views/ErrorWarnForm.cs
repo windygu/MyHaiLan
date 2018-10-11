@@ -91,6 +91,7 @@ namespace HLACommonView.Views
             {
                 LogHelper.WriteLine(ex.ToString());
             }
+
         }
         public void showErrorInfo(string epc, TagDetailInfo tag, string errormsg)
         {
@@ -126,7 +127,6 @@ namespace HLACommonView.Views
             {
                 LogHelper.WriteLine(ex.ToString());
             }
-
         }
 
     }

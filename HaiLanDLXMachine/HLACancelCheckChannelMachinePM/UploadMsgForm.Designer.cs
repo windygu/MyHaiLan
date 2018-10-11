@@ -1,4 +1,4 @@
-﻿namespace HLACommonView.Views
+﻿namespace HLACancelCheckChannelMachine
 {
     partial class UploadMsgForm
     {

@@ -271,6 +271,7 @@ namespace HLACommonLib
             SysConfig.ScannerPort_1 = ConfigurationManager.AppSettings["ScannerPort_1"];
             SysConfig.ScannerPort_2 = ConfigurationManager.AppSettings["ScannerPort_2"];
 
+            SysConfig.IsTest = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Test"]) ? false : int.Parse(ConfigurationManager.AppSettings["Test"]) == 1;
         }
         public static void Load()
         {

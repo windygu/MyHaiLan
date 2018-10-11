@@ -20,7 +20,7 @@ using System.Xml;
 using OSharp.Utility.Extensions;
 using Newtonsoft.Json;
 
-namespace HLAJiaoJieCheckChannelMachine
+namespace HLADianShangOutCheckChannelMachine
 {
     public partial class LoginForm : CommonLoginForm
     {
@@ -45,8 +45,7 @@ namespace HLAJiaoJieCheckChannelMachine
                 return;
             }
 
-            string msg = "";
-            if (SAPDataService.dianShangLogin(User, Password,out msg))
+            if (SAPDataService.Login(User, Password))
             {
                 //缓存当前登录用户
                 SysConfig.CurrentLoginUser = new HLACommonLib.Model.UserInfo() { UserId = User, Password = Password };

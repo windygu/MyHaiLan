@@ -6,9 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using HLACommonLib;
 
-namespace HLAJiaoJieCheckChannelMachine
+namespace HLADianShangOutCheckChannelMachine
 {
     public partial class ClearDataForm : Form
     {
@@ -26,16 +25,7 @@ namespace HLAJiaoJieCheckChannelMachine
 
         private void button1_clearHu_Click(object sender, EventArgs e)
         {
-            string hu = textBox1_hu.Text.Trim();
-            if(string.IsNullOrEmpty(hu))
-            {
-                MessageBox.Show("请输入箱号");
-                return;
-            }
-
-            mParent.clearHu(hu);
-            string msg = "";
-            SAPDataService.dianShangCGTDelHu(hu, out msg);
+            mParent.clearHu(textBox1_hu.Text.Trim());
         }
 
         private void button1_clearDoc_Click(object sender, EventArgs e)

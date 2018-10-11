@@ -1,6 +1,6 @@
 ﻿namespace HLACommonView.Views
 {
-    partial class CommonInventoryFormYZ
+    partial class CommonPMDanJieJiInventoryForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,12 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommonInventoryFormYZ));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommonPMInventoryForm));
             this.metroPanel1 = new DMSkin.Metro.Controls.MetroPanel();
             this.lblText = new System.Windows.Forms.Label();
             this.metroProgressSpinner1 = new DMSkin.Metro.Controls.MetroProgressSpinner();
-            this.timer = new System.Windows.Forms.Timer(this.components);
             this.metroPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,12 +84,7 @@
             this.metroProgressSpinner1.Style = DMSkin.Metro.MetroColorStyle.White;
             this.metroProgressSpinner1.TabIndex = 2;
             // 
-            // timer
-            // 
-            this.timer.Enabled = true;
-            this.timer.Tick += new System.EventHandler(this.timer_Tick);
-            // 
-            // CommonInventoryFormYZ
+            // CommonPMInventoryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -101,10 +94,10 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "CommonInventoryFormYZ";
+            this.Name = "CommonPMInventoryForm";
             this.Padding = new System.Windows.Forms.Padding(0, 30, 0, 0);
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Shown += new System.EventHandler(this.CommonInventoryFormYZ_Shown);
+            this.Shown += new System.EventHandler(this.CommonPMInventoryForm_Shown);
             this.metroPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -115,6 +108,5 @@
         private DMSkin.Metro.Controls.MetroPanel metroPanel1;
         private DMSkin.Metro.Controls.MetroProgressSpinner metroProgressSpinner1;
         private System.Windows.Forms.Label lblText;
-        private System.Windows.Forms.Timer timer;
     }
 }
