@@ -23,14 +23,15 @@ namespace HLADianShangOutCheckChannelMachine
             Close();
         }
 
-        private void button1_clearHu_Click(object sender, EventArgs e)
-        {
-            mParent.clearHu(textBox1_hu.Text.Trim());
-        }
-
         private void button1_clearDoc_Click(object sender, EventArgs e)
         {
+            if(string.IsNullOrEmpty(textBox2_doc.Text.Trim()))
+            {
+                MessageBox.Show("请输入单号");
+                return;
+            }
             mParent.clearDoc(textBox2_doc.Text.Trim());
+            MessageBox.Show("删除成功");
         }
     }
 }

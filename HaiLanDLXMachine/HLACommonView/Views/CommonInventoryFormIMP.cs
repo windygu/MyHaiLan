@@ -87,7 +87,7 @@ namespace HLACommonView.Views
             try
             {
                 List<string> matList = tagDetailList.Select(i => i.MATNR).Distinct().ToList();
-                foreach(var v in matList)
+                foreach (var v in matList)
                 {
                     TagDetailInfo ti = tagDetailList.FirstOrDefault(i => i.MATNR == v);
 
@@ -108,6 +108,89 @@ namespace HLACommonView.Views
             {
 
             }
+            return re;
+        }
+        public bool hasDif(List<CTagSumDif> td)
+        {
+            bool re = false;
+            try
+            {
+                foreach (var v in td)
+                {
+                    if(v.qty_diff!=0 || v.qty_add_diff!=0)
+                    {
+                        re = true;
+                        break;
+                    }
+                }
+            }
+            catch(Exception)
+            {
+
+            }
+            return re;
+        }
+        public List<CTagSumDif> duibi(List<CMatQty> std)
+        {
+            List<CTagSumDif> re = new List<CTagSumDif>();
+
+            if (std != null && std.Count > 0)
+            {
+                List<string> matList = tagDetailList.Select(i => i.MATNR).Distinct().ToList();
+                foreach(var v in matList)
+                {
+                    TagDetailInfo ti = tagDetailList.FirstOrDefault(i => i.MATNR == v);
+
+                    if (std.Exists(i=>i.mat == v))
+                    {
+                        bool hasAdd = !string.IsNullOrEmpty(ti.BARCD_ADD);
+                        int stdQty = std.First(i => i.mat == v).qty;
+                        CTagSumDif d = new CTagSumDif(ti.MATNR, ti.BARCD, ti.BARCD_ADD, ti.ZSATNR, ti.ZCOLSN, ti.ZSIZTX
+                        , tagDetailList.Count(i => i.MATNR == v && !i.IsAddEpc), tagDetailList.Count(i => i.MATNR == v && i.IsAddEpc)
+                        , tagDetailList.Count(i => i.MATNR == v && !i.IsAddEpc) - stdQty
+                        , tagDetailList.Count(i => i.MATNR == v && i.IsAddEpc) - (hasAdd ? stdQty : 0));
+                        re.Add(d);
+                    }
+                    else
+                    {
+                        CTagSumDif d = new CTagSumDif(ti.MATNR, ti.BARCD, ti.BARCD_ADD, ti.ZSATNR, ti.ZCOLSN, ti.ZSIZTX
+                        , tagDetailList.Count(i => i.MATNR == v && !i.IsAddEpc), tagDetailList.Count(i => i.MATNR == v && i.IsAddEpc)
+                        , tagDetailList.Count(i => i.MATNR == v && !i.IsAddEpc), tagDetailList.Count(i => i.MATNR == v && i.IsAddEpc));
+                        re.Add(d);
+                    }
+                }
+
+                foreach(var v in std)
+                {
+                    if (!matList.Exists(i => i == v.mat))
+                    {
+                        MaterialInfo mi = materialList.FirstOrDefault(i => i.MATNR == v.mat);
+                        HLATagInfo ti = hlaTagList.FirstOrDefault(i => i.MATNR == v.mat);
+                        bool hasAdd = false;
+                        if (ti != null && !string.IsNullOrEmpty(ti.BARCD_ADD))
+                            hasAdd = true;
+                        CTagSumDif d = new CTagSumDif(v.mat, ti != null ? ti.BARCD : "", ti != null ? ti.BARCD_ADD : ""
+                            , mi != null ? mi.ZSATNR : "", mi != null ? mi.ZCOLSN : "", mi != null ? mi.ZSIZTX : ""
+                        , 0, 0
+                        , 0 - v.qty, 0 - (hasAdd ? v.qty : 0));
+                        re.Add(d);
+                    }
+                }
+            }
+            else
+            {
+                List<string> matList = tagDetailList.Select(i => i.MATNR).Distinct().ToList();
+                foreach (var v in matList)
+                {
+                    TagDetailInfo ti = tagDetailList.FirstOrDefault(i => i.MATNR == v);
+
+                    CTagSumDif d = new CTagSumDif(ti.MATNR, ti.BARCD, ti.BARCD_ADD, ti.ZSATNR, ti.ZCOLSN, ti.ZSIZTX
+                        , tagDetailList.Count(i => i.MATNR == v && !i.IsAddEpc), tagDetailList.Count(i => i.MATNR == v && i.IsAddEpc)
+                        , tagDetailList.Count(i => i.MATNR == v && !i.IsAddEpc), tagDetailList.Count(i => i.MATNR == v && i.IsAddEpc));
+                    re.Add(d);
+                }
+            }
+
             return re;
         }
 

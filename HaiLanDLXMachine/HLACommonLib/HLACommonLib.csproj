@@ -110,6 +110,7 @@
     <Compile Include="DAO\ReceiveService.cs" />
     <Compile Include="DAO\YKBoxService.cs" />
     <Compile Include="DBHelper.cs" />
+    <Compile Include="Help.cs" />
     <Compile Include="LocalDataService.cs" />
     <Compile Include="Log4netHelper.cs" />
     <Compile Include="LogHelper.cs" />

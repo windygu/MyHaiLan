@@ -18,7 +18,7 @@ namespace HLACommonLib.Model
             qty = q;
         }
     }
-    public class CMatQty
+    public class CMatQty:ICloneable
     {
         public string mat;
         public int qty;
@@ -26,6 +26,11 @@ namespace HLACommonLib.Model
         {
             mat = m;
             qty = q;
+        }
+
+        public object Clone()
+        {
+            return new CMatQty(mat, qty);
         }
     }
     public class CCancelDocData
@@ -516,5 +521,23 @@ namespace HLACommonLib.Model
         public List<CMatQty> mMatQtyList = new List<CMatQty>();
 
         public Dictionary<string, List<TagDetailInfo>> mHuDetail = new Dictionary<string, List<TagDetailInfo>>();
+
+        public List<CMatQty> getLeftMatQty()
+        {
+            List<CMatQty> re = (List<CMatQty>)CHelp.Clone(mMatQtyList);
+
+            foreach(var v in mHuDetail.Values)
+            {
+                foreach(var j in v)
+                {
+                    if(!j.IsAddEpc && re.Exists(k=>k.mat == j.MATNR))
+                    {
+                        re.First(k => k.mat == j.MATNR).qty -= 1;
+                    }
+                }
+            }
+
+            return re;
+        }
     }
 }

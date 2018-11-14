@@ -34,7 +34,7 @@ namespace HLATools
                 SysConfig.CurrentLoginUser = new HLACommonLib.Model.UserInfo() { UserId = User, Password = Password };
                 this.Invoke(new Action(() =>
                 {
-                    MainForm form = new MainForm();
+                    MainFormNew form = new MainFormNew();
                     form.ShowDialog();
                 }));
             }

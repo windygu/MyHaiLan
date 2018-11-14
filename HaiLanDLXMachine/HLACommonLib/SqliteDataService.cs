@@ -116,8 +116,6 @@ namespace HLACommonLib
 
         }
 
-
-
         public static void delOldData(int day = 3)
         {
             try

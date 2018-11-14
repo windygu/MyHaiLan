@@ -37,7 +37,8 @@ namespace HLAYKChannelMachine
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InventoryFormNew));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.dmButton1_upload = new DMSkin.Controls.DMButton();
+            this.dmLabel1_peibi = new DMSkin.Controls.DMLabel();
+            this.dmButton1_peibi = new DMSkin.Controls.DMButton();
             this.dmButtonStart = new DMSkin.Controls.DMButton();
             this.label17 = new System.Windows.Forms.Label();
             this.dmButtonStop = new DMSkin.Controls.DMButton();
@@ -115,7 +116,8 @@ namespace HLAYKChannelMachine
             // 
             this.splitContainer1.Panel1.AutoScroll = true;
             this.splitContainer1.Panel1.BackColor = System.Drawing.Color.Teal;
-            this.splitContainer1.Panel1.Controls.Add(this.dmButton1_upload);
+            this.splitContainer1.Panel1.Controls.Add(this.dmLabel1_peibi);
+            this.splitContainer1.Panel1.Controls.Add(this.dmButton1_peibi);
             this.splitContainer1.Panel1.Controls.Add(this.dmButtonStart);
             this.splitContainer1.Panel1.Controls.Add(this.label17);
             this.splitContainer1.Panel1.Controls.Add(this.dmButtonStop);
@@ -172,30 +174,42 @@ namespace HLAYKChannelMachine
             this.splitContainer1.SplitterDistance = 340;
             this.splitContainer1.TabIndex = 1;
             // 
-            // dmButton1_upload
+            // dmLabel1_peibi
             // 
-            this.dmButton1_upload.AllowDrop = true;
-            this.dmButton1_upload.AutoEllipsis = true;
-            this.dmButton1_upload.BackColor = System.Drawing.Color.Transparent;
-            this.dmButton1_upload.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.dmButton1_upload.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
-            this.dmButton1_upload.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(20)))), ((int)(((byte)(0)))));
-            this.dmButton1_upload.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(60)))), ((int)(((byte)(0)))));
-            this.dmButton1_upload.DM_NormalColor = System.Drawing.Color.WhiteSmoke;
-            this.dmButton1_upload.DM_Radius = 1;
-            this.dmButton1_upload.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.dmButton1_upload.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.dmButton1_upload.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
-            this.dmButton1_upload.ForeColor = System.Drawing.Color.Teal;
-            this.dmButton1_upload.Image = null;
-            this.dmButton1_upload.Location = new System.Drawing.Point(1, 667);
-            this.dmButton1_upload.Margin = new System.Windows.Forms.Padding(0);
-            this.dmButton1_upload.Name = "dmButton1_upload";
-            this.dmButton1_upload.Size = new System.Drawing.Size(155, 40);
-            this.dmButton1_upload.TabIndex = 57;
-            this.dmButton1_upload.Text = "上传列表";
-            this.dmButton1_upload.UseVisualStyleBackColor = true;
-            this.dmButton1_upload.Click += new System.EventHandler(this.dmButton1_upload_Click);
+            this.dmLabel1_peibi.BackColor = System.Drawing.Color.White;
+            this.dmLabel1_peibi.DM_Color = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(163)))), ((int)(((byte)(203)))));
+            this.dmLabel1_peibi.DM_Font_Size = 10F;
+            this.dmLabel1_peibi.DM_Key = DMSkin.Controls.DMLabelKey.错误;
+            this.dmLabel1_peibi.DM_Text = "";
+            this.dmLabel1_peibi.Location = new System.Drawing.Point(23, 583);
+            this.dmLabel1_peibi.Name = "dmLabel1_peibi";
+            this.dmLabel1_peibi.Size = new System.Drawing.Size(15, 15);
+            this.dmLabel1_peibi.TabIndex = 58;
+            this.dmLabel1_peibi.Text = "dmLabel1";
+            // 
+            // dmButton1_peibi
+            // 
+            this.dmButton1_peibi.AutoEllipsis = true;
+            this.dmButton1_peibi.BackColor = System.Drawing.Color.Transparent;
+            this.dmButton1_peibi.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.dmButton1_peibi.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.dmButton1_peibi.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(93)))), ((int)(((byte)(203)))));
+            this.dmButton1_peibi.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(123)))), ((int)(((byte)(203)))));
+            this.dmButton1_peibi.DM_NormalColor = System.Drawing.Color.WhiteSmoke;
+            this.dmButton1_peibi.DM_Radius = 10;
+            this.dmButton1_peibi.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.dmButton1_peibi.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dmButton1_peibi.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
+            this.dmButton1_peibi.ForeColor = System.Drawing.Color.Black;
+            this.dmButton1_peibi.Image = null;
+            this.dmButton1_peibi.Location = new System.Drawing.Point(1, 570);
+            this.dmButton1_peibi.Margin = new System.Windows.Forms.Padding(0);
+            this.dmButton1_peibi.Name = "dmButton1_peibi";
+            this.dmButton1_peibi.Size = new System.Drawing.Size(155, 40);
+            this.dmButton1_peibi.TabIndex = 57;
+            this.dmButton1_peibi.Text = "    按配比收货";
+            this.dmButton1_peibi.UseVisualStyleBackColor = true;
+            this.dmButton1_peibi.Click += new System.EventHandler(this.dmButton1_peibi_Click);
             // 
             // dmButtonStart
             // 
@@ -212,7 +226,7 @@ namespace HLAYKChannelMachine
             this.dmButtonStart.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
             this.dmButtonStart.ForeColor = System.Drawing.Color.Teal;
             this.dmButtonStart.Image = null;
-            this.dmButtonStart.Location = new System.Drawing.Point(1, 571);
+            this.dmButtonStart.Location = new System.Drawing.Point(-1, 619);
             this.dmButtonStart.Margin = new System.Windows.Forms.Padding(0);
             this.dmButtonStart.Name = "dmButtonStart";
             this.dmButtonStart.Size = new System.Drawing.Size(155, 40);
@@ -250,7 +264,7 @@ namespace HLAYKChannelMachine
             this.dmButtonStop.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
             this.dmButtonStop.ForeColor = System.Drawing.Color.Teal;
             this.dmButtonStop.Image = null;
-            this.dmButtonStop.Location = new System.Drawing.Point(166, 571);
+            this.dmButtonStop.Location = new System.Drawing.Point(166, 619);
             this.dmButtonStop.Margin = new System.Windows.Forms.Padding(0);
             this.dmButtonStop.Name = "dmButtonStop";
             this.dmButtonStop.Size = new System.Drawing.Size(155, 40);
@@ -266,7 +280,7 @@ namespace HLAYKChannelMachine
             this.lblCheckSku.DM_Font_Size = 10F;
             this.lblCheckSku.DM_Key = DMSkin.Controls.DMLabelKey.错误;
             this.lblCheckSku.DM_Text = "";
-            this.lblCheckSku.Location = new System.Drawing.Point(192, 533);
+            this.lblCheckSku.Location = new System.Drawing.Point(192, 534);
             this.lblCheckSku.Name = "lblCheckSku";
             this.lblCheckSku.Size = new System.Drawing.Size(15, 15);
             this.lblCheckSku.TabIndex = 18;
@@ -287,7 +301,7 @@ namespace HLAYKChannelMachine
             this.btnCheckSku.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
             this.btnCheckSku.ForeColor = System.Drawing.Color.Black;
             this.btnCheckSku.Image = null;
-            this.btnCheckSku.Location = new System.Drawing.Point(166, 521);
+            this.btnCheckSku.Location = new System.Drawing.Point(166, 522);
             this.btnCheckSku.Margin = new System.Windows.Forms.Padding(0);
             this.btnCheckSku.Name = "btnCheckSku";
             this.btnCheckSku.Size = new System.Drawing.Size(155, 40);
@@ -427,7 +441,7 @@ namespace HLAYKChannelMachine
             this.btnGenerateDoc.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
             this.btnGenerateDoc.ForeColor = System.Drawing.Color.Teal;
             this.btnGenerateDoc.Image = null;
-            this.btnGenerateDoc.Location = new System.Drawing.Point(166, 619);
+            this.btnGenerateDoc.Location = new System.Drawing.Point(166, 674);
             this.btnGenerateDoc.Margin = new System.Windows.Forms.Padding(0);
             this.btnGenerateDoc.Name = "btnGenerateDoc";
             this.btnGenerateDoc.Size = new System.Drawing.Size(155, 40);
@@ -451,7 +465,7 @@ namespace HLAYKChannelMachine
             this.btnGx.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
             this.btnGx.ForeColor = System.Drawing.Color.Teal;
             this.btnGx.Image = null;
-            this.btnGx.Location = new System.Drawing.Point(1, 712);
+            this.btnGx.Location = new System.Drawing.Point(1, 731);
             this.btnGx.Margin = new System.Windows.Forms.Padding(0);
             this.btnGx.Name = "btnGx";
             this.btnGx.Size = new System.Drawing.Size(155, 40);
@@ -746,7 +760,7 @@ namespace HLAYKChannelMachine
             this.btnClose.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
             this.btnClose.ForeColor = System.Drawing.Color.Teal;
             this.btnClose.Image = null;
-            this.btnClose.Location = new System.Drawing.Point(166, 667);
+            this.btnClose.Location = new System.Drawing.Point(166, 731);
             this.btnClose.Margin = new System.Windows.Forms.Padding(0);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(155, 40);
@@ -770,12 +784,12 @@ namespace HLAYKChannelMachine
             this.btnErrorBox.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
             this.btnErrorBox.ForeColor = System.Drawing.Color.Teal;
             this.btnErrorBox.Image = null;
-            this.btnErrorBox.Location = new System.Drawing.Point(1, 619);
+            this.btnErrorBox.Location = new System.Drawing.Point(-1, 674);
             this.btnErrorBox.Margin = new System.Windows.Forms.Padding(0);
             this.btnErrorBox.Name = "btnErrorBox";
             this.btnErrorBox.Size = new System.Drawing.Size(155, 40);
             this.btnErrorBox.TabIndex = 14;
-            this.btnErrorBox.Text = "异常箱明细";
+            this.btnErrorBox.Text = "上传列表";
             this.btnErrorBox.UseVisualStyleBackColor = true;
             this.btnErrorBox.Click += new System.EventHandler(this.btnErrorBox_Click);
             // 
@@ -1167,7 +1181,8 @@ namespace HLAYKChannelMachine
         private System.Windows.Forms.DataGridViewTextBoxColumn ZSIZTX;
         private System.Windows.Forms.DataGridViewTextBoxColumn QTY;
         private System.Windows.Forms.DataGridViewTextBoxColumn MSG;
-        private DMSkin.Controls.DMButton dmButton1_upload;
+        private DMSkin.Controls.DMLabel dmLabel1_peibi;
+        private DMSkin.Controls.DMButton dmButton1_peibi;
     }
 }
 

@@ -87,9 +87,9 @@ namespace HLAYKChannelMachine
                 {
                     CUploadData box = row.Tag as CUploadData;
                     SqliteDataService.delUploadFromSqlite(box.Guid);
-                    mParent.addToSavingQueue(box.Data as YKBoxInfo);
+                    mParent.updateSAP(box.Data as YKBoxInfo);
                 }
-                MetroMessageBox.Show(this, "成功加入上传队列", "提示");
+                MetroMessageBox.Show(this, "上传结束", "提示");
                 initData();
             }
         }

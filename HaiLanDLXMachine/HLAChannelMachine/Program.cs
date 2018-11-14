@@ -70,7 +70,6 @@ namespace HLAChannelMachine
 
             if (AutoUpdate.Update(SoftwareType.大通道机交货软件))
             {
-                AppConfig.Load();
                 SAPDataService.Init();
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

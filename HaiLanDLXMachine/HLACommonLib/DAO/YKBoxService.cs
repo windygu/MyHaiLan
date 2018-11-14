@@ -67,6 +67,9 @@ DELETE FROM dbo.YKBoxDetail WHERE Hu IN ({0})";
 
         public static bool SaveBox(YKBoxInfo box)
         {
+            if (SysConfig.IsTest)
+                return true;
+
             try
             {
                 string sql = string.Format(@"

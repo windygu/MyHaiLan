@@ -120,7 +120,6 @@
             this.button3_clearData.TabIndex = 46;
             this.button3_clearData.Text = "清除数据";
             this.button3_clearData.UseVisualStyleBackColor = false;
-            this.button3_clearData.Visible = false;
             this.button3_clearData.Click += new System.EventHandler(this.button3_clearData_Click);
             // 
             // button4_cancel

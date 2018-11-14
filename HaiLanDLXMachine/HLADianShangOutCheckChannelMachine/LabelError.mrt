@@ -20,8 +20,9 @@
     </DataSources>
     <Relations isList="true" count="0" />
     <Report isRef="0" />
-    <Variables isList="true" count="1">
+    <Variables isList="true" count="2">
       <value>,HU,HU,System.String,,False,False</value>
+      <value>,DOC,DOC,System.String,,False,False</value>
     </Variables>
   </Dictionary>
   <EngineVersion>EngineV2</EngineVersion>
@@ -34,8 +35,8 @@
       <Components isList="true" count="2">
         <HeaderBand1 Ref="4" type="HeaderBand" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>0,0.4,10,2.2</ClientRectangle>
-          <Components isList="true" count="7">
+          <ClientRectangle>0,0.4,10,3.4</ClientRectangle>
+          <Components isList="true" count="9">
             <Text5 Ref="5" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>2,0.2,7.8,1</ClientRectangle>
@@ -69,7 +70,7 @@
             <Text8 Ref="7" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
-              <ClientRectangle>0.2,1.6,3.2,0.6</ClientRectangle>
+              <ClientRectangle>0.2,2.8,3.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>微软雅黑 Light,10,Bold</Font>
               <Guid>83b37d18201c43cfbdc559f6819f7bd5</Guid>
@@ -86,7 +87,7 @@
             <Text3 Ref="8" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
-              <ClientRectangle>3.4,1.6,1,0.6</ClientRectangle>
+              <ClientRectangle>3.4,2.8,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>微软雅黑 Light,10,Bold</Font>
               <Guid>cd279e481e16420f9ec988a778fe13c2</Guid>
@@ -103,7 +104,7 @@
             <Text11 Ref="9" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
-              <ClientRectangle>4.4,1.6,2.6,0.6</ClientRectangle>
+              <ClientRectangle>4.4,2.8,2.6,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>微软雅黑 Light,10,Bold</Font>
               <Guid>9f096d549a7d473db19b300846321b75</Guid>
@@ -120,7 +121,7 @@
             <Text13 Ref="10" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
-              <ClientRectangle>7,1.6,1.4,0.6</ClientRectangle>
+              <ClientRectangle>7,2.8,1.4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>微软雅黑 Light,10,Bold</Font>
               <Guid>dcc935cdca5b44d5a7a0d5263f8eda64</Guid>
@@ -137,7 +138,7 @@
             <Text14 Ref="11" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
-              <ClientRectangle>8.4,1.6,1.4,0.6</ClientRectangle>
+              <ClientRectangle>8.4,2.8,1.4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>微软雅黑 Light,10,Bold</Font>
               <Guid>145c7b26b4f64391a21e7e3f691b800a</Guid>
@@ -151,18 +152,48 @@
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
             </Text14>
+            <Text4 Ref="12" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>2,1.4,7.8,1</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Arial Black,18,Bold</Font>
+              <Guid>b111416a1d604e27b76bf5215c2e4df2</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text4</Name>
+              <Page isRef="3" />
+              <Parent isRef="4" />
+              <Text>{DOC}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text4>
+            <Text6 Ref="13" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0.2,1.4,1.8,0.8</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>微软雅黑,18,Bold,Point,False,134</Font>
+              <Guid>fffb5bc5d18d48f9a0c112da2257d585</Guid>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text6</Name>
+              <Page isRef="3" />
+              <Parent isRef="4" />
+              <Text>单号：</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text6>
           </Components>
           <Conditions isList="true" count="0" />
           <Name>HeaderBand1</Name>
           <Page isRef="3" />
           <Parent isRef="3" />
         </HeaderBand1>
-        <DataBand1 Ref="12" type="DataBand" isKey="true">
+        <DataBand1 Ref="14" type="DataBand" isKey="true">
           <Brush>Transparent</Brush>
           <BusinessObjectGuid isNull="true" />
-          <ClientRectangle>0,3.4,10,0.6</ClientRectangle>
+          <ClientRectangle>0,4.6,10,0.6</ClientRectangle>
           <Components isList="true" count="5">
-            <Text90 Ref="13" type="Text" isKey="true">
+            <Text90 Ref="15" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
               <ClientRectangle>4.4,0,2.6,0.6</ClientRectangle>
@@ -173,13 +204,13 @@
               <Margins>0,0,0,0</Margins>
               <Name>Text90</Name>
               <Page isRef="3" />
-              <Parent isRef="12" />
+              <Parent isRef="14" />
               <Text>{CHAYIDATA.GUI}</Text>
               <TextBrush>Black</TextBrush>
               <Type>DataColumn</Type>
               <VertAlignment>Center</VertAlignment>
             </Text90>
-            <Text94 Ref="14" type="Text" isKey="true">
+            <Text94 Ref="16" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
               <ClientRectangle>7,0,1.4,0.6</ClientRectangle>
@@ -191,13 +222,13 @@
               <Margins>0,0,0,0</Margins>
               <Name>Text94</Name>
               <Page isRef="3" />
-              <Parent isRef="12" />
+              <Parent isRef="14" />
               <Text>{CHAYIDATA.MAIN}</Text>
               <TextBrush>Black</TextBrush>
               <Type>DataColumn</Type>
               <VertAlignment>Center</VertAlignment>
             </Text94>
-            <Text95 Ref="15" type="Text" isKey="true">
+            <Text95 Ref="17" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
               <ClientRectangle>8.4,0,1.4,0.6</ClientRectangle>
@@ -209,13 +240,13 @@
               <Margins>0,0,0,0</Margins>
               <Name>Text95</Name>
               <Page isRef="3" />
-              <Parent isRef="12" />
+              <Parent isRef="14" />
               <Text>{CHAYIDATA.ADD}</Text>
               <TextBrush>Black</TextBrush>
               <Type>DataColumn</Type>
               <VertAlignment>Center</VertAlignment>
             </Text95>
-            <Text2 Ref="16" type="Text" isKey="true">
+            <Text2 Ref="18" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
               <ClientRectangle>3.4,0,1,0.6</ClientRectangle>
@@ -226,13 +257,13 @@
               <Margins>0,0,0,0</Margins>
               <Name>Text2</Name>
               <Page isRef="3" />
-              <Parent isRef="12" />
+              <Parent isRef="14" />
               <Text>{CHAYIDATA.SE}</Text>
               <TextBrush>Black</TextBrush>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
             </Text2>
-            <Text1 Ref="17" type="Text" isKey="true">
+            <Text1 Ref="19" type="Text" isKey="true">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
               <ClientRectangle>0.2,0,3.2,0.6</ClientRectangle>
@@ -243,7 +274,7 @@
               <Margins>0,0,0,0</Margins>
               <Name>Text1</Name>
               <Page isRef="3" />
-              <Parent isRef="12" />
+              <Parent isRef="14" />
               <Text>{CHAYIDATA.PIN}</Text>
               <TextBrush>Black</TextBrush>
               <Type>Expression</Type>
@@ -267,7 +298,7 @@
       <PageHeight>15</PageHeight>
       <PageWidth>10</PageWidth>
       <Report isRef="0" />
-      <Watermark Ref="18" type="Stimulsoft.Report.Components.StiWatermark" isKey="true">
+      <Watermark Ref="20" type="Stimulsoft.Report.Components.StiWatermark" isKey="true">
         <Font>Arial,100</Font>
         <ShowImageBehind>False</ShowImageBehind>
         <TextBrush>[50:0:0:0]</TextBrush>
@@ -275,7 +306,7 @@
     </Page1>
   </Pages>
   <PreviewSettings>268427775</PreviewSettings>
-  <PrinterSettings Ref="19" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
+  <PrinterSettings Ref="21" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
   <ReferencedAssemblies isList="true" count="8">
     <value>System.Dll</value>
     <value>System.Drawing.Dll</value>
@@ -287,10 +318,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>报表</ReportAlias>
-  <ReportChanged>10/8/2018 2:43:41 PM</ReportChanged>
+  <ReportChanged>10/27/2018 6:27:34 PM</ReportChanged>
   <ReportCreated>5/29/2013 8:48:17 AM</ReportCreated>
   <ReportFile>F:\code\HaiLan\HaiLanDLXMachine\HLADianShangOutCheckChannelMachine\LabelError.mrt</ReportFile>
-  <ReportGuid>d20c9697c16f4179af4aa53e5ee1d6c4</ReportGuid>
+  <ReportGuid>bbfbe6ae47344fceab6a2bb16d455a32</ReportGuid>
   <ReportName>报表</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2012.3.1500</ReportVersion>

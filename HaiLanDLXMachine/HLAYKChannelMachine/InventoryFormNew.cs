@@ -30,12 +30,8 @@ namespace HLAYKChannelMachine
     {
         List<AuthInfo> mGAuthList = new List<AuthInfo>();
         List<YKBoxInfo> mBoxList = new List<YKBoxInfo>();
-        private Queue<CUploadData> savingData = new Queue<CUploadData>();
-        private object savingDataLockObject = new object();
-        private Thread savingDataThread = null;
         string mPackmat = "";
         bool mIsFull = false;
-        bool mCancel = false;
         public InventoryFormNew()
         {
             InitializeComponent();
@@ -66,6 +62,7 @@ namespace HLAYKChannelMachine
                 addEpcNumber = 0;
                 epcList.Clear();
                 tagDetailList.Clear();
+
                 if (boxNoList.Count > 0)
                 {
                     Invoke(new Action(() =>
@@ -106,22 +103,21 @@ namespace HLAYKChannelMachine
 
                 CheckResult checkResult = CheckData();
 
-                playSound(checkResult);
-
+                Invoke(new Action(() =>
+                {
+                    lblResult.Text = checkResult.Message;
+                }));
+                if (checkResult.Message.Contains("重投"))
+                {
+                    AddGrid(checkResult.Message);
+                    playSound(false);
+                    SetInventoryResult(1);
+                    return;
+                }
                 YKBoxInfo box = GetCurrentYKBox(checkResult);
+                updateSAP(box);
 
-                if (lblUsePrint.DM_Key == DMSkin.Controls.DMLabelKey.正确)
-                {
-                    if (checkResult.InventoryResult)
-                        PrintHelper.PrintRightTag(box, materialList);
-                    else
-                        PrintHelper.PrintErrorTag(box, lblCheckSku.DM_Key == DMSkin.Controls.DMLabelKey.正确);
-                }
-
-                if (!checkResult.IsRecheck)
-                {
-                    addToSavingQueue(box);
-                }
+                playSound(checkResult.InventoryResult && box.SapStatus == "S");
 
                 AddGrid(box);
 
@@ -132,6 +128,17 @@ namespace HLAYKChannelMachine
                 else
                 {
                     SetInventoryResult(1);
+                }
+
+                if (dmLabel1_peibi.DM_Key == DMSkin.Controls.DMLabelKey.错误)
+                {
+                    if (lblUsePrint.DM_Key == DMSkin.Controls.DMLabelKey.正确)
+                    {
+                        if (checkResult.InventoryResult)
+                            PrintHelper.PrintRightTag(box, materialList);
+                        else
+                            PrintHelper.PrintErrorTag(box, lblCheckSku.DM_Key == DMSkin.Controls.DMLabelKey.正确);
+                    }
                 }
             }
             catch (Exception ex)
@@ -189,34 +196,6 @@ namespace HLAYKChannelMachine
             return result;
         }
 
-        public void addToSavingQueue(YKBoxInfo uploadData)
-        {
-            CUploadData ud = new CUploadData();
-            ud.Guid = Guid.NewGuid().ToString();
-            ud.Data = uploadData;
-            ud.IsUpload = 0;
-            ud.CreateTime = DateTime.Now;
-            SqliteDataService.saveToSqlite(ud);
-
-            lock (savingDataLockObject)
-            {
-                savingData.Enqueue(ud);
-            }
-
-            updateUploadCount();
-
-        }
-
-        void updateUploadCount()
-        {
-            int count = SqliteDataService.GetUnUploadCountFromSqlite();
-            Invoke(new Action(() =>
-            {
-                dmButton1_upload.Text = string.Format("上传列表({0})", count);
-            }));
-
-        }
-
         private bool ExistsSameEpc()
         {
             if (mBoxList != null && mBoxList.Count > 0)
@@ -246,11 +225,11 @@ namespace HLAYKChannelMachine
             catch (Exception)
             { }
         }
-        void playSound(CheckResult cr)
+        void playSound(bool cr)
         {
             try
             {
-                if (cr.InventoryResult)
+                if (cr)
                 {
                     AudioHelper.Play(".\\Res\\success.wav");
                 }
@@ -263,57 +242,54 @@ namespace HLAYKChannelMachine
             { }
         }
 
-        bool checkSame(ref CheckResult result)
+        bool checkSame()
         {
             bool re = false;
-            YKBoxInfo box = mBoxList == null ? null : mBoxList.Find(i => i.Hu == lblHu.Text);
-            if (box != null && box.Status != null && box.Status == "S" && box.SapStatus == "S")
+            if (mBoxList != null && mBoxList.Exists(i => i.Hu == lblHu.Text))
             {
-                re = true;
-                //上次检测结果为正常，
-                bool isAllSame = true;
-                bool isAllNotSame = true;
-                List<YKBoxDetailInfo> lastCheckDetail = box.Details;
-                if (lastCheckDetail != null && lastCheckDetail.Count > 0)
+                YKBoxInfo box = mBoxList.First(i => i.Hu == lblHu.Text);
+                if (box.Status == "S" && box.SapStatus == "S")
                 {
-                    if (lastCheckDetail.Count != epcList.Count) isAllSame = false;
-                    foreach (YKBoxDetailInfo item in lastCheckDetail)
-                    {
-                        if (!epcList.Contains(item.Epc))
-                        {
-                            isAllSame = false;
-                            break;
-                        }
-                        else
-                        {
-                            isAllNotSame = false;
-                        }
-                    }
-                }
-                else
-                {
-                    isAllSame = false;
-                    isAllNotSame = true;
-                }
-
-                if (isAllSame)
-                {
-                    result.IsRecheck = true;
-                }
-                else if (isAllNotSame)
-                {
-                    //两批EPC对比，完全不一样，示为箱码重复使用
-                    result.UpdateMessage(Consts.Default.XIANG_MA_CHONG_FU_SHI_YONG);
-                    result.InventoryResult = false;
-                }
-
-                if (lastCheckDetail.Count > 0 && !isAllSame && !isAllNotSame)
-                {
-                    result.UpdateMessage(Consts.Default.EPC_YI_SAO_MIAO);
-                    result.InventoryResult = false;
+                    List<string> a = box.Details.Select(i => i.Epc).ToList();
+                    re = LocalDataService.compareListStr(a, epcList);
                 }
             }
+
             return re;
+        }
+
+        void checkPeibi(ref CheckResult cr)
+        {
+            string sapre="";
+            string sapmsg = "";
+            string peibi = "";
+            string BARCD = tagDetailList.FirstOrDefault(i => !string.IsNullOrEmpty(i.BARCD)).BARCD;
+            if(string.IsNullOrEmpty(BARCD))
+            {
+                cr.UpdateMessage("无可用条码");
+                cr.InventoryResult = false;
+                return;
+            }
+
+            List<CMatQty> re = SAPDataService.Z_EW_RFID_058B(BARCD, ref sapre, ref sapmsg, ref peibi);
+            if(re.Count>0)
+            {
+                if (hasDif(duibi(re)))
+                {
+                    cr.UpdateMessage(string.Format("配比不符"));
+                    cr.InventoryResult = false;
+                }
+            }
+            else
+            {
+                cr.UpdateMessage(string.Format("无配比信息 BARCD:{0}", BARCD));
+                cr.InventoryResult = false;
+            }
+
+            if (!string.IsNullOrEmpty(peibi))
+            {
+                mPackmat = peibi;
+            }
         }
         public override CheckResult CheckData()
         {
@@ -336,150 +312,163 @@ namespace HLAYKChannelMachine
 
                 if (tagDetailList.Count > 0)
                 {
+                    if (checkSame())
+                    {
+                        result.UpdateMessage("重投");
+                        result.InventoryResult = false;
+
+                        return result;
+                    }
+
+                    if(dmLabel1_peibi.DM_Key == DMSkin.Controls.DMLabelKey.正确)
+                    {
+                        checkPeibi(ref result);
+                        return result;
+                    }
+
                     if (tagDetailList.First().LIFNRS != null && tagDetailList.First().LIFNRS.Count > 1)
                     {
                         result.UpdateMessage(Consts.Default.JIAO_JIE_HAO_BU_YI_ZHI);
                         result.InventoryResult = false;
                     }
 
-                    if (!checkSame(ref result))
+                    if (lblCheckSku.DM_Key == DMSkin.Controls.DMLabelKey.正确)
                     {
-                        if (lblCheckSku.DM_Key == DMSkin.Controls.DMLabelKey.正确)
+                        if (tagDetailList.Select(i => i.MATNR).Distinct().Count() > 10)
                         {
-                            if (tagDetailList.Select(i => i.MATNR).Distinct().Count() > 10)
-                            {
-                                result.UpdateMessage(Consts.Default.SHANG_PIN_DA_YU_SHI);
-                                result.InventoryResult = false;
-                            }
+                            result.UpdateMessage(Consts.Default.SHANG_PIN_DA_YU_SHI);
+                            result.InventoryResult = false;
                         }
-                        if (lblCheckPinSe.DM_Key == DMSkin.Controls.DMLabelKey.正确)
+                    }
+                    if (lblCheckPinSe.DM_Key == DMSkin.Controls.DMLabelKey.正确)
+                    {
+                        if (tagDetailList != null && tagDetailList.Count > 0)
                         {
-                            if (tagDetailList != null && tagDetailList.Count > 0)
+                            TagDetailInfo t = tagDetailList[0];
+                            foreach (var v in tagDetailList)
                             {
-                                TagDetailInfo t = tagDetailList[0];
-                                foreach (var v in tagDetailList)
+                                if (v.ZSATNR == t.ZSATNR && v.ZCOLSN == t.ZCOLSN)
                                 {
-                                    if (v.ZSATNR == t.ZSATNR && v.ZCOLSN == t.ZCOLSN)
-                                    {
 
-                                    }
-                                    else
-                                    {
-                                        result.UpdateMessage(Consts.Default.PIN_SE_BU_FU);
-                                        result.InventoryResult = false;
+                                }
+                                else
+                                {
+                                    result.UpdateMessage(Consts.Default.PIN_SE_BU_FU);
+                                    result.InventoryResult = false;
 
-                                        break;
-                                    }
+                                    break;
                                 }
                             }
                         }
+                    }
 
-                        if (ExistsSameEpc())
+                    if (ExistsSameEpc())
+                    {
+                        result.UpdateMessage(Consts.Default.EPC_YI_SAO_MIAO);
+                        result.InventoryResult = false;
+                    }
+
+                    if (GetCurrentReceiveMode() == ReceiveMode.按品色装箱)
+                    {
+                        if (!IsOnePinSe())
                         {
-                            result.UpdateMessage(Consts.Default.EPC_YI_SAO_MIAO);
+                            result.UpdateMessage(Consts.Default.DUO_GE_PIN_SE);
+                            result.InventoryResult = false;
+                        }
+                    }
+                    if (GetCurrentReceiveMode() == ReceiveMode.按规格装箱)
+                    {
+                        if (!IsOneSku())
+                        {
+                            result.UpdateMessage(Consts.Default.DUO_GE_SHANG_PIN);
                             result.InventoryResult = false;
                         }
 
-                        if (GetCurrentReceiveMode() == ReceiveMode.按品色装箱)
+                        int pxqty = 0;
+                        MaterialInfo material = materialList.Find(i => i.MATNR == tagDetailList.First().MATNR);
+
+                        if (material.PUT_STRA == "ADM1" || cboTarget.Text == "BDMX")
                         {
-                            if (!IsOnePinSe())
-                            {
-                                result.UpdateMessage(Consts.Default.DUO_GE_PIN_SE);
-                                result.InventoryResult = false;
-                            }
+                            pxqty = material.PXQTY;
+                            mPackmat = material.PXMAT;
                         }
-                        if (GetCurrentReceiveMode() == ReceiveMode.按规格装箱)
+                        else
                         {
-                            if (!IsOneSku())
+                            pxqty = material.PXQTY_FH;
+                            mPackmat = material.PXMAT_FH;
+                        }
+                        /*
+                         * 如果设备信息中配置了带G开头的权限信息
+                         * 且对应的AUTH_VALUE的值与当前选择的源存储类型一致 
+                         * 则取收货箱规
+                         */
+                        if (mGAuthList?.Count > 0 && mGAuthList.Exists(i => i.AUTH_VALUE == cboSource.Text))
+                        {
+                            pxqty = material.PXQTY;
+                        }
+                        if (lblUseBoxStandard.DM_Key == DMSkin.Controls.DMLabelKey.正确)
+                        {
+                            if (mainEpcNumber != pxqty)
                             {
-                                result.UpdateMessage(Consts.Default.DUO_GE_SHANG_PIN);
+                                mIsFull = false;
+                                result.UpdateMessage(Consts.Default.BU_FU_HE_XIANG_GUI + string.Format("({0})", pxqty));
                                 result.InventoryResult = false;
                             }
-
-                            int pxqty = 0;
-                            MaterialInfo material = materialList.Find(i => i.MATNR == tagDetailList.First().MATNR);
-
-                            if (material.PUT_STRA == "ADM1" || cboTarget.Text == "BDMX")
-                            {
-                                pxqty = material.PXQTY;
-                                mPackmat = material.PXMAT;
-                            }
                             else
                             {
-                                pxqty = material.PXQTY_FH;
-                                mPackmat = material.PXMAT_FH;
-                            }
-                            /*
-                             * 如果设备信息中配置了带G开头的权限信息
-                             * 且对应的AUTH_VALUE的值与当前选择的源存储类型一致 
-                             * 则取收货箱规
-                             */
-                            if (mGAuthList?.Count > 0 && mGAuthList.Exists(i => i.AUTH_VALUE == cboSource.Text))
-                            {
-                                pxqty = material.PXQTY;
-                            }
-                            if (lblUseBoxStandard.DM_Key == DMSkin.Controls.DMLabelKey.正确)
-                            {
-                                if (mainEpcNumber != pxqty)
-                                {
-                                    mIsFull = false;
-                                    result.UpdateMessage(Consts.Default.BU_FU_HE_XIANG_GUI + string.Format("({0})", pxqty));
-                                    result.InventoryResult = false;
-                                }
-                                else
-                                    mIsFull = true;
-                            }
-                            else
-                            {
-                                if (mainEpcNumber > pxqty)
-                                {
-                                    result.UpdateMessage(Consts.Default.SHU_LIANG_DA_YU_XIANG_GUI + string.Format("({0})", pxqty));
-                                    result.InventoryResult = false;
-                                }
+                                mIsFull = true;
                             }
                         }
                         else
                         {
-                            if (shouldCheckNum())
+                            if (mainEpcNumber > pxqty)
                             {
-                                //075接口获取数量对比
-                                string sapRe = "";
-                                string sapMsg = "";
-                                int re = SAPDataService.RFID_075F(lblHu.Text, ref sapRe, ref sapMsg);
-                                if (sapRe == "E")
+                                result.UpdateMessage(Consts.Default.SHU_LIANG_DA_YU_XIANG_GUI + string.Format("({0})", pxqty));
+                                result.InventoryResult = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (shouldCheckNum())
+                        {
+                            //075接口获取数量对比
+                            string sapRe = "";
+                            string sapMsg = "";
+                            int re = SAPDataService.RFID_075F(lblHu.Text, ref sapRe, ref sapMsg);
+                            if (sapRe == "E")
+                            {
+                                result.UpdateMessage(string.Format("未获取到装箱数据 {0}", lblHu.Text));
+                                result.InventoryResult = false;
+                            }
+                            else
+                            {
+                                if (mainEpcNumber != re)
                                 {
-                                    result.UpdateMessage(string.Format("未获取到装箱数据 {0}", lblHu.Text));
+                                    result.UpdateMessage(string.Format("装箱数量错误 {0}-{1}", re, mainEpcNumber));
                                     result.InventoryResult = false;
-                                }
-                                else
-                                {
-                                    if (mainEpcNumber != re)
-                                    {
-                                        result.UpdateMessage(string.Format("装箱数量错误 {0}-{1}", re, mainEpcNumber));
-                                        result.InventoryResult = false;
-                                    }
                                 }
                             }
                         }
+                    }
 
-                        if (lblUseBoxStandard.DM_Key != DMSkin.Controls.DMLabelKey.正确)
-                        {
-                            mPackmat = cboPxmat.SelectedValue.CastTo("未选择包材");
-                        }
+                    if (lblUseBoxStandard.DM_Key != DMSkin.Controls.DMLabelKey.正确)
+                    {
+                        mPackmat = cboPxmat.SelectedValue.CastTo("未选择包材");
                     }
                 }
+
             }
             catch (Exception ex)
             {
                 Log4netHelper.LogError(ex);
             }
 
-            if (result.InventoryResult || result.IsRecheck)
+            if (result.InventoryResult)
             {
-                result.UpdateMessage(result.IsRecheck ? Consts.Default.CHONG_TOU : Consts.Default.RIGHT);
+                result.UpdateMessage(Consts.Default.RIGHT);
             }
 
-            lblResult.Text = result.Message;
             return result;
         }
         string getSourceDes()
@@ -524,8 +513,6 @@ namespace HLAYKChannelMachine
 
         private void InventoryForm_Load(object sender, EventArgs e)
         {
-#if DEBUG
-#endif
             InitView();
 
             Thread thread = new Thread(new ThreadStart(() =>
@@ -556,9 +543,12 @@ namespace HLAYKChannelMachine
 
                 if (boxStyleTable != null && boxStyleTable.Rows.Count > 0)
                 {
-                    cboPxmat.DataSource = boxStyleTable;
-                    cboPxmat.ValueMember = "PMAT_MATNR";
-                    cboPxmat.DisplayMember = "MAKTX";
+                    this.Invoke(new Action(() =>
+                    {
+                        cboPxmat.DataSource = boxStyleTable;
+                        cboPxmat.ValueMember = "PMAT_MATNR";
+                        cboPxmat.DisplayMember = "MAKTX";
+                    }));
                 }
                 else
                 {
@@ -568,6 +558,7 @@ namespace HLAYKChannelMachine
                         MetroMessageBox.Show(this, "未下载到包材数据，请检查网络情况", "提示");
                         closed = true;
                         Close();
+
                     }));
                 }
 
@@ -602,8 +593,24 @@ namespace HLAYKChannelMachine
                 }
                 if (closed) return;
 
-                ShowLoading("正在检查是否存在未交接的历史箱记录...");
+                ShowLoading("正在获取历史箱记录...");
                 mBoxList = YKBoxService.GetUnHandoverBoxList(SysConfig.DeviceNO);
+                if (mBoxList != null && mBoxList.Count > 0)
+                {
+                    bool first = true;
+                    foreach (YKBoxInfo item in mBoxList)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            if (first)
+                            {
+                                cboSource.Text = item.Source;
+                                cboTarget.Text = item.Target;
+                            }
+                            AddGrid(item);
+                        }));
+                    }
+                }
 
                 HideLoading();
             }));
@@ -616,31 +623,21 @@ namespace HLAYKChannelMachine
             Invoke(new Action(() =>
             {
                 int totalBoxNum = mBoxList.Count(i => i.SapStatus == "S" && i.Status == "S");
-                int totalNum = mBoxList.FindAll(i => i.SapStatus == "S" && i.Status == "S").Sum(j => j.Details.Count);
+                int totalNum = mBoxList.FindAll(i => i.SapStatus == "S" && i.Status == "S").Sum(j => j.Details.Count(K => K.IsAdd == 0));
                 lblTotalBoxNum.Text = totalBoxNum.ToString();
                 lblTotalNum.Text = totalNum.ToString();
             }));
         }
 
-        void updateExpButton()
+        private void AddGrid(string msg)
         {
-            int expCount = SqliteDataService.GetExpUploadCount();
             Invoke(new Action(() =>
             {
-                string str = string.Format("异常箱明细({0})", expCount);
-                btnErrorBox.Text = str;
-
-                if (expCount > 0)
-                {
-                    btnErrorBox.DM_NormalColor = Color.Red;
-                }
-                else
-                {
-                    btnErrorBox.DM_NormalColor = Color.WhiteSmoke;
-                }
+                grid.Rows.Insert(0, "", "", lblHu.Text, "", "", "", "", msg);
+                grid.Rows[0].DefaultCellStyle.BackColor = Color.OrangeRed;
             }));
-
         }
+
 
         private void AddGrid(YKBoxInfo box)
         {
@@ -655,10 +652,10 @@ namespace HLAYKChannelMachine
                             box.Details.First(i => i.Matnr == matnr).Zsatnr,
                             box.Details.First(i => i.Matnr == matnr).Zcolsn,
                             box.Details.First(i => i.Matnr == matnr).Zsiztx,
-                            box.Details.Count(i => i.Matnr == matnr), box.Remark);
+                            box.Details.Count(i => i.Matnr == matnr && i.IsAdd==0), box.Remark + " SAP:" + box.SapRemark);
                         grid.Rows[0].Tag = matnr;
 
-                        if (box.Status == "E")
+                        if (box.Status == "E" || box.SapStatus == "E")
                         {
                             grid.Rows[0].DefaultCellStyle.BackColor = Color.OrangeRed;
                         }
@@ -837,8 +834,6 @@ namespace HLAYKChannelMachine
 
         private void btnErrorBox_Click(object sender, EventArgs e)
         {
-            btnErrorBox.DM_NormalColor = Color.WhiteSmoke;
-
             UploadMsgForm form = new UploadMsgForm(this);
             form.ShowDialog();
         }
@@ -854,7 +849,6 @@ namespace HLAYKChannelMachine
 
         private void InventoryForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            mCancel = true;
             CloseWindow();
         }
         private void btnCheckSku_Click(object sender, EventArgs e)
@@ -944,6 +938,49 @@ namespace HLAYKChannelMachine
         {
             Start();
             openMachine();
+
+            if(SysConfig.IsTest)
+            {
+                boxNoList.Enqueue("1234567");
+                StartInventory();
+
+                List<Xindeco.Device.Model.TagInfo> ti = new List<Xindeco.Device.Model.TagInfo>();
+                Xindeco.Device.Model.TagInfo t = null;
+                for (int i = 0; i < 5; i++)
+                {
+                    //FKCAJ38001A01001
+                    t = new Xindeco.Device.Model.TagInfo();
+                    t.Epc = "50002A232508C00000009" + i.ToString();
+                    ti.Add(t);
+                }
+
+                for (int i = 0; i < 6; i++)
+                {
+                    //FKCAJ38001A01002
+                    t = new Xindeco.Device.Model.TagInfo();
+                    t.Epc = "50002A233508C00000009" + i.ToString();
+                    ti.Add(t);
+                }
+
+                for (int i = 0; i < 8; i++)
+                {
+                    //HTXAD3A011Y11004
+                    t = new Xindeco.Device.Model.TagInfo();
+                    t.Epc = "500009D77500010000001" + i.ToString();
+                    ti.Add(t);
+                }
+                for (int i = 0; i < 8; i++)
+                {
+                    //HTXAD3A011Y11004
+                    t = new Xindeco.Device.Model.TagInfo();
+                    t.Epc = "500009D77503150000001" + i.ToString();
+                    ti.Add(t);
+                }
+
+                foreach (var v in ti)
+                    Reader_OnTagReported(v);
+                StopInventory();
+            }
         }
 
         private void dmButtonStop_Click(object sender, EventArgs e)
@@ -964,26 +1001,13 @@ namespace HLAYKChannelMachine
                 AddGrid(item);
             }
         }
-        void restoreUpload()
-        {
-            List<CUploadData> up = SqliteDataService.GetAllUploadFromSqlite<YKBoxInfo>();
-            foreach (var v in up)
-            {
-                SqliteDataService.delUploadFromSqlite(v.Guid);
-                addToSavingQueue(v.Data as YKBoxInfo);
-            }
-        }
+
         private void InventoryFormNew_Shown(object sender, EventArgs e)
         {
             restoreGrid();
-            restoreUpload();
-
             UpdateTotalInfo();
-            updateExpButton();
 
-            this.savingDataThread = new Thread(new ThreadStart(savingDataThreadFunc));
-            this.savingDataThread.IsBackground = true;
-            this.savingDataThread.Start();
+            SqliteDataService.delOldData();
         }
         void updateBoxList(YKBoxInfo box)
         {
@@ -993,82 +1017,52 @@ namespace HLAYKChannelMachine
                 mBoxList.Add(box);
             }));
         }
-        CUploadData getQueueData()
+
+        public void updateSAP(YKBoxInfo uploadData)
         {
-            CUploadData re = null;
-            try
+            CUploadData ud = new CUploadData();
+            ud.Guid = Guid.NewGuid().ToString();
+            ud.Data = uploadData;
+            ud.IsUpload = 0;
+            ud.CreateTime = DateTime.Now;
+            SqliteDataService.saveToSqlite(ud);
+
+            YKBoxInfo upData = ud.Data as YKBoxInfo;
+            if (upData == null)
+                return;
+
+            string uploadRe = "";
+            string sapMsg = "";
+
+            SapResult result = SAPDataService.UploadYKBoxInfo(SysConfig.LGNUM, upData);
+            uploadRe = result.STATUS;
+            sapMsg = result.MSG;
+
+            if (uploadRe == "E")
             {
-                lock (savingDataLockObject)
-                {
-                    if (savingData.Count > 0)
-                        return savingData.Dequeue();
-                }
+                SqliteDataService.updateMsgToSqlite(ud.Guid, sapMsg);
             }
-            catch (Exception) { }
-            return re;
-        }
-        private void savingDataThreadFunc()
-        {
-            while (true)
+            else
             {
-                try
-                {
-                    if (mCancel)
-                        return;
+                SqliteDataService.delUploadFromSqlite(ud.Guid);
+            }
 
-                    CUploadData ud = getQueueData();
+            upData.SapRemark = result.MSG;
+            upData.SapStatus = result.STATUS;
 
-                    if (ud != null)
-                    {
-                        YKBoxInfo upData = ud.Data as YKBoxInfo;
-                        if (upData != null)
-                        {
-                            //upload
-                            string uploadRe = "";
-                            string sapMsg = "";
+            //save
+            YKBoxService.SaveBox(upData);
 
-                            SapResult result = SAPDataService.UploadYKBoxInfo(SysConfig.LGNUM, upData);
-                            uploadRe = result.STATUS;
-                            sapMsg = result.MSG;
-
-                            if (uploadRe == "E")
-                            {
-                                SqliteDataService.updateMsgToSqlite(ud.Guid, sapMsg);
-                                playSoundWarn();
-                            }
-                            else
-                            {
-                                SqliteDataService.delUploadFromSqlite(ud.Guid);
-                            }
-
-                            upData.SapRemark = result.MSG;
-                            upData.SapStatus = result.STATUS;
-
-                            //save
-                            YKBoxService.SaveBox(upData);
-
-                            if (upData.Status == "S" && uploadRe == "S")
-                            {
-                                updateBoxList(upData);
-                                UpdateTotalInfo();
-                            }
-
-                            updateUploadCount();
-                            updateExpButton();
-                        }
-                    }
-                    Thread.Sleep(500);
-                }
-                catch (Exception)
-                {
-                    //LogHelper.WriteLine(ex.Message + "\r\n" + ex.StackTrace.ToString());
-                }
+            if (upData.Status == "S" && uploadRe == "S")
+            {
+                updateBoxList(upData);
+                UpdateTotalInfo();
             }
         }
 
-        private void dmButton1_upload_Click(object sender, EventArgs e)
+        private void dmButton1_peibi_Click(object sender, EventArgs e)
         {
-
+            dmLabel1_peibi.DM_Key = dmLabel1_peibi.DM_Key == DMSkin.Controls.DMLabelKey.正确 ? DMSkin.Controls.DMLabelKey.错误 : DMSkin.Controls.DMLabelKey.正确;
         }
     }
 }

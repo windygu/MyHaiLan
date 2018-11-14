@@ -124,7 +124,7 @@ namespace HLACommonLib
         public static string ErrorPrintTemplate = "";
 
         public static bool IsTest = false;
-
+        public static bool IsUseTestSAP = false;
         public static bool IsLog = false;
 
         /// <summary>
@@ -237,6 +237,9 @@ namespace HLACommonLib
             SysConfig.PeakConnectionsLimit = ConfigurationManager.AppSettings["PeakConnectionsLimit"];
             SysConfig.IdleTimeout = ConfigurationManager.AppSettings["IdleTimeout"];
 
+            SysConfig.IsTest = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Test"]) ? false : int.Parse(ConfigurationManager.AppSettings["Test"]) == 1;
+            SysConfig.IsUseTestSAP = string.IsNullOrEmpty(ConfigurationManager.AppSettings["IsUseTestSAP"]) ? false : int.Parse(ConfigurationManager.AppSettings["IsUseTestSAP"]) == 1;
+
         }
 
         public static void loadConfig()
@@ -272,6 +275,7 @@ namespace HLACommonLib
             SysConfig.ScannerPort_2 = ConfigurationManager.AppSettings["ScannerPort_2"];
 
             SysConfig.IsTest = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Test"]) ? false : int.Parse(ConfigurationManager.AppSettings["Test"]) == 1;
+            SysConfig.IsUseTestSAP = string.IsNullOrEmpty(ConfigurationManager.AppSettings["IsUseTestSAP"]) ? false : int.Parse(ConfigurationManager.AppSettings["IsUseTestSAP"]) == 1;
         }
         public static void Load()
         {

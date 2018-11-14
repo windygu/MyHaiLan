@@ -16,6 +16,7 @@ using HLACommonLib;
 using HLACommonLib.Model;
 using System.Drawing.Printing;
 using Stimulsoft.Report;
+using System.Data.SqlClient;
 
 namespace HLADianShangOutCheckChannelMachine
 {
@@ -62,14 +63,16 @@ namespace HLADianShangOutCheckChannelMachine
                 if(int.Parse(DBHelper.GetValue(sql,false).ToString())>0)
                 {
                     //update
-                    sql = string.Format("update DianShangOutDoc set data='{0}',opTime = GETDATE() where doc='{1}'", Newtonsoft.Json.JsonConvert.SerializeObject(doc), doc.mDoc);
-                    DBHelper.ExecuteSql(sql, false);
+                    sql = string.Format("update DianShangOutDoc set data=@data,opTime = GETDATE() where doc='{0}'", doc.mDoc);
+                    SqlParameter sp = new SqlParameter("@data", Newtonsoft.Json.JsonConvert.SerializeObject(doc));
+                    DBHelper.ExecuteSql(sql, false,sp);
                 }
                 else
                 {
                     //insert
-                    sql = string.Format("insert into DianShangOutDoc (doc,data,opTime) values ('{0}','{1}',GETDATE())", doc.mDoc, Newtonsoft.Json.JsonConvert.SerializeObject(doc), doc.mDoc);
-                    DBHelper.ExecuteSql(sql, false);
+                    sql = string.Format("insert into DianShangOutDoc (doc,data,opTime) values ('{0}',@data,GETDATE())", doc.mDoc);
+                    SqlParameter sp = new SqlParameter("@data", Newtonsoft.Json.JsonConvert.SerializeObject(doc));
+                    DBHelper.ExecuteSql(sql, false, sp);
                 }
             }
             catch(Exception ex)
@@ -100,6 +103,34 @@ namespace HLADianShangOutCheckChannelMachine
                 List<CTagSum> curTagSum = getTagSum();
 
                 bool last = isLastHu(doc, hu);
+                List<CMatQty> leftMatQty = doc.getLeftMatQty();
+
+                re = duibi(leftMatQty);
+                if(!last)
+                {
+                    List<string> reMat = new List<string>();
+                    foreach(var v in re)
+                    {
+                        if(!curTagSum.Exists(k=>k.mat == v.mat))
+                        {
+                            reMat.Add(v.mat);
+                        }
+                    }
+
+                    foreach(var v in reMat)
+                    {
+                        re.RemoveAll(i => i.mat == v);
+                    }
+
+                    foreach(var v in re)
+                    {
+                        if (v.qty_diff < 0)
+                            v.qty_diff = 0;
+                        if (v.qty_add_diff < 0)
+                            v.qty_add_diff = 0;
+                    }
+                }
+                /*
                 foreach(var v in curTagSum)
                 {
                     if (doc.mMatQtyList.Exists(i => i.mat == v.mat))
@@ -127,7 +158,9 @@ namespace HLADianShangOutCheckChannelMachine
                     {
                         re.Add(new CTagSumDif(v.mat, v.bar, v.barAdd, v.zsatnr, v.zcolsn, v.zsiztx, v.qty, v.qty_add, v.qty, v.qty_add));
                     }
-                }
+                }*/
+
+                
             }
             catch(Exception)
             {
@@ -175,8 +208,14 @@ namespace HLADianShangOutCheckChannelMachine
                 bool closed = false;
 
                 ShowLoading("正在下载物料数据...");
-                materialList = LocalDataService.GetMaterialInfoList();
-
+                if (SysConfig.IsUseTestSAP)
+                {
+                    materialList = SAPDataService.GetMaterialInfoList(SysConfig.LGNUM);
+                }
+                else
+                {
+                    materialList = LocalDataService.GetMaterialInfoList();
+                }
                 if (materialList == null || materialList.Count <= 0)
                 {
                     this.Invoke(new Action(() =>
@@ -192,8 +231,14 @@ namespace HLADianShangOutCheckChannelMachine
                 if (closed) return;
 
                 ShowLoading("正在下载吊牌数据...");
-                hlaTagList = LocalDataService.GetAllRfidHlaTagList();
-
+                if (SysConfig.IsUseTestSAP)
+                {
+                    hlaTagList = SAPDataService.GetTagInfoList(SysConfig.LGNUM);
+                }
+                else
+                {
+                    hlaTagList = LocalDataService.GetAllRfidHlaTagList();
+                }
                 if (hlaTagList == null || hlaTagList.Count <= 0)
                 {
                     this.Invoke(new Action(() =>
@@ -222,7 +267,15 @@ namespace HLADianShangOutCheckChannelMachine
 
         public void clearDoc(string doc)
         {
-            
+            try
+            {
+                string sql = string.Format("delete from DianShangOutDoc where doc = '{0}'", doc);
+                DBHelper.ExecuteNonQuery(sql);
+            }
+            catch(Exception)
+            {
+
+            }
         }
 
         public override void StartInventory()
@@ -244,7 +297,7 @@ namespace HLADianShangOutCheckChannelMachine
 
                 if (SysConfig.IsTest)
                 {
-                    boxNoList.Enqueue("123451");
+                    boxNoList.Enqueue("3017441547");
                 }
 
                 if (boxNoList.Count > 0)
@@ -345,11 +398,12 @@ namespace HLADianShangOutCheckChannelMachine
                 //print
                 if(re.InventoryResult)
                 {
-                    printOKLabel(hu, doc.WHAreaId, doc.mDocTime, doc.OrigBillId, doc.mDoc, mainEpcNumber.ToString());
+                    string huCount = string.Format("{0}-{1}", doc.mHu.Count, doc.mHuDetail.Count);
+                    printOKLabel(hu, huCount, doc.WHAreaId, doc.mDocTime, doc.OrigBillId, doc.mDoc, mainEpcNumber.ToString());
                 }
                 else
                 {
-                    printErrorLabel(hu, tagDif);
+                    printErrorLabelMulti(hu, doc.mDoc, tagDif);
                 }
             }
             catch(Exception ex)
@@ -360,16 +414,21 @@ namespace HLADianShangOutCheckChannelMachine
             return re;
         }
 
-        void printOKLabel(string hu,string kuqu,string date,string boci,string danhao,string count)
+        void printOKLabel(string hu,string huCount,string kuqu,string date,string boci,string danhao,string count)
         {
             try
             {
+                if(boci.Length>=5)
+                {
+                    boci = boci.Substring(boci.Length - 5);
+                }
                 string filepath = Application.StartupPath + "\\LabelOk.mrt";
                 StiReport stiReport = new StiReport();
                 stiReport.Load(filepath);
                 //设置报表内的参数值
                 stiReport.Compile();
                 stiReport["HU"] = hu;
+                stiReport["HUCOUNT"] = huCount;
                 stiReport["COUNT"] = count;
                 stiReport["JHKUQU"] = kuqu;
                 stiReport["JHDATE"] = date;
@@ -384,7 +443,34 @@ namespace HLADianShangOutCheckChannelMachine
 
             }
         }
-        void printErrorLabel(string hu, List<CTagSumDif> difs)
+        void printErrorLabelMulti(string hu, string doc, List<CTagSumDif> difs)
+        {
+            List<CTagSumDif> errorDif = new List<CTagSumDif>();
+            foreach (var v in difs)
+            {
+                if (v.qty_diff != 0 || v.qty_add_diff != 0)
+                {
+                    errorDif.Add(v);
+                }
+            }
+
+            int maxCount = 10;
+            List<CTagSumDif> printLabel = new List<CTagSumDif>();
+            for(int i=0;i<errorDif.Count;i++)
+            {
+                printLabel.Add(errorDif[i]);
+                if(printLabel.Count>=maxCount)
+                {
+                    printErrorLabel(hu, doc, printLabel);
+                    printLabel.Clear();
+                }
+            }
+            if(printLabel.Count>0 && printLabel.Count<maxCount)
+            {
+                printErrorLabel(hu, doc, printLabel);
+            }
+        }
+        void printErrorLabel(string hu,string doc, List<CTagSumDif> difs)
         {
             try
             {
@@ -394,6 +480,7 @@ namespace HLADianShangOutCheckChannelMachine
                 stiReport.Compile();
 
                 stiReport["HU"] = hu;
+                stiReport["DOC"] = doc;
 
                 DataTable content = new DataTable();
                 content.Columns.Add(new DataColumn("PIN", System.Type.GetType("System.String")));
@@ -404,13 +491,16 @@ namespace HLADianShangOutCheckChannelMachine
 
                 foreach(var v in difs)
                 {
-                    DataRow row = content.NewRow();
-                    row["PIN"] = v.zsatnr;
-                    row["SE"] = v.zcolsn;
-                    row["GUI"] = v.zsiztx;
-                    row["MAIN"] = v.qty_diff;
-                    row["ADD"] = v.qty_add_diff;
-                    content.Rows.Add(row);
+                    if (v.qty_diff != 0 || v.qty_add_diff != 0)
+                    {
+                        DataRow row = content.NewRow();
+                        row["PIN"] = v.zsatnr;
+                        row["SE"] = v.zcolsn;
+                        row["GUI"] = v.zsiztx;
+                        row["MAIN"] = v.qty_diff;
+                        row["ADD"] = v.qty_add_diff;
+                        content.Rows.Add(row);
+                    }
                 }
 
                 PrinterSettings printerSettings = new PrinterSettings();
@@ -532,14 +622,14 @@ namespace HLADianShangOutCheckChannelMachine
                 for (int i = 0; i < 3; i++)
                 {
                     t = new Xindeco.Device.Model.TagInfo();
-                    t.Epc = "50002A232508C00000009111" + i.ToString();
+                    t.Epc = "50002A232508C00000009116" + i.ToString();
                     ti.Add(t);
                 }
 
                 for (int i = 0; i < 4; i++)
                 {
                     t = new Xindeco.Device.Model.TagInfo();
-                    t.Epc = "50002A233508C00000009111" + i.ToString();
+                    t.Epc = "50002A233508C00000009116" + i.ToString();
                     ti.Add(t);
                 }
 
@@ -592,6 +682,17 @@ namespace HLADianShangOutCheckChannelMachine
         private void Form1_Shown(object sender, EventArgs e)
         {
             SqliteDataService.delOldData();
+
+            if(SysConfig.IsTest)
+            {
+                List<CTagSumDif> d = new List<CTagSumDif>();
+                for(int i=0;i<30;i++)
+                {
+                    CTagSumDif dif = new CTagSumDif("123","123","456","zsa","zcol","zgui",1,0,i+1,0);
+                    d.Add(dif);
+                }
+                printErrorLabelMulti("123", "345", d);
+            }
         }
 
         void UploadMsgFormMethod.Upload(CCmnUploadData ud)

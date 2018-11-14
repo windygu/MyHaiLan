@@ -75,6 +75,11 @@ namespace HLACommonLib
                     //SysConfig.UseGroupLogon = "0";
                 }
 
+                if(SysConfig.IsUseTestSAP)
+                {
+                    SysConfig.UseGroupLogon = "0";
+                }
+
                 if (SysConfig.UseGroupLogon == "1")
                 {
                     if (SysConfig.LGNUM == "ET01")
@@ -104,6 +109,15 @@ namespace HLACommonLib
                 }
                 else
                 {
+                    if (SysConfig.IsUseTestSAP)
+                    {
+                        SysConfig.AppServerHost = "172.18.200.14";
+                        SysConfig.SystemNumber = "00";
+                        SysConfig.User = "069675";
+                        SysConfig.Password = "121212";
+                        SysConfig.Client = "300";
+                    }
+
                     rfcParams.Add(RfcConfigParameters.AppServerHost, SysConfig.AppServerHost);   //SAP主机IP
                     rfcParams.Add(RfcConfigParameters.SystemNumber, SysConfig.SystemNumber);  //SAP实例
                     rfcParams.Add(RfcConfigParameters.User, SysConfig.User);  //用户名
@@ -1358,9 +1372,9 @@ namespace HLACommonLib
         {
             try
             {
-                if (SysConfig.IsTest)
+                //if (SysConfig.IsTest)
+                if(SysConfig.IsUseTestSAP)
                 {
-                    
                     DeviceTable result = new DeviceTable();
                     result.EQUIP_HLA = "HLA98720";
                     result.LOUCENG = "XXX";
@@ -3815,80 +3829,17 @@ namespace HLACommonLib
 
 #region 大通道机移库装箱系统
 
-        public static SapResult UploadZLKBoxInfo(string lgnum, ZLKBoxInfo box)
-        {
-            SapResult result = new SapResult();
-            try
-            {
-                RfcDestination dest = RfcDestinationManager.GetDestination(rfcParams);
-                RfcRepository rfcrep = dest.Repository;
-                IRfcFunction myfun = null;
-                myfun = rfcrep.CreateFunction("Z_EW_RFID_058");
-                myfun.SetValue("LGNUM", lgnum);
-                myfun.SetValue("VLTYP", box.Source);
-                myfun.SetValue("LGTYP", box.Target);
-                myfun.SetValue("IS_FULL", box.IsFull == 1 ? "X" : "");
-                myfun.SetValue("EQUIP_HLA", box.EquipHla);
-                myfun.SetValue("LOUCENG", box.LouCeng);
-                myfun.SetValue("SUBUSER", box.SubUser);
-                myfun.SetValue("HU", box.Hu);
-                myfun.SetValue("STATUS_IN", box.Status);
-                myfun.SetValue("MSG_IN", box.Remark);
-                myfun.SetValue("PACKMAT", box.PackMat.TrimStart('0'));
-                //myfun.SetValue("IS_RF", "");  //是否通过RF调用
-                //LogService.Log(SysConfig.DeviceNO, string.Format("箱号：{0}，上传包材：{1}", box.Hu, box.PackMat));
-
-                IRfcStructure import = null;
-                IRfcTable IrfTable = myfun.GetTable("IT_LIST");
-                if (box.Details != null && box.Details.Count > 0)
-                {
-                    //List<string> barcodelist = box.Details.Select(o => o.Barcd).Distinct().ToList();//获取条码列表
-                    List<string> barcodelist = new List<string>();
-                    foreach (ZLKBoxDetailInfo ydi in box.Details)
-                    {
-                        if (ydi.IsAdd == 0 && !barcodelist.Contains(ydi.Barcd))
-                        {
-                            barcodelist.Add(ydi.Barcd);
-                        }
-                    }
-
-                    if (barcodelist != null && barcodelist.Count > 0)
-                    {
-                        foreach (string barcode in barcodelist)
-                        {
-                            int qty = box.Details.Count(o => o.Barcd == barcode);//统计对应主条码的数量
-                            import = rfcrep.GetStructureMetadata("ZSEWRFID058").CreateStructure();
-                            import.SetValue("BARCD", barcode);
-                            import.SetValue("MATNR", box.Details.First(x => x.Barcd == barcode).Matnr);
-                            import.SetValue("QTY", qty);
-                            IrfTable.Insert(import);
-                        }
-                    }
-                }
-
-
-                myfun.Invoke(dest);
-
-                string status = myfun.GetString("STATUS"); //执行状态正确‘S’错误‘E’）
-                string msg_sap = myfun.GetString("MSG");
-                RfcSessionManager.EndContext(dest);
-                result.STATUS = status;
-                result.MSG = msg_sap;
-                return result;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error(ex.Message, ex.StackTrace);
-                result.STATUS = "E";
-                result.MSG = ex.Message;
-            }
-
-            return result;
-        }
-
         public static SapResult UploadYKBoxInfo(string lgnum, YKBoxInfo box)
         {
             SapResult result = new SapResult();
+
+            if (SysConfig.IsTest)
+            {
+                result.MSG = "ZZZ";
+                result.STATUS = "S";
+                return result;
+            }
+
             try
             {
                 RfcDestination dest = RfcDestinationManager.GetDestination(rfcParams);
@@ -3906,14 +3857,13 @@ namespace HLACommonLib
                 myfun.SetValue("STATUS_IN", box.Status);
                 myfun.SetValue("MSG_IN", box.Remark);
                 myfun.SetValue("PACKMAT", box.PackMat.TrimStart('0'));
-                //myfun.SetValue("IS_RF", "");  //是否通过RF调用
-                //LogService.Log(SysConfig.DeviceNO, string.Format("箱号：{0}，上传包材：{1}", box.Hu, box.PackMat));
 
                 IRfcStructure import = null;
                 IRfcTable IrfTable = myfun.GetTable("IT_LIST");
                 if (box.Details != null && box.Details.Count > 0)
                 {
-                    //List<string> barcodelist = box.Details.Select(o => o.Barcd).Distinct().ToList();//获取条码列表
+                    List<string> barcodelist = box.Details.Where(i => i.IsAdd == 0).Select(j => j.Barcd).Distinct().ToList();
+                    /*
                     List<string> barcodelist = new List<string>();
                     foreach(YKBoxDetailInfo ydi in box.Details)
                     {
@@ -3921,7 +3871,7 @@ namespace HLACommonLib
                         {
                             barcodelist.Add(ydi.Barcd);
                         }
-                    }
+                    }*/
 
                     if (barcodelist != null && barcodelist.Count > 0)
                     {
@@ -3936,7 +3886,6 @@ namespace HLACommonLib
                         }
                     }
                 }
-
 
                 myfun.Invoke(dest);
 
@@ -4517,7 +4466,57 @@ namespace HLACommonLib
             }
             return re;
         }
+        public static List<CMatQty> Z_EW_RFID_058B(string barcd,ref string sapRe,ref string sapMsg,ref string peibi)
+        {
+            List<CMatQty> re = new List<CMatQty>();
 
+            if(SysConfig.IsTest)
+            {
+                sapRe = "S";
+                sapMsg = "";
+                peibi = "123";
+                re.Add(new CMatQty("FKCAJ38001A01001", 5));
+                re.Add(new CMatQty("FKCAJ38001A01002", 6));
+                re.Add(new CMatQty("HTXAD3A011Y11004", 8));
+                //re.Add(new CMatQty("HWJAJ1N027A27003", 4));
+
+                return re;
+            }
+
+            try
+            {
+                RfcDestination dest = RfcDestinationManager.GetDestination(rfcParams);
+                RfcRepository rfcrep = dest.Repository;
+                IRfcFunction myfun = null;
+                myfun = rfcrep.CreateFunction("Z_EW_RFID_058B");
+
+                myfun.SetValue("LGNUM", SysConfig.LGNUM);
+                myfun.SetValue("BARCD", barcd);
+
+                myfun.Invoke(dest);
+                sapRe = myfun.GetString("STATUS");
+                sapMsg = myfun.GetString("MSG");
+                peibi = myfun.GetString("ZPBNO");
+
+                IRfcTable IrfTable = myfun.GetTable("OUT_DATA");
+                for (int i = 0; i < IrfTable.Count; i++)
+                {
+                    IrfTable.CurrentIndex = i;
+                    string MATNR = getZiDuan(IrfTable, "MATNR");
+                    int qty = IrfTable.GetInt("QTY");
+
+                    re.Add(new CMatQty(MATNR, qty));
+                }
+
+                RfcSessionManager.EndContext(dest);
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return re;
+        }
         public static int RFID_075F(string hu, ref string result, ref string sapMsg)
         {
             int re = 0;
@@ -4887,10 +4886,7 @@ namespace HLACommonLib
                 re.mDocTime = "2015-01-04";
 
                 List<string> huList = new List<string>();
-                huList.Add("123456");
-                huList.Add("123455");
-                huList.Add("123454");
-                huList.Add("123453");
+
                 huList.Add("123452");
                 huList.Add("123451");
                 huList.Add("123450");
@@ -4925,7 +4921,7 @@ namespace HLACommonLib
                     string flag = nodeRep.SelectSingleNode("flag").InnerText;
                     if (flag == SUCCESS)
                     {
-                        XmlNode data = nodeRep.SelectSingleNode("data/Inner_syncpickinfosearch");
+                        XmlNode data = nodeRep.SelectSingleNode("data/Inner_SyncPickSearchInfoData");
                         XmlNode doc = data.SelectSingleNode("BillId");
                         if (doc != null)
                         {
@@ -4950,19 +4946,26 @@ namespace HLACommonLib
                             re.OrigBillId = OrigBillId.InnerText.Trim();
                         }
 
-                        XmlNodeList boxIdList = data.SelectNodes("item/boxIds/boxId");
+                        XmlNodeList boxIdList = data.SelectNodes("boxIds/box");
                         if (boxIdList != null)
                         {
                             foreach (XmlNode v in boxIdList)
                             {
                                 if(v!=null)
                                 {
-                                    re.mHu.Add(v.InnerText.Trim());
+                                    XmlNode bi = v.SelectSingleNode("boxId");
+                                    if (bi != null && !string.IsNullOrEmpty(bi.InnerText.Trim()))
+                                    {
+                                        if (!re.mHu.Exists(i => i == v.InnerText.Trim()))
+                                        {
+                                            re.mHu.Add(v.InnerText.Trim());
+                                        }
+                                    }
                                 }
                             }
                         }
 
-                        XmlNodeList productList = data.SelectNodes("item/products/product");
+                        XmlNodeList productList = data.SelectNodes("products/product");
                         if (productList != null)
                         {
                             foreach (XmlNode v in productList)
@@ -4972,7 +4975,14 @@ namespace HLACommonLib
                                 if (pro != null && qty != null && !string.IsNullOrEmpty(pro.InnerText) && !string.IsNullOrEmpty(qty.InnerText))
                                 {
                                     CMatQty barQty = new CMatQty(pro.InnerText.Trim(), int.Parse(qty.InnerText.Trim()));
-                                    re.mMatQtyList.Add(barQty);
+                                    if (!re.mMatQtyList.Exists(i => i.mat == barQty.mat))
+                                    {
+                                        re.mMatQtyList.Add(barQty);
+                                    }
+                                    else
+                                    {
+                                        re.mMatQtyList.First(i => i.mat == barQty.mat).qty += barQty.qty;
+                                    }
                                 }
                             }
                         }
