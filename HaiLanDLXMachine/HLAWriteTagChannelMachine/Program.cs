@@ -2,7 +2,6 @@
 using HLACommonLib.Model;
 using HLACommonView.Views.Dialogs;
 using Newtonsoft.Json;
-using HLABoxCheckChannelMachine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +10,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Configuration;
 
-namespace HLABoxCheckChannelMachine
+namespace HLAWriteTagChannelMachine
 {
     static class Program
     {
@@ -41,6 +40,8 @@ namespace HLABoxCheckChannelMachine
                     }
                 }
             }
+
+            Utils.AppConfig.Load();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

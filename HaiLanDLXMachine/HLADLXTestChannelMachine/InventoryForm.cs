@@ -1,11 +1,5 @@
 ﻿using DMSkin;
-using HLACommonLib;
-using HLACommonLib.DAO;
-using HLACommonLib.Model;
-using HLACommonLib.Model.YK;
-using HLACommonView.Model;
-using HLACommonView.Views;
-using HLACommonView.Configs;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,13 +10,13 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Xindeco.Device.Model;
+using HLABoxCheckChannelMachine.Utils;
 
 namespace HLABoxCheckChannelMachine
 {
 
-    public partial class InventoryForm : CommonInventoryFormIMP
+    public partial class InventoryForm : CommonInventoryForm
     {
-        CLogManager mLog = new CLogManager(true);
         string mCurBoxNo = "";
         Thread thread = null;
         public InventoryForm()
@@ -33,8 +27,6 @@ namespace HLABoxCheckChannelMachine
         private void InitView()
         {
             Invoke(new Action(() => {
-                lblCurrentUser.Text = SysConfig.CurrentLoginUser != null ? SysConfig.CurrentLoginUser.UserId : "登录信息异常";
-                lblLouceng.Text = SysConfig.DeviceInfo != null ? SysConfig.DeviceInfo.LOUCENG : "设备信息异常";
                 lblPlc.Text = "连接中...";
                 lblReader.Text = "连接中...";
                 lblWorkStatus.Text = "未开始工作";
@@ -84,26 +76,16 @@ namespace HLABoxCheckChannelMachine
             btnStart.Enabled = false;
             btnPause.Enabled = true;
 
-            allCheck.Enabled = false;
-            pinseCheck.Enabled = false;
         }
         private void Pause()
         {
             btnStart.Enabled = true;
             btnPause.Enabled = false;
 
-            allCheck.Enabled = true;
-            pinseCheck.Enabled = true;
 
         }
         public override void StartInventory()
         {
-            if (!boxCheckCheckBox.Checked)
-            {
-                SetInventoryResult(1);
-                return;
-            }
-
             if (!isInventory)
             {
                 Invoke(new Action(() =>
@@ -121,7 +103,6 @@ namespace HLABoxCheckChannelMachine
                 mainEpcNumber = 0;
                 addEpcNumber = 0;
                 epcList.Clear();
-                tagDetailList.Clear();
 
                 mCurBoxNo = "";
 
@@ -133,7 +114,7 @@ namespace HLABoxCheckChannelMachine
                 {
                     label9_hu.Text = mCurBoxNo;
                 }));
-                reader.StartInventory(0, 0, 0);
+                reader.StartReading();
                 isInventory = true;
                 lastReadTime = DateTime.Now;
 
@@ -143,70 +124,15 @@ namespace HLABoxCheckChannelMachine
         {
             CheckResult result = base.CheckData();
 
-            bool pinseCheckBool = false;
-            bool allCheckBool = false;
-            Invoke(new Action(() =>
-            {
-                pinseCheckBool = pinseCheck.Checked;
-                allCheckBool = allCheck.Checked;
-            }));
-            if (allCheckBool)
-            {
-                if (tagDetailList != null && tagDetailList.Count > 0)
-                {
-                    TagDetailInfo t = tagDetailList[0];
-                    foreach (var v in tagDetailList)
-                    {
-                        if (v.ZSATNR == t.ZSATNR && v.ZCOLSN == t.ZCOLSN && v.ZSIZTX == t.ZSIZTX)
-                        {
-
-                        }
-                        else
-                        {
-                            result.UpdateMessage(@"品色规不唯一");
-                            result.InventoryResult = false;
-
-                            break;
-                        }
-                    }
-                }
-            }
-            if (pinseCheckBool)
-            {
-                if (tagDetailList != null && tagDetailList.Count > 0)
-                {
-                    TagDetailInfo t = tagDetailList[0];
-                    foreach (var v in tagDetailList)
-                    {
-                        if (v.ZSATNR == t.ZSATNR && v.ZCOLSN == t.ZCOLSN)
-                        {
-
-                        }
-                        else
-                        {
-                            result.UpdateMessage(@"品色不唯一");
-                            result.InventoryResult = false;
-
-                            break;
-                        }
-                    }
-                }
-            }
-
             if (result.InventoryResult)
             {
-                result.UpdateMessage(Consts.Default.RIGHT);
+                result.UpdateMessage("正常");
             }
 
             return result;
         }
         public override void StopInventory()
         {
-            if (!boxCheckCheckBox.Checked)
-            {
-                return;
-            }
-
             if (isInventory)
             {
                 Invoke(new Action(() =>
@@ -214,7 +140,7 @@ namespace HLABoxCheckChannelMachine
                     lblWorkStatus.Text = "停止扫描";
                 }));
                 isInventory = false;
-                reader.StopInventory();
+                reader.StopReading();
 
                 //show in grid
                 Invoke(new Action(() =>
@@ -236,34 +162,6 @@ namespace HLABoxCheckChannelMachine
             Close();
         }
 
-        private void pinseCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            if (pinseCheck.Checked)
-            {
-                pinseCheck.BackColor = Color.Tan;
-                allCheck.Checked = false;
-                allCheck.BackColor = Color.WhiteSmoke;
-            }
-            else
-            {
-                pinseCheck.BackColor = Color.WhiteSmoke;
-            }
-        }
-
-        private void allCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            if (allCheck.Checked)
-            {
-                allCheck.BackColor = Color.Tan;
-                pinseCheck.Checked = false;
-                pinseCheck.BackColor = Color.WhiteSmoke;
-            }
-            else
-            {
-                allCheck.BackColor = Color.WhiteSmoke;
-            }
-        }
-
         private void btnStart_Click(object sender, EventArgs e)
         {
             Start();
@@ -272,44 +170,6 @@ namespace HLABoxCheckChannelMachine
         private void btnPause_Click(object sender, EventArgs e)
         {
             Pause();
-        }
-
-        List<CTagDetail> getTags()
-        {
-            List<CTagDetail> re = new List<CTagDetail>();
-
-            try
-            {
-                if (tagDetailList != null && tagDetailList.Count > 0)
-                {
-                    foreach (var v in tagDetailList)
-                    {
-                        if (!v.IsAddEpc)
-                        {
-                            if (!re.Exists(i => i.proNo == v.MATNR))
-                            {
-                                CTagDetail t = new CTagDetail();
-                                t.proNo = v.MATNR;
-                                t.zsatnr = v.ZSATNR;
-                                t.zcolsn = v.ZCOLSN;
-                                t.zsiztx = v.ZSIZTX;
-                                t.charg = v.CHARG;
-                                t.quan = 1;
-
-                                re.Add(t);
-                            }
-                            else
-                            {
-                                re.FirstOrDefault(i => i.proNo == v.MATNR).quan += 1;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            { }
-
-            return re;
         }
 
         private void InventoryForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -326,4 +186,5 @@ namespace HLABoxCheckChannelMachine
         public string charg;
         public int quan;
     }
+
 }

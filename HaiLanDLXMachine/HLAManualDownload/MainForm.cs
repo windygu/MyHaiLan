@@ -722,5 +722,101 @@ namespace HLAManualDownload
 
             })).Start();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            DialogResult result = openFileDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                metroTextBox1_bar.Text = openFileDialog1.FileName;
+            }
+        }
+
+        bool delBar(string bar)
+        {
+            bool re = false;
+            try
+            {
+                string sql = string.Format("select MATNR from taginfo where BARCD='{0}'", bar);
+                string mtr = DBHelper.GetValue(sql, false)?.ToString().Trim();
+                if(!string.IsNullOrEmpty(mtr))
+                {
+                    sql = string.Format("delete from taginfo where MATNR='{0}'", mtr);
+                    DBHelper.ExecuteNonQuery(sql);
+                    sql = string.Format("delete from materialinfo where MATNR='{0}'", mtr);
+                    DBHelper.ExecuteNonQuery(sql);
+                    re = true;
+                }
+            }
+            catch(Exception)
+            {
+
+            }
+
+            return re;
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            matProgressBar.Value = 0;
+
+            if (metroTextBox1_bar.Text == "")
+            {
+                matLogLabel.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请选择条码文件";
+                return;
+            }
+
+            List<string> barList = new List<string>();
+
+            try
+            {
+                string file = openFileDialog1.FileName;
+                var lines = File.ReadLines(file);
+                foreach (var line in lines)
+                {
+                    string lineStr = line.Trim();
+                    if(!string.IsNullOrEmpty(lineStr))
+                        barList.Add(lineStr);
+                }
+            }
+            catch (Exception ex)
+            {
+                mLog.log(ex.Message);
+                mLog.log(ex.StackTrace);
+            }
+
+            if (barList.Count <= 0)
+            {
+                matLogLabel.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "该文件中没有条码数据";
+                return;
+            }
+
+            button1.Enabled = false;
+
+            new Thread(new ThreadStart(() =>
+            {
+                Invoke(new Action(() => { matProgressBar.Maximum = barList.Count; }));
+
+                int delCount = 0;
+                foreach (string bar in barList)
+                {
+                    Invoke(new Action(() => { matProgressBar.Value++; }));
+                    if (delBar(bar))
+                        delCount++;
+                }
+
+                string log = string.Format("文件共有{0}条，实际删除{1}条", barList.Count, delCount);
+                Invoke(new Action(() =>
+                {
+                    matLogLabel.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + log;
+                }));
+
+                Invoke(new Action(() =>
+                {
+                    button1.Enabled = true;
+                }));
+
+            })).Start();
+
+        }
     }
 }

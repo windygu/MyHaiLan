@@ -96,6 +96,7 @@ namespace HLAYKChannelMachine
             this.QTY = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MSG = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label13 = new System.Windows.Forms.Label();
+            this.dmButton1 = new DMSkin.Controls.DMButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -116,6 +117,7 @@ namespace HLAYKChannelMachine
             // 
             this.splitContainer1.Panel1.AutoScroll = true;
             this.splitContainer1.Panel1.BackColor = System.Drawing.Color.Teal;
+            this.splitContainer1.Panel1.Controls.Add(this.dmButton1);
             this.splitContainer1.Panel1.Controls.Add(this.dmLabel1_peibi);
             this.splitContainer1.Panel1.Controls.Add(this.dmButton1_peibi);
             this.splitContainer1.Panel1.Controls.Add(this.dmButtonStart);
@@ -1097,6 +1099,30 @@ namespace HLAYKChannelMachine
             this.label13.Text = "复核明细";
             this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // dmButton1
+            // 
+            this.dmButton1.AutoEllipsis = true;
+            this.dmButton1.BackColor = System.Drawing.Color.Transparent;
+            this.dmButton1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.dmButton1.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.dmButton1.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(93)))), ((int)(((byte)(203)))));
+            this.dmButton1.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(123)))), ((int)(((byte)(203)))));
+            this.dmButton1.DM_NormalColor = System.Drawing.Color.WhiteSmoke;
+            this.dmButton1.DM_Radius = 1;
+            this.dmButton1.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.dmButton1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dmButton1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
+            this.dmButton1.ForeColor = System.Drawing.Color.Teal;
+            this.dmButton1.Image = null;
+            this.dmButton1.Location = new System.Drawing.Point(1, 785);
+            this.dmButton1.Margin = new System.Windows.Forms.Padding(0);
+            this.dmButton1.Name = "dmButton1";
+            this.dmButton1.Size = new System.Drawing.Size(155, 40);
+            this.dmButton1.TabIndex = 59;
+            this.dmButton1.Text = "重连扫描枪";
+            this.dmButton1.UseVisualStyleBackColor = true;
+            this.dmButton1.Click += new System.EventHandler(this.dmButton1_Click);
+            // 
             // InventoryFormNew
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1183,6 +1209,7 @@ namespace HLAYKChannelMachine
         private System.Windows.Forms.DataGridViewTextBoxColumn MSG;
         private DMSkin.Controls.DMLabel dmLabel1_peibi;
         private DMSkin.Controls.DMButton dmButton1_peibi;
+        private DMSkin.Controls.DMButton dmButton1;
     }
 }
 

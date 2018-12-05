@@ -89,55 +89,46 @@ namespace HLAYKChannelMachine
         {
             try
             {
-                if (!isInventory)
+                if (isInventory)
                 {
-                    SetInventoryResult(1);
-                    return;
-                }
-                Invoke(new Action(() =>
-                {
-                    lblWorkStatus.Text = "停止扫描";
-                }));
-                isInventory = false;
-                reader.StopInventory();
-
-                CheckResult checkResult = CheckData();
-
-                Invoke(new Action(() =>
-                {
-                    lblResult.Text = checkResult.Message;
-                }));
-                if (checkResult.Message.Contains("重投"))
-                {
-                    AddGrid(checkResult.Message);
-                    playSound(false);
-                    SetInventoryResult(1);
-                    return;
-                }
-                YKBoxInfo box = GetCurrentYKBox(checkResult);
-                updateSAP(box);
-
-                playSound(checkResult.InventoryResult && box.SapStatus == "S");
-
-                AddGrid(box);
-
-                if (checkResult.InventoryResult || checkResult.IsRecheck)
-                {
-                    SetInventoryResult(1);
-                }
-                else
-                {
-                    SetInventoryResult(1);
-                }
-
-                if (dmLabel1_peibi.DM_Key == DMSkin.Controls.DMLabelKey.错误)
-                {
-                    if (lblUsePrint.DM_Key == DMSkin.Controls.DMLabelKey.正确)
+                    Invoke(new Action(() =>
                     {
-                        if (checkResult.InventoryResult)
-                            PrintHelper.PrintRightTag(box, materialList);
-                        else
-                            PrintHelper.PrintErrorTag(box, lblCheckSku.DM_Key == DMSkin.Controls.DMLabelKey.正确);
+                        lblWorkStatus.Text = "停止扫描";
+                    }));
+                    isInventory = false;
+                    reader.StopInventory();
+
+                    CheckResult checkResult = CheckData();
+
+                    Invoke(new Action(() =>
+                    {
+                        lblResult.Text = checkResult.Message;
+                    }));
+                    if (checkResult.Message.Contains("重投"))
+                    {
+                        AddGrid(checkResult.Message);
+                        playSound(false);
+                        SetInventoryResult(1);
+                        return;
+                    }
+                    YKBoxInfo box = GetCurrentYKBox(checkResult);
+                    updateSAP(box);
+
+                    playSound(checkResult.InventoryResult && box.SapStatus == "S");
+
+                    AddGrid(box);
+
+                    SetInventoryResult(1);
+
+                    if (dmLabel1_peibi.DM_Key == DMSkin.Controls.DMLabelKey.错误)
+                    {
+                        if (lblUsePrint.DM_Key == DMSkin.Controls.DMLabelKey.正确)
+                        {
+                            if (checkResult.InventoryResult)
+                                PrintHelper.PrintRightTag(box, materialList);
+                            else
+                                PrintHelper.PrintErrorTag(box, lblCheckSku.DM_Key == DMSkin.Controls.DMLabelKey.正确);
+                        }
                     }
                 }
             }
@@ -565,8 +556,8 @@ namespace HLAYKChannelMachine
                 if (closed) return;
 
                 ShowLoading("正在更新SAP最新物料数据...");
-                materialList = SAPDataService.GetMaterialInfoList(SysConfig.LGNUM);
-                //materialList = LocalDataService.GetMaterialInfoList();
+                //materialList = SAPDataService.GetMaterialInfoList(SysConfig.LGNUM);
+                materialList = LocalDataService.GetMaterialInfoList();
 
                 if (materialList == null || materialList.Count <= 0)
                 {
@@ -1063,6 +1054,20 @@ namespace HLAYKChannelMachine
         private void dmButton1_peibi_Click(object sender, EventArgs e)
         {
             dmLabel1_peibi.DM_Key = dmLabel1_peibi.DM_Key == DMSkin.Controls.DMLabelKey.正确 ? DMSkin.Controls.DMLabelKey.错误 : DMSkin.Controls.DMLabelKey.正确;
+        }
+
+        private void dmButton1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DisconnectBarcode();
+                ConnectBarcode();
+                MessageBox.Show("重连成功");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }

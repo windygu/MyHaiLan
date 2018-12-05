@@ -34,13 +34,11 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.boxCheckCheckBox = new System.Windows.Forms.CheckBox();
-            this.printCheckBox = new System.Windows.Forms.CheckBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9_hu = new System.Windows.Forms.Label();
             this.btnStart = new DMSkin.Controls.DMButton();
             this.btnPause = new DMSkin.Controls.DMButton();
             this.btnClose = new DMSkin.Controls.DMButton();
-            this.allCheck = new System.Windows.Forms.CheckBox();
-            this.pinseCheck = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lblWorkStatus = new System.Windows.Forms.Label();
@@ -56,8 +54,6 @@
             this.grid = new DMSkin.Metro.Controls.MetroGrid();
             this.MSG = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label2 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9_hu = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -76,13 +72,9 @@
             this.splitContainer1.Panel1.BackColor = System.Drawing.Color.Teal;
             this.splitContainer1.Panel1.Controls.Add(this.label8);
             this.splitContainer1.Panel1.Controls.Add(this.label9_hu);
-            this.splitContainer1.Panel1.Controls.Add(this.boxCheckCheckBox);
-            this.splitContainer1.Panel1.Controls.Add(this.printCheckBox);
             this.splitContainer1.Panel1.Controls.Add(this.btnStart);
             this.splitContainer1.Panel1.Controls.Add(this.btnPause);
             this.splitContainer1.Panel1.Controls.Add(this.btnClose);
-            this.splitContainer1.Panel1.Controls.Add(this.allCheck);
-            this.splitContainer1.Panel1.Controls.Add(this.pinseCheck);
             this.splitContainer1.Panel1.Controls.Add(this.label6);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.lblWorkStatus);
@@ -104,39 +96,31 @@
             this.splitContainer1.SplitterDistance = 337;
             this.splitContainer1.TabIndex = 1;
             // 
-            // boxCheckCheckBox
+            // label8
             // 
-            this.boxCheckCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.boxCheckCheckBox.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.boxCheckCheckBox.Checked = true;
-            this.boxCheckCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.boxCheckCheckBox.FlatAppearance.BorderSize = 5;
-            this.boxCheckCheckBox.Font = new System.Drawing.Font("微软雅黑", 11F, System.Drawing.FontStyle.Bold);
-            this.boxCheckCheckBox.ForeColor = System.Drawing.Color.Black;
-            this.boxCheckCheckBox.Location = new System.Drawing.Point(26, 321);
-            this.boxCheckCheckBox.Margin = new System.Windows.Forms.Padding(0);
-            this.boxCheckCheckBox.Name = "boxCheckCheckBox";
-            this.boxCheckCheckBox.Size = new System.Drawing.Size(121, 36);
-            this.boxCheckCheckBox.TabIndex = 23;
-            this.boxCheckCheckBox.Text = "复核";
-            this.boxCheckCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.boxCheckCheckBox.UseVisualStyleBackColor = false;
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label8.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label8.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
+            this.label8.ForeColor = System.Drawing.Color.Black;
+            this.label8.Location = new System.Drawing.Point(7, 266);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(111, 32);
+            this.label8.TabIndex = 24;
+            this.label8.Text = "箱号：";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // printCheckBox
+            // label9_hu
             // 
-            this.printCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.printCheckBox.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.printCheckBox.FlatAppearance.BorderSize = 5;
-            this.printCheckBox.Font = new System.Drawing.Font("微软雅黑", 11F, System.Drawing.FontStyle.Bold);
-            this.printCheckBox.ForeColor = System.Drawing.Color.Black;
-            this.printCheckBox.Location = new System.Drawing.Point(191, 321);
-            this.printCheckBox.Margin = new System.Windows.Forms.Padding(0);
-            this.printCheckBox.Name = "printCheckBox";
-            this.printCheckBox.Size = new System.Drawing.Size(121, 36);
-            this.printCheckBox.TabIndex = 22;
-            this.printCheckBox.Text = "打印";
-            this.printCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.printCheckBox.UseVisualStyleBackColor = false;
+            this.label9_hu.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label9_hu.BackColor = System.Drawing.Color.White;
+            this.label9_hu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label9_hu.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.label9_hu.Location = new System.Drawing.Point(117, 266);
+            this.label9_hu.Name = "label9_hu";
+            this.label9_hu.Size = new System.Drawing.Size(210, 32);
+            this.label9_hu.TabIndex = 25;
+            this.label9_hu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnStart
             // 
@@ -214,40 +198,6 @@
             this.btnClose.Text = "退出";
             this.btnClose.UseVisualStyleBackColor = false;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            // 
-            // allCheck
-            // 
-            this.allCheck.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.allCheck.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.allCheck.FlatAppearance.BorderSize = 5;
-            this.allCheck.Font = new System.Drawing.Font("微软雅黑", 11F, System.Drawing.FontStyle.Bold);
-            this.allCheck.ForeColor = System.Drawing.Color.Black;
-            this.allCheck.Location = new System.Drawing.Point(191, 375);
-            this.allCheck.Margin = new System.Windows.Forms.Padding(0);
-            this.allCheck.Name = "allCheck";
-            this.allCheck.Size = new System.Drawing.Size(121, 36);
-            this.allCheck.TabIndex = 18;
-            this.allCheck.Text = "按规格复核";
-            this.allCheck.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.allCheck.UseVisualStyleBackColor = false;
-            this.allCheck.CheckedChanged += new System.EventHandler(this.allCheck_CheckedChanged);
-            // 
-            // pinseCheck
-            // 
-            this.pinseCheck.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.pinseCheck.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.pinseCheck.FlatAppearance.BorderSize = 5;
-            this.pinseCheck.Font = new System.Drawing.Font("微软雅黑", 11F, System.Drawing.FontStyle.Bold);
-            this.pinseCheck.ForeColor = System.Drawing.Color.Black;
-            this.pinseCheck.Location = new System.Drawing.Point(26, 375);
-            this.pinseCheck.Margin = new System.Windows.Forms.Padding(0);
-            this.pinseCheck.Name = "pinseCheck";
-            this.pinseCheck.Size = new System.Drawing.Size(121, 36);
-            this.pinseCheck.TabIndex = 17;
-            this.pinseCheck.Text = "按品色复核";
-            this.pinseCheck.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.pinseCheck.UseVisualStyleBackColor = false;
-            this.pinseCheck.CheckedChanged += new System.EventHandler(this.pinseCheck_CheckedChanged);
             // 
             // label6
             // 
@@ -493,32 +443,6 @@
             this.label2.Text = "复核明细";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label8
-            // 
-            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.label8.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label8.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold);
-            this.label8.ForeColor = System.Drawing.Color.Black;
-            this.label8.Location = new System.Drawing.Point(7, 266);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(111, 32);
-            this.label8.TabIndex = 24;
-            this.label8.Text = "箱号：";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label9_hu
-            // 
-            this.label9_hu.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.label9_hu.BackColor = System.Drawing.Color.White;
-            this.label9_hu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label9_hu.Font = new System.Drawing.Font("微软雅黑", 12F);
-            this.label9_hu.Location = new System.Drawing.Point(117, 266);
-            this.label9_hu.Name = "label9_hu";
-            this.label9_hu.Size = new System.Drawing.Size(210, 32);
-            this.label9_hu.TabIndex = 25;
-            this.label9_hu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // InventoryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -556,14 +480,10 @@
         private System.Windows.Forms.Label lblPlc;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label lblReader;
-        private System.Windows.Forms.CheckBox allCheck;
-        private System.Windows.Forms.CheckBox pinseCheck;
         private DMSkin.Controls.DMButton btnStart;
         private DMSkin.Controls.DMButton btnPause;
         private DMSkin.Controls.DMButton btnClose;
         private DMSkin.Metro.Controls.MetroGrid grid;
-        private System.Windows.Forms.CheckBox printCheckBox;
-        private System.Windows.Forms.CheckBox boxCheckCheckBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn MSG;
         private System.Windows.Forms.Label lblQty;
         private System.Windows.Forms.Label label8;

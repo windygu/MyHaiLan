@@ -46,12 +46,42 @@ namespace HLACommonView.Views
 
         private List<string> mIgnoreEpcs = new List<string>();
 
-
+        Dictionary<string, MaterialInfo> mSapMaterial = new Dictionary<string, MaterialInfo>();
         public CommonInventoryFormIMP()
         {
             InitializeComponent();
             mIgnoreEpcs = SAPDataService.getIngnoreEpcs();
         }
+        public void openMachineCommon()
+        {
+            try
+            {
+                if (plc != null)
+                {
+                    plc.SendCommand((PLCResponse)5);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+        public void closeMachineCommon()
+        {
+            try
+            {
+                if (plc != null)
+                {
+                    plc.SendCommand((PLCResponse)6);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
 
         public List<CTagDetail> getTags()
         {
@@ -250,7 +280,22 @@ namespace HLACommonView.Views
         {
         }
 
-        
+        MaterialInfo getMaterialFromSAP(string mat)
+        {
+            if(mSapMaterial.ContainsKey(mat))
+            {
+                return mSapMaterial[mat];
+            }
+            List<MaterialInfo> re = SAPDataService.GetMaterialInfoListByMATNR(SysConfig.LGNUM, mat);
+            if(re!=null && re.Count>0)
+            {
+                mSapMaterial[mat] = re[0];
+                materialList.RemoveAll(i => i.MATNR == mat);
+                materialList.Add(re[0]);
+                return re[0];
+            }
+            return null;
+        }
         public TagDetailInfo GetTagDetailInfoByEpc(string epc)
         {
             if (string.IsNullOrEmpty(epc) || epc.Length < 20)
@@ -265,7 +310,9 @@ namespace HLACommonView.Views
             else
             {
                 HLATagInfo tag = tags.First();
-                MaterialInfo mater = materialList.FirstOrDefault(i => i.MATNR == tag.MATNR);
+                //MaterialInfo mater = materialList.FirstOrDefault(i => i.MATNR == tag.MATNR);
+                MaterialInfo mater = getMaterialFromSAP(tag.MATNR);
+
                 if (mater == null)
                     return null;
                 else
@@ -440,6 +487,35 @@ namespace HLACommonView.Views
             return false;
         }
 
+        void getTagDetail()
+        {
+            try
+            {
+                foreach(string epc in epcList)
+                {
+                    TagDetailInfo tag = GetTagDetailInfoByEpc(epc);
+                    if (tag != null)   //合法EPC
+                    {
+                        tagDetailList.Add(tag);
+                        if (!tag.IsAddEpc)   //主条码
+                            mainEpcNumber++;
+                        else
+                            addEpcNumber++;
+                    }
+                    else
+                    {
+                        //累加非法EPC数量
+                        errorEpcNumber++;
+                    }
+                }
+
+                UpdateView();
+            }
+            catch(Exception)
+            {
+
+            }
+        }
         public void Reader_OnTagReported(Xindeco.Device.Model.TagInfo taginfo)
         {
             if (!isInventory) return;
@@ -449,6 +525,7 @@ namespace HLACommonView.Views
                 lastReadTime = DateTime.Now;
                 epcList.Add(taginfo.Epc);
 
+                /*
                 TagDetailInfo tag = GetTagDetailInfoByEpc(taginfo.Epc);
                 if (tag != null)   //合法EPC
                 {
@@ -464,6 +541,7 @@ namespace HLACommonView.Views
                     errorEpcNumber++;
                 }
                 UpdateView();
+                */
             }
         }
 
@@ -484,6 +562,7 @@ namespace HLACommonView.Views
                 //当前正在盘点，则判断上次读取时间和现在读取时间
                 if ((DateTime.Now - lastReadTime).TotalMilliseconds >= SysConfig.DelayTime)
                 {
+                    getTagDetail();
                     StopInventory();
                 }
             }
@@ -539,7 +618,7 @@ namespace HLACommonView.Views
             barcode2.Connect();
         }
 
-        private void DisconnectBarcode()
+        public void DisconnectBarcode()
         {
             barcode1.OnBarcodeReported -= OnBarcodeReported;
             barcode1.Disconnect();

@@ -1,7 +1,4 @@
-﻿using HLACommonLib;
-using HLACommonLib.Model;
-using HLACommonLib.Model.YK;
-using Stimulsoft.Report;
+﻿using Stimulsoft.Report;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -126,7 +123,6 @@ namespace HLABoxCheckChannelMachine.Utils
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLine(ex.ToString());
             }
         }
 

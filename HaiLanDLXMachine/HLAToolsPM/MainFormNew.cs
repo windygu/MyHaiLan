@@ -94,8 +94,8 @@ namespace HLATools
                         HideLoading();
                         MetroMessageBox.Show(this, "连接读写器失败,请检查设备是否连接", "错误", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        closed = true;
-                        Close();
+                        //closed = true;
+                        //Close();
                     }));
                 }
 

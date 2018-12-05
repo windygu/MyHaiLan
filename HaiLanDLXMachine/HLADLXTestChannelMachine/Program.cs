@@ -1,8 +1,4 @@
-﻿using HLACommonLib;
-using HLACommonLib.Model;
-using HLACommonView.Views.Dialogs;
-using Newtonsoft.Json;
-using HLABoxCheckChannelMachine.Utils;
+﻿using HLABoxCheckChannelMachine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;

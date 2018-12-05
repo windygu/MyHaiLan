@@ -1,10 +1,4 @@
 ﻿using DMSkin;
-using HLACommonLib;
-using HLACommonLib.Model;
-using HLACommonView.Configs;
-using HLACommonView.Model;
-using HLACommonView.Views.Dialogs;
-using HLACommonView.Views.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,8 +12,9 @@ using System.Windows.Forms;
 using Xindeco.Device;
 using Xindeco.Device.Model;
 using ThingMagic;
+using HLABoxCheckChannelMachine.Utils;
 
-namespace HLACommonView.Views
+namespace HLABoxCheckChannelMachine
 {
     public partial class CommonInventoryForm : MetroForm
     {
@@ -37,10 +32,7 @@ namespace HLACommonView.Views
         public List<string> epcList = new List<string>();
         #endregion
 
-        public List<TagDetailInfo> tagDetailList = new List<TagDetailInfo>();
         public int errorEpcNumber = 0, mainEpcNumber = 0, addEpcNumber = 0;
-        public List<HLATagInfo> hlaTagList = null;
-        public List<MaterialInfo> materialList = null;
 
         public static int mGhost = 0;
         public static int mTrigger = 0;
@@ -58,15 +50,9 @@ namespace HLACommonView.Views
         {
             CheckResult result = new CheckResult();
             
-            if (boxNoList.Count > 0)
-            {
-                boxNoList.Clear();
-                result.UpdateMessage(Consts.Default.XIANG_MA_BU_YI_ZHI);
-                result.InventoryResult = false;
-            }
             if (epcList.Count == 0)
             {
-                result.UpdateMessage(Consts.Default.WEI_SAO_DAO_EPC);
+                result.UpdateMessage("未扫描到EPC");
                 result.InventoryResult = false;
             }
 
@@ -80,70 +66,10 @@ namespace HLACommonView.Views
         }
 
         
-        public TagDetailInfo GetTagDetailInfoByEpc(string epc)
-        {
-            if (string.IsNullOrEmpty(epc) || epc.Length < 20)
-                return null;
-            string rfidEpc = epc.Substring(0, 14) + "000000";
-            string rfidAddEpc = rfidEpc.Substring(0, 14);
-            if (hlaTagList == null || materialList == null)
-                return null;
-            List<HLATagInfo> tags = hlaTagList.FindAll(i => i.RFID_EPC == rfidEpc || i.RFID_ADD_EPC == rfidAddEpc);
-            if (tags == null || tags.Count == 0)
-                return null;
-            else
-            {
-                HLATagInfo tag = tags.First();
-                MaterialInfo mater = materialList.FirstOrDefault(i => i.MATNR == tag.MATNR);
-                if (mater == null)
-                    return null;
-                else
-                {
-                    TagDetailInfo item = new TagDetailInfo();
-                    item.EPC = epc;
-                    item.RFID_EPC = tag.RFID_EPC;
-                    item.RFID_ADD_EPC = string.IsNullOrEmpty(tag.RFID_ADD_EPC) ? "" : tag.RFID_ADD_EPC;
-                    item.CHARG = tag.CHARG;
-                    item.MATNR = tag.MATNR;
-                    item.BARCD = tag.BARCD;
-                    item.BARCD_ADD = tag.BARCD_ADD;
-                    item.ZSATNR = mater.ZSATNR;
-                    item.ZCOLSN = mater.ZCOLSN;
-                    item.ZSIZTX = mater.ZSIZTX;
-                    item.ZCOLSN_WFG = mater.ZCOLSN_WFG;
-                    item.PXQTY = mater.PXQTY;
-                    item.PXQTY_FH = mater.PXQTY_FH;
-                    item.PACKMAT = mater.PXMAT;
-                    item.PACKMAT_FH = mater.PXMAT_FH;
-                    item.PUT_STRA = mater.PUT_STRA;
-                    item.BRGEW = mater.BRGEW;
-                    item.MAKTX = mater.MAKTX;
 
-                    if (rfidEpc == item.RFID_EPC)
-                        item.IsAddEpc = false;
-                    else
-                        item.IsAddEpc = true;
-                    item.LIFNRS = new List<string>();
-                    foreach(HLATagInfo t in tags)
-                    {
-                        if(!string.IsNullOrEmpty(t.LIFNR))
-                        {
-                            if(!item.LIFNRS.Contains(t.LIFNR))
-                            {
-                                item.LIFNRS.Add(t.LIFNR);
-                            }
-                        }
-                    }
-                    return item;
-                }
-            }
-        }
-
-        ProcessDialog pd = new ProcessDialog();
         public virtual void ShowLoading(string message)
         {
             Invoke(new Action(() => {
-                //pd.Show();
                 metroPanel1.Show();
                 lblText.Text = message;
             }));
@@ -154,8 +80,6 @@ namespace HLACommonView.Views
         {
 
             Invoke(new Action(() => {
-                //oc.HideOpaqueLayer();
-                //pd.Hide();
                 metroPanel1.Hide();
                 lblText.Text = "";
             }));
@@ -240,7 +164,6 @@ namespace HLACommonView.Views
             }
             catch (Exception ex)
             {
-                Log4netHelper.LogError(ex);
                 return false;
             }
             return true;
