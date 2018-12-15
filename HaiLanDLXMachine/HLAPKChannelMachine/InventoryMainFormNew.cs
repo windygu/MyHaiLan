@@ -347,7 +347,20 @@ namespace HLAPKChannelMachine
                 checkResult.InventoryResult = false;
             }
 
-
+            List<TagDetailInfo> tags = new List<TagDetailInfo>();
+            tags.AddRange(tagDetailList);
+            tags.AddRange(tagAdd2DetailList);
+            int checkAdd2Re = LocalDataService.checkAdd2(tags);
+            if (checkAdd2Re == 1)
+            {
+                checkResult.UpdateMessage("主副条码数量不一致");
+                checkResult.InventoryResult = false;
+            }
+            if (checkAdd2Re == 2)
+            {
+                checkResult.UpdateMessage("主条码和副2条码数量不一致");
+                checkResult.InventoryResult = false;
+            }
 
 
             if (currentBoxPickTaskMapInfoList == null || currentBoxPickTaskMapInfoList.Count == 0)
@@ -1099,6 +1112,7 @@ namespace HLAPKChannelMachine
                     addEpcNumber = 0;
                     epcList.Clear();
                     tagDetailList.Clear();
+                    tagAdd2DetailList.Clear();
 
                     currentBoxPickTaskMapInfoList = null;
                     currentOutLogList.Clear();

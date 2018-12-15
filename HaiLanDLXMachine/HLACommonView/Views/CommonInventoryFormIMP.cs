@@ -36,6 +36,9 @@ namespace HLACommonView.Views
         #endregion
 
         public List<TagDetailInfo> tagDetailList = new List<TagDetailInfo>();
+
+        public List<TagDetailInfo> tagAdd2DetailList = new List<TagDetailInfo>();
+
         public int errorEpcNumber = 0, mainEpcNumber = 0, addEpcNumber = 0;
         public List<HLATagInfo> hlaTagList = null;
         public List<MaterialInfo> materialList = null;
@@ -224,6 +227,35 @@ namespace HLACommonView.Views
             return re;
         }
 
+        public int checkAdd2()
+        {
+            List<TagDetailInfo> sum = tagDetailList.ToList();
+            sum.AddRange(tagAdd2DetailList);
+
+            List<string> matList = sum.Select(i => i.MATNR).Distinct().ToList();
+            foreach (string m in matList)
+            {
+                int mainEpc = sum.Count(i => i.MATNR == m && i.EPC.Substring(0, 14) == i.RFID_EPC);
+                int addEpc = sum.Count(i => i.MATNR == m && i.EPC.Substring(0, 14) == i.RFID_ADD_EPC);
+                int add2Epc = sum.Count(i => i.MATNR == m && i.EPC.Substring(0, 14) == i.RFID_ADD_EPC2);
+
+                if (sum.Exists(i => i.MATNR == m && !string.IsNullOrEmpty(i.RFID_ADD_EPC)))
+                {
+                    if (mainEpc != addEpc)
+                    {
+                        return 1;
+                    }
+                }
+                if (sum.Exists(i => i.MATNR == m && !string.IsNullOrEmpty(i.RFID_ADD_EPC2)))
+                {
+                    if (mainEpc != add2Epc)
+                        return 2;
+                }
+            }
+
+            return 0;
+        }
+
         public virtual CheckResult CheckData()
         {
             CheckResult result = new CheckResult();
@@ -232,9 +264,22 @@ namespace HLACommonView.Views
                 result.UpdateMessage(Consts.Default.EPC_WEI_ZHU_CE);
                 result.InventoryResult = false;
             }
+            /*
             if (mainEpcNumber != addEpcNumber && tagDetailList.Exists(i => !string.IsNullOrEmpty(i.BARCD_ADD)))
             {
                 result.UpdateMessage(Consts.Default.TWO_NUMBER_ERROR);
+                result.InventoryResult = false;
+            }
+            */
+            int checkAdd2Re = checkAdd2();
+            if (checkAdd2Re == 1)
+            {
+                result.UpdateMessage("主副条码数量不一致");
+                result.InventoryResult = false;
+            }
+            if (checkAdd2Re == 2)
+            {
+                result.UpdateMessage("主条码和副2条码数量不一致");
                 result.InventoryResult = false;
             }
 
@@ -296,7 +341,7 @@ namespace HLACommonView.Views
             }
             return null;
         }
-        public TagDetailInfo GetTagDetailInfoByEpc(string epc)
+        public TagDetailInfo GetTagDetailInfoByEpc(string epc,ref bool isAdd2)
         {
             if (string.IsNullOrEmpty(epc) || epc.Length < 20)
                 return null;
@@ -304,7 +349,7 @@ namespace HLACommonView.Views
             string rfidAddEpc = rfidEpc.Substring(0, 14);
             if (hlaTagList == null || materialList == null)
                 return null;
-            List<HLATagInfo> tags = hlaTagList.FindAll(i => i.RFID_EPC == rfidEpc || i.RFID_ADD_EPC == rfidAddEpc);
+            List<HLATagInfo> tags = hlaTagList.FindAll(i => i.RFID_EPC == rfidEpc || i.RFID_ADD_EPC == rfidAddEpc || i.RFID_ADD_EPC2 == rfidAddEpc);
             if (tags == null || tags.Count == 0)
                 return null;
             else
@@ -317,6 +362,9 @@ namespace HLACommonView.Views
                     return null;
                 else
                 {
+                    if (tag.RFID_ADD_EPC2 == rfidAddEpc)
+                        isAdd2 = true;
+
                     TagDetailInfo item = new TagDetailInfo();
                     item.EPC = epc;
                     item.RFID_EPC = tag.RFID_EPC;
@@ -336,6 +384,9 @@ namespace HLACommonView.Views
                     item.PUT_STRA = mater.PUT_STRA;
                     item.BRGEW = mater.BRGEW;
                     item.MAKTX = mater.MAKTX;
+
+                    item.BARCD_ADD2 = tag.BARCD_ADD2;
+                    item.RFID_ADD_EPC2 = tag.RFID_ADD_EPC2;
 
                     if (rfidEpc == item.RFID_EPC)
                         item.IsAddEpc = false;
@@ -493,7 +544,16 @@ namespace HLACommonView.Views
             {
                 foreach(string epc in epcList)
                 {
-                    TagDetailInfo tag = GetTagDetailInfoByEpc(epc);
+                    bool isAdd2 = false;
+                    TagDetailInfo tag = GetTagDetailInfoByEpc(epc,ref isAdd2);
+
+                    if(isAdd2)
+                    {
+                        tagAdd2DetailList.Add(tag);
+                        UpdateView();
+                        return;
+                    }
+
                     if (tag != null)   //合法EPC
                     {
                         tagDetailList.Add(tag);

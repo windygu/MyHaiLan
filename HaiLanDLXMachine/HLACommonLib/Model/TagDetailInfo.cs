@@ -82,6 +82,10 @@ namespace HLACommonLib.Model
 
         public string MAKTX { get; set; }
 
+        public string BARCD_ADD2 { get; set; }
+
+        public string RFID_ADD_EPC2 { get; set; }
+
         public object Clone()
         {
             TagDetailInfo re = new TagDetailInfo();

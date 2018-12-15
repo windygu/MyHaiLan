@@ -811,6 +811,7 @@ namespace HLAChannelMachine
                 addEpcNumber = 0;
                 epcList.Clear();
                 tagDetailList.Clear();
+                tagAdd2DetailList.Clear();
 
                 currentErrorRecordList.Clear();
 
@@ -1265,6 +1266,21 @@ namespace HLAChannelMachine
                 result.InventoryResult = false;
             }
 
+            List<TagDetailInfo> tags = new List<TagDetailInfo>();
+            tags.AddRange(tagDetailList);
+            tags.AddRange(tagAdd2DetailList);
+            int checkAdd2Re = LocalDataService.checkAdd2(tags);
+            if (checkAdd2Re == 1)
+            {
+                result.UpdateMessage("主副条码数量不一致");
+                result.InventoryResult = false;
+            }
+            if (checkAdd2Re == 2)
+            {
+                result.UpdateMessage("主条码和副2条码数量不一致");
+                result.InventoryResult = false;
+            }
+
             //检查该箱内主条码是否全部相同
             TagDetailInfo tdiExtend = null;
             string zpbno = string.Empty;
@@ -1336,12 +1352,14 @@ namespace HLAChannelMachine
                         result.InventoryResult = false;
                     }
                 }
+
+                /*
                 //如果存在辅条码，检查主条码和辅条码数量是否一致
                 if (addEpcNumber > 0 && mainEpcNumber != addEpcNumber)
                 {
                     result.UpdateMessage(TWO_NUMBER_ERROR);
                     result.InventoryResult = false;
-                }
+                }*/
 
                 if (mReceiveType == ReceiveType.交接单收货)
                 {

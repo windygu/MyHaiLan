@@ -2722,10 +2722,14 @@ VALUES (@MATNR, @ZSATNR, @ZCOLSN, @ZSIZTX, @ZSUPC2, @PXQTY,@PXQTY_FH,@BRGEW,@PUT
                 SqlParameter p7 = DBHelper.CreateParameter("@RFID_ADD_EPC", tag.RFID_ADD_EPC);
                 SqlParameter p8 = DBHelper.CreateParameter("@BARDL", tag.BARDL);
                 SqlParameter p10 = DBHelper.CreateParameter("@LIFNR", tag.LIFNR);
-                sql = @"INSERT INTO taginfo (MATNR, CHARG, BARCD, BARCD_ADD, RFID_EPC, RFID_ADD_EPC, BARDL,LIFNR) 
-                    VALUES (@MATNR, @CHARG, @BARCD, @BARCD_ADD, @RFID_EPC, @RFID_ADD_EPC, @BARDL, @LIFNR)";
 
-                int result = DBHelper.ExecuteSql(sql, false, p2, p3, p4, p5, p6, p7, p8, p10);
+                SqlParameter p11 = DBHelper.CreateParameter("@BARCD_ADD2", tag.BARCD_ADD2);
+                SqlParameter p12 = DBHelper.CreateParameter("@RFID_ADD_EPC2", tag.RFID_ADD_EPC2);
+
+                sql = @"INSERT INTO taginfo (MATNR, CHARG, BARCD, BARCD_ADD, RFID_EPC, RFID_ADD_EPC, BARDL,LIFNR,BARCD_ADD2,RFID_ADD_EPC2) 
+                    VALUES (@MATNR, @CHARG, @BARCD, @BARCD_ADD, @RFID_EPC, @RFID_ADD_EPC, @BARDL, @LIFNR,@BARCD_ADD2,@RFID_ADD_EPC2)";
+
+                int result = DBHelper.ExecuteSql(sql, false, p2, p3, p4, p5, p6, p7, p8, p10, p11, p12);
                 return result > 0 ? true : false;
             }
             else
@@ -2738,11 +2742,16 @@ VALUES (@MATNR, @ZSATNR, @ZCOLSN, @ZSIZTX, @ZSUPC2, @PXQTY,@PXQTY_FH,@BRGEW,@PUT
                 SqlParameter p7 = DBHelper.CreateParameter("@RFID_ADD_EPC", tag.RFID_ADD_EPC);
                 SqlParameter p8 = DBHelper.CreateParameter("@BARDL", tag.BARDL);
                 SqlParameter p10 = DBHelper.CreateParameter("@LIFNR", tag.LIFNR);
+
+                SqlParameter p11 = DBHelper.CreateParameter("@BARCD_ADD2", tag.BARCD_ADD2);
+                SqlParameter p12 = DBHelper.CreateParameter("@RFID_ADD_EPC2", tag.RFID_ADD_EPC2);
+
                 sql = @"UPDATE taginfo SET MATNR = @MATNR, CHARG = @CHARG, BARCD = @BARCD, BARCD_ADD = @BARCD_ADD, 
-                            RFID_EPC=@RFID_EPC,RFID_ADD_EPC = @RFID_ADD_EPC, BARDL = @BARDL,Timestamp=GETDATE(),LIFNR=@LIFNR
+                            RFID_EPC=@RFID_EPC,RFID_ADD_EPC = @RFID_ADD_EPC, BARDL = @BARDL,Timestamp=GETDATE(),LIFNR=@LIFNR,
+                            BARCD_ADD2 = @BARCD_ADD2,RFID_ADD_EPC2 = @RFID_ADD_EPC2 
                         WHERE  MATNR = @MATNR AND BARCD=@BARCD";
 
-                int result = DBHelper.ExecuteSql(sql, false, p2, p3, p4, p5, p6, p7, p8, p10);
+                int result = DBHelper.ExecuteSql(sql, false, p2, p3, p4, p5, p6, p7, p8, p10, p11, p12);
                 return result > 0 ? true : false;
             }
         }
@@ -4414,6 +4423,35 @@ SELECT Id ,
             }
             return re;
         }
+
+        public static int checkAdd2(List<TagDetailInfo> tags)
+        {
+            List<TagDetailInfo> sum = tags;
+
+            List<string> matList = sum.Select(i => i.MATNR).Distinct().ToList();
+            foreach (string m in matList)
+            {
+                int mainEpc = sum.Count(i => i.MATNR == m && (i.EPC.Substring(0, i.EPC.Length < 14 ? i.EPC.Length : 14) == i.RFID_EPC.Substring(0, i.RFID_EPC.Length < 14 ? i.RFID_EPC.Length : 14) || i.EPC == i.BARCD));
+                int addEpc = sum.Count(i => i.MATNR == m && (i.EPC.Substring(0, i.EPC.Length < 14 ? i.EPC.Length : 14) == i.RFID_ADD_EPC.Substring(0, i.RFID_ADD_EPC.Length < 14 ? i.RFID_ADD_EPC.Length : 14) || i.EPC == i.BARCD_ADD));
+                int add2Epc = sum.Count(i => i.MATNR == m && (i.EPC.Substring(0, i.EPC.Length < 14 ? i.EPC.Length : 14) == i.RFID_ADD_EPC2.Substring(0, i.RFID_ADD_EPC2.Length < 14 ? i.RFID_ADD_EPC2.Length : 14) || i.EPC == i.BARCD_ADD2));
+
+                if (sum.Exists(i => i.MATNR == m && !string.IsNullOrEmpty(i.RFID_ADD_EPC)))
+                {
+                    if (mainEpc != addEpc)
+                    {
+                        return 1;
+                    }
+                }
+                if (sum.Exists(i => i.MATNR == m && !string.IsNullOrEmpty(i.RFID_ADD_EPC2)))
+                {
+                    if (mainEpc != add2Epc)
+                        return 2;
+                }
+            }
+
+            return 0;
+        }
+
     }
 
     public class CTimeLog

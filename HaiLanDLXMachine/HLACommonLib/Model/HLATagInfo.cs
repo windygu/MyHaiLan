@@ -42,6 +42,11 @@ namespace HLACommonLib.Model
         /// 交接号
         /// </summary>
         public string LIFNR { get; set; }
+
+        public string RFID_ADD_EPC2 { get; set; }
+        public string BARCD_ADD2 { get; set; }
+
+
         public static HLATagInfo BuildHLATagInfo(DataRow row)
         {
             HLATagInfo result = new HLATagInfo();
@@ -55,6 +60,9 @@ namespace HLACommonLib.Model
             result.BARCD_ADD = row["BARCD_ADD"].CastTo("");
             result.BARDL = row["BARDL"].CastTo("");
             result.LIFNR = row["LIFNR"].CastTo("");
+
+            result.RFID_ADD_EPC2 = row["RFID_ADD_EPC2"].CastTo("");
+            result.BARCD_ADD2 = row["BARCD_ADD2"].CastTo("");
 
             return result;
         }

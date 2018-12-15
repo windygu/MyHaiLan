@@ -695,6 +695,10 @@ namespace HLACommonLib
                     tag.RFID_ADD_EPC = IrfTable.GetString("RFID_ADD_EPC");
                     tag.BARDL = IrfTable.GetString("BARDL");
                     tag.LIFNR = IrfTable.GetString("LIFNR");
+
+                    tag.RFID_ADD_EPC2 = getZiDuan(IrfTable, "RFID_ADD_EPC2");
+                    tag.BARCD_ADD2 = getZiDuan(IrfTable, "BARCD_ADD2");
+
                     result.Add(tag);
                 }
 
@@ -745,6 +749,10 @@ namespace HLACommonLib
                     tag.RFID_ADD_EPC = IrfTable.GetString("RFID_ADD_EPC");
                     tag.BARDL = IrfTable.GetString("BARDL");
                     tag.LIFNR = IrfTable.GetString("LIFNR");
+
+                    tag.RFID_ADD_EPC2 = getZiDuan(IrfTable, "RFID_ADD_EPC2");
+                    tag.BARCD_ADD2 = getZiDuan(IrfTable, "BARCD_ADD2");
+
                     result.Add(tag);
                 }
 
@@ -794,6 +802,10 @@ namespace HLACommonLib
                     tag.RFID_ADD_EPC = IrfTable.GetString("RFID_ADD_EPC");
                     tag.BARDL = IrfTable.GetString("BARDL");
                     tag.LIFNR = IrfTable.GetString("LIFNR");
+
+                    tag.RFID_ADD_EPC2 = getZiDuan(IrfTable, "RFID_ADD_EPC2");
+                    tag.BARCD_ADD2 = getZiDuan(IrfTable, "BARCD_ADD2");
+
                     result.Add(tag);
                 }
 
@@ -2008,140 +2020,6 @@ namespace HLACommonLib
                 return string.Empty;
             }
         }
-
-        /// <summary>
-        /// 获取吊牌信息列表
-        /// </summary>
-        /// <param name="lgnum">仓库编码</param>
-        /// <param name="dateFrom">开始日期</param>
-        /// <param name="dateEnd">结束日期</param>
-        /// <param name="sSKU">产品编码</param>
-        /// <param name="sType">获取方式</param> 
-        /// <returns></returns>
-        public static DataTable GetTagInfoList(string lgnum, string dateFrom, string dateEnd, string sSKU, string sType)
-        {
-            try
-            {
-                RfcDestination dest = RfcDestinationManager.GetDestination(rfcParams);
-                RfcRepository rfcrep = dest.Repository;
-                IRfcFunction myfun = null;
-                myfun = rfcrep.CreateFunction("Z_EW_RFID_014");
-                myfun.SetValue("IV_LGNUM", lgnum);//仓库编号
-                myfun.SetValue("IV_DATE_F", dateFrom);//开始日期
-                myfun.SetValue("IV_DATE_T", dateEnd);//结束日期
-
-                if (sType.Equals('M'))
-                {
-                    myfun.SetValue("IV_MATNR", "");//产品编码（’M’的时候必须填写）
-                }
-                myfun.SetValue("IV_TYPE", sType);//获取方式（’A’全部,’D’按日期,’M’按产品）
-                myfun.Invoke(dest);
-
-                IRfcTable IrfTable = myfun.GetTable("ET_OUTPUT");
-
-                //构建表结构
-                DataTable table = new DataTable();
-                table.Columns.Add("MATNR");
-                table.Columns.Add("CHARG");
-                table.Columns.Add("BARCD");
-                table.Columns.Add("BARCD_ADD");
-                table.Columns.Add("RFID_EPC");
-                table.Columns.Add("RFID_ADD_EPC");
-                table.Columns.Add("BARDL");
-                table.Columns.Add("LIFNR");
-
-                //插入表数据
-                for (int i = 0; i < IrfTable.Count; i++)
-                {
-                    IrfTable.CurrentIndex = i;
-                    DataRow dr = table.NewRow();
-                    dr["MATNR"] = !string.IsNullOrEmpty(IrfTable.GetString("MATNR")) ? IrfTable.GetString("MATNR").TrimStart('0') : "";
-                    dr["CHARG"] = IrfTable.GetString("CHARG");
-                    dr["BARCD"] = IrfTable.GetString("BARCD");
-                    dr["BARCD_ADD"] = IrfTable.GetString("BARCD_ADD");
-                    dr["RFID_EPC"] = IrfTable.GetString("RFID_EPC");
-                    dr["RFID_ADD_EPC"] = IrfTable.GetString("RFID_ADD_EPC");
-                    dr["BARDL"] = IrfTable.GetString("BARDL");
-                    dr["LIFNR"] = IrfTable.GetString("LIFNR");
-                    table.Rows.Add(dr);
-                }
-
-                RfcSessionManager.EndContext(dest);
-
-                return table;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error(ex.Message, ex.StackTrace);
-                return null;
-            }
-        }
-        
-        /// <summary>
-        /// 发运标签信息下载
-        /// </summary>
-        /// <param name="lgnum">仓库编号</param>
-        /// <param name="dTime">发运日期</param>
-        /// <returns></returns>
-        //public static List<ShippingTagInfo> GetHLAINformation(string lgnum, string sTime)
-        //{
-        //    try
-        //    {
-        //        RfcDestination dest = RfcDestinationManager.GetDestination(rfcParams);
-        //        RfcRepository rfcrep = dest.Repository;
-        //        IRfcFunction myfun = null;
-        //        myfun = rfcrep.CreateFunction("Z_EW_RFID_018");
-        //        myfun.SetValue("LGNUM", lgnum);//仓库编号
-        //        myfun.SetValue("SHIP_DATE", sTime);//下架单编号 
-        //        myfun.Invoke(dest);
-
-        //        IRfcTable IrfTable = myfun.GetTable("ET_DETAIL");
-        //        MessageBox.Show(IrfTable.ToString());
-        //        List<ShippingTagInfo> result = null;
-        //        if (IrfTable.Count > 0)
-        //            result = new List<ShippingTagInfo>();
-
-        //        //构建表结构
-        //        //DataTable table = new DataTable();
-        //        //table.Columns.Add("SHIP_DATE");
-        //        //table.Columns.Add("STORE_ID");
-        //        //table.Columns.Add("STORE_NAME");
-        //        //table.Columns.Add("DISPATCH_AREA");
-        //        //table.Columns.Add("COLLECT_WAVE");
-        //        //table.Columns.Add("VSART_DES");
-        //        //table.Columns.Add("ROUTE_NO");
-        //        //table.Columns.Add("ADDRESS");
-        //        //table.Columns.Add("TEL_NUMBER");
-        //        //table.Columns.Add("LANE_ID");
-
-        //        //插入表数据
-        //        for (int i = 0; i < IrfTable.Count; i++)
-        //        {
-        //            IrfTable.CurrentIndex = i;
-        //            //DataRow dr = table.NewRow();
-        //            ShippingTagInfo item = new ShippingTagInfo();
-        //            item.SHIP_DATE = DateTime.Parse(IrfTable.GetString("SHIP_DATE"));
-        //            item.STORE_ID = IrfTable.GetString("STORE_ID");
-        //            item.STORE_NAME = IrfTable.GetString("STORE_NAME");
-        //            item.DISPATCH_AREA = IrfTable.GetString("DISPATCH_AREA");
-        //            item.COLLECT_WAVE = IrfTable.GetString("COLLECT_WAVE");
-        //            item.VSART_DES = IrfTable.GetString("VSART_DES");
-        //            item.ROUTE_NO = IrfTable.GetString("ROUTE_NO");
-        //            item.ADDRESS = IrfTable.GetString("ADDRESS");
-        //            item.TEL_NUMBER = IrfTable.GetString("TEL_NUMBER");
-        //            item.LANE_ID = IrfTable.GetString("LANE_ID");
-        //            //table.Rows.Add(dr);
-        //            result.Add(item);
-        //        }
-        //        RfcSessionManager.EndContext(dest);
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        LogHelper.Error(ex.Message, ex.StackTrace);
-        //    }
-        //    return null;
-        //}
 
         /// <summary>
         /// 获取所有下架单明细
