@@ -62,6 +62,7 @@ namespace HLAYKChannelMachine
                 addEpcNumber = 0;
                 epcList.Clear();
                 tagDetailList.Clear();
+                tagAdd2DetailList.Clear();
 
                 if (boxNoList.Count > 0)
                 {

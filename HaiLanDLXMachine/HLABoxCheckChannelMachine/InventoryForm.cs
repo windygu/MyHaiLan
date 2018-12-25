@@ -184,6 +184,7 @@ namespace HLABoxCheckChannelMachine
                 addEpcNumber = 0;
                 epcList.Clear();
                 tagDetailList.Clear();
+                tagAdd2DetailList.Clear();
 
                 mCurBoxNo = "";
 
