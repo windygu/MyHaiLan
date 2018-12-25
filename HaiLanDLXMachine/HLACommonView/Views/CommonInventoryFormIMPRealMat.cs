@@ -21,7 +21,7 @@ using ThingMagic;
 
 namespace HLACommonView.Views
 {
-    public partial class CommonInventoryFormIMP : MetroForm
+    public partial class CommonInventoryFormIMPRealMat : MetroForm
     {
         #region 通用属性
         public UHFReader reader = null;
@@ -49,7 +49,8 @@ namespace HLACommonView.Views
 
         private List<string> mIgnoreEpcs = new List<string>();
 
-        public CommonInventoryFormIMP()
+        Dictionary<string, MaterialInfo> mSapMaterial = new Dictionary<string, MaterialInfo>();
+        public CommonInventoryFormIMPRealMat()
         {
             InitializeComponent();
             mIgnoreEpcs = SAPDataService.getIngnoreEpcs();
@@ -324,6 +325,22 @@ namespace HLACommonView.Views
         {
         }
 
+        MaterialInfo getMaterialFromSAP(string mat)
+        {
+            if(mSapMaterial.ContainsKey(mat))
+            {
+                return mSapMaterial[mat];
+            }
+            List<MaterialInfo> re = SAPDataService.GetMaterialInfoListByMATNR(SysConfig.LGNUM, mat);
+            if(re!=null && re.Count>0)
+            {
+                mSapMaterial[mat] = re[0];
+                materialList.RemoveAll(i => i.MATNR == mat);
+                materialList.Add(re[0]);
+                return re[0];
+            }
+            return null;
+        }
         public TagDetailInfo GetTagDetailInfoByEpc(string epc,ref bool isAdd2)
         {
             if (string.IsNullOrEmpty(epc) || epc.Length < 20)
@@ -338,7 +355,8 @@ namespace HLACommonView.Views
             else
             {
                 HLATagInfo tag = tags.First();
-                MaterialInfo mater = materialList.FirstOrDefault(i => i.MATNR == tag.MATNR);
+                //MaterialInfo mater = materialList.FirstOrDefault(i => i.MATNR == tag.MATNR);
+                MaterialInfo mater = getMaterialFromSAP(tag.MATNR);
 
                 if (mater == null)
                     return null;

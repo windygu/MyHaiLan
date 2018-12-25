@@ -26,7 +26,7 @@ using Newtonsoft.Json;
 
 namespace HLAYKChannelMachine
 {
-    public partial class InventoryFormNew : CommonInventoryFormIMP
+    public partial class InventoryFormNew : CommonInventoryFormIMPRealMat
     {
         List<AuthInfo> mGAuthList = new List<AuthInfo>();
         List<YKBoxInfo> mBoxList = new List<YKBoxInfo>();
