@@ -289,6 +289,10 @@ namespace HLAManualDownload
             {
                 List<HLATagInfo> tagList = SAPDataService.GetHLATagInfoListByDate(SysConfig.LGNUM, sDateTime.Value.Date.ToString("yyyyMMdd"), eDateTime.Value.Date.ToString("yyyyMMdd"));
 
+#if DEBUG
+                HLATagInfo t = tagList.FirstOrDefault(i => i.MATNR == "HTXAD1R088A88014");
+#endif
+
                 if (tagList == null)
                 {
                     matLogLabel.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "下载出错";

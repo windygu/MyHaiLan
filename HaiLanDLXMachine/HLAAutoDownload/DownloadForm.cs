@@ -47,6 +47,10 @@ namespace HLAAutoDownload
             Thread threadFull = new Thread(new ThreadStart(ThreadWhileFunc));
             threadFull.IsBackground = true;
             threadFull.Start();
+
+            Thread threadFull2 = new Thread(new ThreadStart(ThreadWhileFunc2));
+            threadFull2.IsBackground = true;
+            threadFull2.Start();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -482,7 +486,26 @@ namespace HLAAutoDownload
             }));
             ShowLog(string.Format("下载{0}条发运标签，失败{1}条", list != null ? list.Count : 0, failCount));
         }
+        private void ThreadWhileFunc2()
+        {
+            while (true)
+            {
+                if ((DateTime.Now - this.lastUpdateTime).TotalMinutes > 3)
+                {
+                    DownloadFunc();
+                    UploadDeMaEpcDetail();
+                    UploadDeliverEpc();
+                    UploadInventoryOutEpc();
+                }
 
+                if ((DateTime.Now - this.lastDownloadEbBoxTime).TotalMilliseconds > 5000)
+                {
+                    //DownloadEbBox();
+                }
+
+                Thread.Sleep(100);
+            }
+        }
         private void ThreadWhileFunc()
         {
             while (true)
@@ -527,6 +550,7 @@ namespace HLAAutoDownload
 
                 }
 
+                /*
                 if ((DateTime.Now - this.lastUpdateTime).TotalMinutes > 3)
                 {
                     DownloadFunc();
@@ -539,7 +563,7 @@ namespace HLAAutoDownload
                 {
                     //DownloadEbBox();
                 }
-                
+                */
                 Thread.Sleep(100);
             }
         }

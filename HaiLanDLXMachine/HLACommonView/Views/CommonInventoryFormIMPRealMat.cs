@@ -229,15 +229,16 @@ namespace HLACommonView.Views
 
         public int checkAdd2()
         {
-            List<TagDetailInfo> sum = tagDetailList.ToList();
+            List<TagDetailInfo> sum = new List<TagDetailInfo>();
+            sum.AddRange(tagDetailList);
             sum.AddRange(tagAdd2DetailList);
 
             List<string> matList = sum.Select(i => i.MATNR).Distinct().ToList();
             foreach (string m in matList)
             {
-                int mainEpc = sum.Count(i => i.MATNR == m && i.EPC.Substring(0, 14) == i.RFID_EPC);
-                int addEpc = sum.Count(i => i.MATNR == m && i.EPC.Substring(0, 14) == i.RFID_ADD_EPC);
-                int add2Epc = sum.Count(i => i.MATNR == m && i.EPC.Substring(0, 14) == i.RFID_ADD_EPC2);
+                int mainEpc = sum.Count(i => i.MATNR == m && (i.EPC.Substring(0, i.EPC.Length < 14 ? i.EPC.Length : 14) == i.RFID_EPC.Substring(0, i.RFID_EPC.Length < 14 ? i.RFID_EPC.Length : 14) || i.EPC == i.BARCD));
+                int addEpc = sum.Count(i => i.MATNR == m && (i.EPC.Substring(0, i.EPC.Length < 14 ? i.EPC.Length : 14) == i.RFID_ADD_EPC.Substring(0, i.RFID_ADD_EPC.Length < 14 ? i.RFID_ADD_EPC.Length : 14) || i.EPC == i.BARCD_ADD));
+                int add2Epc = sum.Count(i => i.MATNR == m && (i.EPC.Substring(0, i.EPC.Length < 14 ? i.EPC.Length : 14) == i.RFID_ADD_EPC2.Substring(0, i.RFID_ADD_EPC2.Length < 14 ? i.RFID_ADD_EPC2.Length : 14) || i.EPC == i.BARCD_ADD2));
 
                 if (sum.Exists(i => i.MATNR == m && !string.IsNullOrEmpty(i.RFID_ADD_EPC)))
                 {
