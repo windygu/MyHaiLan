@@ -763,23 +763,44 @@ namespace HLAManualDownload
         {
             matProgressBar.Value = 0;
 
+            bool delNoUse = false;
+
             if (metroTextBox1_bar.Text == "")
             {
-                matLogLabel.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + "请选择条码文件";
-                return;
+                MessageBox.Show("将删除失效标记的条码");
+                delNoUse = true;
             }
 
             List<string> barList = new List<string>();
 
             try
             {
-                string file = openFileDialog1.FileName;
-                var lines = File.ReadLines(file);
-                foreach (var line in lines)
+                if (!delNoUse)
                 {
-                    string lineStr = line.Trim();
-                    if(!string.IsNullOrEmpty(lineStr))
-                        barList.Add(lineStr);
+                    string file = openFileDialog1.FileName;
+                    var lines = File.ReadLines(file);
+                    foreach (var line in lines)
+                    {
+                        string lineStr = line.Trim();
+                        if (!string.IsNullOrEmpty(lineStr))
+                            barList.Add(lineStr);
+                    }
+                }
+                else
+                {
+                    string sql = string.Format("select BARCD from taginfo where BARDL!=''");
+                    DataTable dt = DBHelper.GetTable(sql, false);
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            string barcd = row["BARCD"].ToString();
+                            if (string.IsNullOrEmpty(barcd))
+                            {
+                                barList.Add(barcd);
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)

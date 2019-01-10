@@ -688,32 +688,7 @@ namespace HLAJiaoJieCheckChannelMachine
 
         private void button2_Click(object sender, EventArgs e)
         {
-            errorEpcNumber = 0;
-            mainEpcNumber = 59;
-            addEpcNumber = 0;
-            {
-                for(int i=1;i<=23;i++)
-                {
-                    string epc = "500007B0850001000000" + i.ToString();
-                    epcList.Add(epc);
-                    tagDetailList.Add(GetTagDetailInfoByEpc(epc));
-                }
-
-                for (int i = 1; i <= 23; i++)
-                {
-                    string epc = "50000673950001000000" + i.ToString();
-                    epcList.Add(epc);
-                    tagDetailList.Add(GetTagDetailInfoByEpc(epc));
-                }
-                for (int i = 1; i <= 12; i++)
-                {
-                    string epc = "500006DEE50001000000" + i.ToString();
-                    epcList.Add(epc);
-                    tagDetailList.Add(GetTagDetailInfoByEpc(epc));
-                }
-            }
-
-            StopInventory();
+            
         }
 
         private void button3_clearData_Click(object sender, EventArgs e)
