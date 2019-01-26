@@ -237,10 +237,17 @@ namespace HLAChannelMachine
 
         private void UploadedHandler(string guid)
         {
-            //已上传完成,更新uploaddata
-            if (!SqliteDataService.SetUploaded(guid))
+            try
             {
-                LogHelper.WriteLine(string.Format("更新uploaddata出错:GUID[{0}]", guid));
+                //已上传完成,更新uploaddata
+                if (!SqliteDataService.SetUploaded(guid))
+                {
+                    LogHelper.WriteLine(string.Format("更新uploaddata出错:GUID[{0}]", guid));
+                }
+            }
+            catch(Exception ex)
+            {
+                LogHelper.WriteLine(ex.Message + "\r\n" + ex.Source + "\r\n" + ex.StackTrace);
             }
         }
         /*
@@ -1241,6 +1248,29 @@ namespace HLAChannelMachine
 
             return false;
         }
+        bool checkBarDelFlag()
+        {
+            try
+            {
+                List<string> barList = tagDetailList.Select(i => i.BARCD).Distinct().ToList();
+                foreach (var v in barList)
+                {
+                    if (hlaTagList.Exists(i => i.BARCD == v))
+                    {
+                        if (!string.IsNullOrEmpty(hlaTagList.First(i => i.BARCD == v).BARDL))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return false;
+        }
+
         private void CheckDataForCommon(ref CheckResult result)
         {
             if (this.btnStart.Enabled)
@@ -1259,7 +1289,11 @@ namespace HLAChannelMachine
                 result.UpdateMessage(WEI_SAO_DAO_EPC);
                 result.InventoryResult = false;
             }
-
+            if (checkBarDelFlag())
+            {
+                result.UpdateMessage("有失效条码");
+                result.InventoryResult = false;
+            }
             if (checkPiCiNotSame())
             {
                 result.UpdateMessage("批次不一致");

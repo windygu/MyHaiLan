@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.pnMain = new System.Windows.Forms.Panel();
+            this.dmButton2 = new DMSkin.Controls.DMButton();
             this.dmButton2_dianshang = new DMSkin.Controls.DMButton();
             this.dmButton9_jiaojiedan = new DMSkin.Controls.DMButton();
             this.dmButton9_jiehuodan = new DMSkin.Controls.DMButton();
@@ -51,7 +52,7 @@
             this.netStatusButton = new DMSkin.Controls.DMButton();
             this.dmButton3 = new DMSkin.Controls.DMButton();
             this.label2_IP = new System.Windows.Forms.Label();
-            this.dmButton2 = new DMSkin.Controls.DMButton();
+            this.label2_deviceNo = new System.Windows.Forms.Label();
             this.pnMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,6 +81,31 @@
             this.pnMain.Name = "pnMain";
             this.pnMain.Size = new System.Drawing.Size(1044, 343);
             this.pnMain.TabIndex = 12;
+            // 
+            // dmButton2
+            // 
+            this.dmButton2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.dmButton2.AutoEllipsis = true;
+            this.dmButton2.BackColor = System.Drawing.Color.Transparent;
+            this.dmButton2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.dmButton2.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
+            this.dmButton2.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(124)))), ((int)(((byte)(16)))));
+            this.dmButton2.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(212)))), ((int)(((byte)(100)))));
+            this.dmButton2.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dmButton2.DM_Radius = 8;
+            this.dmButton2.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.dmButton2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.dmButton2.Font = new System.Drawing.Font("微软雅黑", 24F);
+            this.dmButton2.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.dmButton2.Image = null;
+            this.dmButton2.Location = new System.Drawing.Point(753, 264);
+            this.dmButton2.Margin = new System.Windows.Forms.Padding(0);
+            this.dmButton2.Name = "dmButton2";
+            this.dmButton2.Size = new System.Drawing.Size(246, 62);
+            this.dmButton2.TabIndex = 25;
+            this.dmButton2.Text = "电商拣货复核";
+            this.dmButton2.UseVisualStyleBackColor = true;
+            this.dmButton2.Click += new System.EventHandler(this.dmButton2_Click);
             // 
             // dmButton2_dianshang
             // 
@@ -527,37 +553,25 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2_IP.Font = new System.Drawing.Font("微软雅黑", 25F, System.Drawing.FontStyle.Bold);
             this.label2_IP.ForeColor = System.Drawing.Color.Black;
-            this.label2_IP.Location = new System.Drawing.Point(193, 105);
+            this.label2_IP.Location = new System.Drawing.Point(93, 94);
             this.label2_IP.Name = "label2_IP";
-            this.label2_IP.Size = new System.Drawing.Size(666, 69);
+            this.label2_IP.Size = new System.Drawing.Size(430, 51);
             this.label2_IP.TabIndex = 34;
             this.label2_IP.Text = "IP";
             this.label2_IP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // dmButton2
+            // label2_deviceNo
             // 
-            this.dmButton2.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.dmButton2.AutoEllipsis = true;
-            this.dmButton2.BackColor = System.Drawing.Color.Transparent;
-            this.dmButton2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.dmButton2.DM_DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(89)))), ((int)(((byte)(98)))), ((int)(((byte)(115)))));
-            this.dmButton2.DM_DownColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(124)))), ((int)(((byte)(16)))));
-            this.dmButton2.DM_MoveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(212)))), ((int)(((byte)(100)))));
-            this.dmButton2.DM_NormalColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dmButton2.DM_Radius = 8;
-            this.dmButton2.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.dmButton2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.dmButton2.Font = new System.Drawing.Font("微软雅黑", 24F);
-            this.dmButton2.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.dmButton2.Image = null;
-            this.dmButton2.Location = new System.Drawing.Point(753, 264);
-            this.dmButton2.Margin = new System.Windows.Forms.Padding(0);
-            this.dmButton2.Name = "dmButton2";
-            this.dmButton2.Size = new System.Drawing.Size(246, 62);
-            this.dmButton2.TabIndex = 25;
-            this.dmButton2.Text = "电商拣货复核";
-            this.dmButton2.UseVisualStyleBackColor = true;
-            this.dmButton2.Click += new System.EventHandler(this.dmButton2_Click);
+            this.label2_deviceNo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2_deviceNo.Font = new System.Drawing.Font("微软雅黑", 25F, System.Drawing.FontStyle.Bold);
+            this.label2_deviceNo.ForeColor = System.Drawing.Color.Black;
+            this.label2_deviceNo.Location = new System.Drawing.Point(581, 94);
+            this.label2_deviceNo.Name = "label2_deviceNo";
+            this.label2_deviceNo.Size = new System.Drawing.Size(430, 51);
+            this.label2_deviceNo.TabIndex = 35;
+            this.label2_deviceNo.Text = "设备号";
+            this.label2_deviceNo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // MainForm
             // 
@@ -565,6 +579,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Teal;
             this.ClientSize = new System.Drawing.Size(1068, 649);
+            this.Controls.Add(this.label2_deviceNo);
             this.Controls.Add(this.label2_IP);
             this.Controls.Add(this.dmButton3);
             this.Controls.Add(this.netStatusButton);
@@ -610,6 +625,7 @@
         private DMSkin.Controls.DMButton dmButton9_jiaojiedan;
         private DMSkin.Controls.DMButton dmButton2_dianshang;
         private DMSkin.Controls.DMButton dmButton2;
+        private System.Windows.Forms.Label label2_deviceNo;
     }
 }
 

@@ -506,6 +506,70 @@ namespace HLAAutoDownload
                 Thread.Sleep(100);
             }
         }
+        bool delBar(string bar)
+        {
+            bool re = false;
+            try
+            {
+                /*
+                string sql = string.Format("select MATNR from taginfo where BARCD='{0}'", bar);
+                string mtr = DBHelper.GetValue(sql, false)?.ToString().Trim();
+                if (!string.IsNullOrEmpty(mtr))
+                {
+                    sql = string.Format("delete from taginfo where MATNR='{0}'", mtr);
+                    DBHelper.ExecuteNonQuery(sql);
+                    sql = string.Format("delete from materialinfo where MATNR='{0}'", mtr);
+                    DBHelper.ExecuteNonQuery(sql);
+                    re = true;
+                }
+                */
+                string sql = string.Format("delete from taginfo where BARCD='{0}'", bar);
+                DBHelper.ExecuteNonQuery(sql);
+                re = true;
+
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return re;
+        }
+
+        void delNoUse()
+        {
+            try
+            {
+                List<string> barList = new List<string>();
+
+                string sql = string.Format("select BARCD from taginfo where BARDL!=''");
+                DataTable dt = DBHelper.GetTable(sql, false);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string barcd = row["BARCD"].ToString();
+                        if (string.IsNullOrEmpty(barcd))
+                        {
+                            barList.Add(barcd);
+                        }
+                    }
+                }
+
+                int delCount = 0;
+                foreach (string bar in barList)
+                {
+                    if (delBar(bar))
+                        delCount++;
+                }
+
+                string log = string.Format("共有{0}条，实际删除{1}条", barList.Count, delCount);
+                ShowLog(log);
+
+            }
+            catch (Exception)
+            { }
+        }
         private void ThreadWhileFunc()
         {
             while (true)
@@ -528,6 +592,10 @@ namespace HLAAutoDownload
                         {
                             DownloadMaterialInfo();
                         }
+
+                        //删除有失效标记的
+                        delNoUse();
+
                         if(DateTime.Now.Hour>5)
                         {
                             forceDown = true;

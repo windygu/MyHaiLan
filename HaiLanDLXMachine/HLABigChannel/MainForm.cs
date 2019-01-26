@@ -177,10 +177,24 @@ namespace HLABigChannel
             }
 
             label2_IP.Text = GetLocalIPAddress();
+            label2_deviceNo.Text = getDeviceNo();
 
             openMachine();
         }
 
+        string getDeviceNo()
+        {
+            try
+            {
+                if(!string.IsNullOrEmpty(SysConfig.DeviceNO))
+                    return SysConfig.DeviceNO;
+            }
+            catch(Exception)
+            {
+
+            }
+            return "";
+        }
         public string getPort()
         {
             return ConfigurationManager.AppSettings["Port"] == null ? "COM1" : ConfigurationManager.AppSettings["Port"];

@@ -568,7 +568,7 @@ namespace HLAManualDownload
                 foreach (var line in lines)
                 {
                     string lineStr = line.Trim();
-                    if (lineStr.StartsWith("H"))
+                    //if (lineStr.StartsWith("H"))
                     {
                         mtrList.Add(line);
                     }
@@ -741,6 +741,7 @@ namespace HLAManualDownload
             bool re = false;
             try
             {
+                /*
                 string sql = string.Format("select MATNR from taginfo where BARCD='{0}'", bar);
                 string mtr = DBHelper.GetValue(sql, false)?.ToString().Trim();
                 if(!string.IsNullOrEmpty(mtr))
@@ -751,8 +752,13 @@ namespace HLAManualDownload
                     DBHelper.ExecuteNonQuery(sql);
                     re = true;
                 }
+                */
+                string sql = string.Format("delete from taginfo where BARCD='{0}'", bar);
+                DBHelper.ExecuteNonQuery(sql);
+                re = true;
+
             }
-            catch(Exception)
+            catch (Exception)
             {
 
             }
