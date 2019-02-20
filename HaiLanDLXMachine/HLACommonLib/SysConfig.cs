@@ -145,6 +145,53 @@ namespace HLACommonLib
         public static string HttpKey = "";
         public static string HttpUrl = "";
         public static string HttpSec = "";
+
+        public static READER_TYPE mReaderType = READER_TYPE.Unknow;
+        public static string mReaderTmIp = "10.0.0.101";
+        public static int mReaderTmPower = 3000;
+
+
+        public static void loadReaderType()
+        {
+            if (SysConfig.LGNUM == "ET01")
+            {
+                mReaderType = READER_TYPE.READER_TM;
+            }
+            if (SysConfig.LGNUM == "HL01")
+            {
+                mReaderType = READER_TYPE.READER_IMP;
+            }
+
+            string rt = ConfigurationManager.AppSettings["ReaderType"];
+            if (!string.IsNullOrEmpty(rt))
+            {
+                if (rt.Trim() == "1")
+                {
+                    mReaderType = READER_TYPE.READER_IMP;
+                }
+                if (rt.Trim() == "2")
+                {
+                    mReaderType = READER_TYPE.READER_TM;
+                }
+            }
+        }
+        public static void loadReaderTmIp()
+        {
+            string rt = ConfigurationManager.AppSettings["ReaderIP_TM"];
+            if (!string.IsNullOrEmpty(rt))
+            {
+                mReaderTmIp = rt.Trim();
+            }
+        }
+        public static void loadReaderTmPower()
+        {
+            string rt = ConfigurationManager.AppSettings["ReaderPower_TM"];
+            if (!string.IsNullOrEmpty(rt))
+            {
+                mReaderTmPower = int.Parse(rt.Trim());
+            }
+        }
+
         /// <summary>
         /// 初始化单位中英对照表
         /// </summary>
@@ -276,6 +323,7 @@ namespace HLACommonLib
 
             SysConfig.IsTest = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Test"]) ? false : int.Parse(ConfigurationManager.AppSettings["Test"]) == 1;
             SysConfig.IsUseTestSAP = string.IsNullOrEmpty(ConfigurationManager.AppSettings["IsUseTestSAP"]) ? false : int.Parse(ConfigurationManager.AppSettings["IsUseTestSAP"]) == 1;
+
         }
         public static void Load()
         {

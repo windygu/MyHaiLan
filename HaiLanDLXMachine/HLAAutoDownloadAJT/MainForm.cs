@@ -56,6 +56,10 @@ namespace HLAManualDownload
             Thread threadFull = new Thread(new ThreadStart(ThreadWhileFunc));
             threadFull.IsBackground = true;
             threadFull.Start();
+
+            Thread threadFull2 = new Thread(new ThreadStart(ThreadWhileFunc2));
+            threadFull2.IsBackground = true;
+            threadFull2.Start();
         }
 
         private void button1_UPLOADEPC_Click(object sender, EventArgs e)
@@ -124,7 +128,6 @@ namespace HLAManualDownload
             {
                 this.button1_UPLOADEPC.Enabled = true;
             }));
-            this.lastUpdateTime = DateTime.Now;
         }
         bool delBar(string bar)
         {
@@ -190,6 +193,20 @@ namespace HLAManualDownload
             catch (Exception)
             { }
         }
+        private void ThreadWhileFunc2()
+        {
+            while (true)
+            {
+                if ((DateTime.Now - this.lastUpdateTime).TotalMinutes > 3)
+                {
+                    UploadShouHuoEpc();
+                    UploadDeliverEpc();
+                    this.lastUpdateTime = DateTime.Now;
+                }
+
+                Thread.Sleep(100);
+            }
+        }
 
         private void ThreadWhileFunc()
         {
@@ -236,13 +253,6 @@ namespace HLAManualDownload
 
                 }
                 
-
-
-                if ((DateTime.Now - this.lastUpdateTime).TotalMinutes > 3)
-                {
-                    UploadShouHuoEpc();
-                    UploadDeliverEpc();
-                }
 
                 Thread.Sleep(100);
             }

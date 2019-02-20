@@ -24,7 +24,7 @@ using System.Configuration;
 using UARTRfidLink.Exparam;
 using Codetag.Rfid.ClassLibrary;
 
-namespace HLACommonView.Views
+namespace HLACommonView.Views.YZ
 {
     public partial class CommonInventoryFormYZ : MetroForm
     {

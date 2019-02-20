@@ -73,17 +73,19 @@ namespace HLAYKChannelMachine
                 }
 
                 lastReadTime = DateTime.Now;
-                reader.StartInventory(0, 0, 0);
+                //reader.StartInventory(0, 0, 0);
+                startReader();
                 isInventory = true;
             }
         }
 
-        void stopReader()
+        void stopMyReader()
         {
             if (isInventory)
             {
                 isInventory = false;
-                reader.StopInventory();
+                //reader.StopInventory();
+                stopReader();
             }
         }
         public override void StopInventory()
@@ -97,7 +99,8 @@ namespace HLAYKChannelMachine
                         lblWorkStatus.Text = "停止扫描";
                     }));
                     isInventory = false;
-                    reader.StopInventory();
+                    //reader.StopInventory();
+                    stopReader();
 
                     CheckResult checkResult = CheckData();
 
@@ -978,7 +981,7 @@ namespace HLAYKChannelMachine
         private void dmButtonStop_Click(object sender, EventArgs e)
         {
             Stop();
-            stopReader();
+            stopMyReader();
             closeMachine();
         }
 

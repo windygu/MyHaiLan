@@ -99,7 +99,7 @@ namespace HLAYKChannelMachine
             }
         }
 
-        void stopReader()
+        void stopMyReader()
         {
             if(isInventory)
             {
@@ -1081,7 +1081,7 @@ namespace HLAYKChannelMachine
         private void dmButtonStop_Click(object sender, EventArgs e)
         {
             Stop();
-            stopReader();
+            stopMyReader();
             closeMachine();
         }
 

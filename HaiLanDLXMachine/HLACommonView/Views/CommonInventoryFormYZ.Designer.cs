@@ -1,4 +1,4 @@
-﻿namespace HLACommonView.Views
+﻿namespace HLACommonView.Views.YZ
 {
     partial class CommonInventoryFormYZ
     {

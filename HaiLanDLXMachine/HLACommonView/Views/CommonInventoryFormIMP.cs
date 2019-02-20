@@ -18,6 +18,8 @@ using System.Windows.Forms;
 using Xindeco.Device;
 using Xindeco.Device.Model;
 using ThingMagic;
+using Impinj.OctaneSdk;
+using System.Configuration;
 
 namespace HLACommonView.Views
 {
@@ -49,10 +51,31 @@ namespace HLACommonView.Views
 
         private List<string> mIgnoreEpcs = new List<string>();
 
+
+        //thing magic
+        //500~3150
+        public Reader mReaderTM = null;
+
         public CommonInventoryFormIMP()
         {
             InitializeComponent();
             mIgnoreEpcs = SAPDataService.getIngnoreEpcs();
+        }
+
+        public void startTarReader()
+        {
+            if (SysConfig.mReaderType == READER_TYPE.READER_IMP)
+                reader.StartInventory(0, 0, 0);
+            if (SysConfig.mReaderType == READER_TYPE.READER_TM)
+                mReaderTM.StartReading();
+
+        }
+        public void stopTarReader()
+        {
+            if (SysConfig.mReaderType == READER_TYPE.READER_IMP)
+                reader.StopInventory();
+            if (SysConfig.mReaderType == READER_TYPE.READER_TM)
+                mReaderTM.StopReading();
         }
         public void openMachineCommon()
         {
@@ -438,16 +461,6 @@ namespace HLACommonView.Views
             }
         }
 
-        public virtual void InitDevice(bool connectBarcode)
-        {
-            plc = new PLCController(SysConfig.Port);
-            if (connectBarcode)
-            {
-                barcode1 = new BarcodeDevice(SysConfig.ScannerPort_1);
-                barcode2 = new BarcodeDevice(SysConfig.ScannerPort_2);
-            }
-        }
-
         public virtual void CloseWindow()
         {
             DisconnectReader();
@@ -457,43 +470,101 @@ namespace HLACommonView.Views
         #region reader
         private void DisconnectReader()
         {
-            reader.Disconnect();
+            if (SysConfig.mReaderType == READER_TYPE.READER_IMP)
+                reader.Disconnect();
+            if (SysConfig.mReaderType == READER_TYPE.READER_TM)
+                mReaderTM.Destroy();
+
         }
 
         public virtual bool ConnectReader()
         {
-            reader.OnTagReported += Reader_OnTagReported;
-            bool result = reader.Connect(readerIp, Xindeco.Device.Model.ConnectType.TCP, WindowsFormsSynchronizationContext.Current);
-            if (result)
+            if (SysConfig.mReaderType == READER_TYPE.READER_IMP)
             {
-                Xindeco.Device.Model.ReaderConfig config = new Xindeco.Device.Model.ReaderConfig();
-                config.SearchMode = SysConfig.ReaderConfig.SearchMode;
-                config.Session = SysConfig.ReaderConfig.Session;
-                if (config.AntennaList == null) config.AntennaList = new List<Xindeco.Device.Model.ReaderAntenna>();
-                if (SysConfig.ReaderConfig.UseAntenna1)
-                    config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(1, true, SysConfig.ReaderConfig.AntennaPower1));
-                else
-                    config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(1, false, SysConfig.ReaderConfig.AntennaPower1));
+                reader.OnTagReported += Reader_OnTagReported;
+                bool result = reader.Connect(readerIp, Xindeco.Device.Model.ConnectType.TCP, WindowsFormsSynchronizationContext.Current);
+                if (result)
+                {
+                    Xindeco.Device.Model.ReaderConfig config = new Xindeco.Device.Model.ReaderConfig();
+                    config.SearchMode = SysConfig.ReaderConfig.SearchMode;
+                    config.Session = SysConfig.ReaderConfig.Session;
+                    if (config.AntennaList == null) config.AntennaList = new List<Xindeco.Device.Model.ReaderAntenna>();
+                    if (SysConfig.ReaderConfig.UseAntenna1)
+                        config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(1, true, SysConfig.ReaderConfig.AntennaPower1));
+                    else
+                        config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(1, false, SysConfig.ReaderConfig.AntennaPower1));
 
-                if (SysConfig.ReaderConfig.UseAntenna2)
-                    config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(2, true, SysConfig.ReaderConfig.AntennaPower2));
-                else
-                    config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(2, false, SysConfig.ReaderConfig.AntennaPower2));
+                    if (SysConfig.ReaderConfig.UseAntenna2)
+                        config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(2, true, SysConfig.ReaderConfig.AntennaPower2));
+                    else
+                        config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(2, false, SysConfig.ReaderConfig.AntennaPower2));
 
-                if (SysConfig.ReaderConfig.UseAntenna3)
-                    config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(3, true, SysConfig.ReaderConfig.AntennaPower3));
-                else
-                    config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(3, false, SysConfig.ReaderConfig.AntennaPower3));
+                    if (SysConfig.ReaderConfig.UseAntenna3)
+                        config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(3, true, SysConfig.ReaderConfig.AntennaPower3));
+                    else
+                        config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(3, false, SysConfig.ReaderConfig.AntennaPower3));
 
-                if (SysConfig.ReaderConfig.UseAntenna4)
-                    config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(4, true, SysConfig.ReaderConfig.AntennaPower4));
-                else
-                    config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(4, false, SysConfig.ReaderConfig.AntennaPower4));
-                reader.SetParameter(config);
+                    if (SysConfig.ReaderConfig.UseAntenna4)
+                        config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(4, true, SysConfig.ReaderConfig.AntennaPower4));
+                    else
+                        config.AntennaList.Add(new Xindeco.Device.Model.ReaderAntenna(4, false, SysConfig.ReaderConfig.AntennaPower4));
+                    reader.SetParameter(config);
+                }
+                return result;
             }
-            return result;
+            if(SysConfig.mReaderType == READER_TYPE.READER_TM)
+            {
+                bool re = false;
+                try
+                {
+                    Reader.SetSerialTransport("tcp", SerialTransportTCP.CreateSerialReader);
+                    mReaderTM = Reader.Create(string.Format("tcp://{0}", SysConfig.mReaderTmIp));
+                    mReaderTM.TagRead += tagsReportedTM;
+
+                    mReaderTM.Connect();
+
+                    configTM(SysConfig.mReaderTmPower);
+
+                    re = true;
+                }
+                catch (Exception)
+                {
+                    re = false;
+                }
+
+                return re;
+            }
+            return false;
         }
-    
+        public void configTM(int power = 3000)
+        {
+            int[] antennaList = { 1, 2, 3, 4 }; //选择天线1,2,3,4
+
+            mReaderTM.ParamSet("/reader/region/id", Reader.Region.NA);
+
+            SimpleReadPlan plan = new SimpleReadPlan(antennaList, TagProtocol.GEN2, null, null, 1000); //设置天线和协议
+            mReaderTM.ParamSet("/reader/read/plan", plan);
+
+            //场景配置,用于隧道机
+            Gen2.LinkFrequency blf = Gen2.LinkFrequency.LINK320KHZ;
+            mReaderTM.ParamSet("/reader/gen2/BLF", blf);
+
+            Gen2.Tari tari = Gen2.Tari.TARI_6_25US;
+            mReaderTM.ParamSet("/reader/gen2/tari", tari);
+
+            Gen2.TagEncoding tagncoding = Gen2.TagEncoding.FM0;
+            mReaderTM.ParamSet("/reader/gen2/tagEncoding", tagncoding);
+
+            Gen2.Session session = Gen2.Session.S1;
+            mReaderTM.ParamSet("/reader/gen2/session", session);
+
+            Gen2.Target target = Gen2.Target.A;
+            mReaderTM.ParamSet("/reader/gen2/target", target);
+
+            //500~3150
+            mReaderTM.ParamSet("/reader/radio/readPower", power);
+        }
+
 
         public bool ignore(string epc)
         {
@@ -586,6 +657,26 @@ namespace HLACommonView.Views
             }
         }
 
+        public void tagsReportedTM(Object sender, TagReadDataEventArgs taginfo)
+        {
+            if (!isInventory) return;
+
+            if (taginfo == null || taginfo.TagReadData == null || string.IsNullOrEmpty(taginfo.TagReadData.EpcString))
+                return;
+
+            string epc = taginfo.TagReadData.EpcString;
+
+            if (!string.IsNullOrEmpty(epc))
+            {
+                epc = epc.ToUpper();
+            }
+
+            if (!epcList.Contains(epc))
+            {
+                lastReadTime = DateTime.Now;
+                epcList.Add(epc);
+            }
+        }
         public virtual void StartInventory()
         {
             throw new NotImplementedException();
@@ -682,5 +773,220 @@ namespace HLACommonView.Views
         #endregion
 
     }
-    
+
+    public class CReader
+    {
+        //1~32.5
+        public ImpinjReader mReaderIMP = null;
+        //500~3150
+        public Reader mReaderTM = null;
+
+        public READER_TYPE mReaderType;
+        public string mIp;
+        public double mPower;
+
+        public delegate void TagReportedHandler(string epc);
+        public event TagReportedHandler OnTagReported;
+        /*
+         
+        */
+        public CReader(READER_TYPE rt)
+        {
+            mReaderType = rt;
+
+            if (mReaderType == READER_TYPE.READER_IMP)
+            {
+                mIp = ConfigurationManager.AppSettings["ReaderIP_IMP"];
+                mPower = double.Parse(ConfigurationManager.AppSettings["ReaderPower_IMP"]);
+            }
+            if (mReaderType == READER_TYPE.READER_TM)
+            {
+                mIp = ConfigurationManager.AppSettings["ReaderIP_TM"];
+                mPower = double.Parse(ConfigurationManager.AppSettings["ReaderPower_TM"]);
+            }
+
+        }
+
+        private void tagsReportedIMP(ImpinjReader reader, TagReport report)
+        {
+            if (report != null && report.Tags != null)
+            {
+                foreach (Tag tag in report.Tags)
+                {
+                    string epc = tag.Epc.ToString().Replace(" ", "");
+                    if (!string.IsNullOrEmpty(epc))
+                    {
+                        epc = epc.ToUpper();
+                    }
+                    this.OnTagReported?.Invoke(epc);
+                }
+            }
+        }
+        public void tagsReportedTM(Object sender, TagReadDataEventArgs taginfo)
+        {
+            if (taginfo == null || taginfo.TagReadData == null || string.IsNullOrEmpty(taginfo.TagReadData.EpcString))
+                return;
+
+            string epc = taginfo.TagReadData.EpcString;
+
+            if (!string.IsNullOrEmpty(epc))
+            {
+                epc = epc.ToUpper();
+            }
+            this.OnTagReported?.Invoke(epc);
+        }
+        public bool connect()
+        {
+#if DEBUG
+            return false;
+#endif
+            bool re = false;
+
+            if (mReaderType == READER_TYPE.READER_IMP)
+            {
+                try
+                {
+                    mReaderIMP = new ImpinjReader();
+                    mReaderIMP.TagsReported += this.tagsReportedIMP;
+
+                    mReaderIMP.Connect(mIp);
+                    mReaderIMP.ApplyDefaultSettings();
+
+                    configIMP(mPower);
+
+                    re = true;
+                }
+                catch (Exception)
+                {
+                    re = false;
+                }
+            }
+
+            if (mReaderType == READER_TYPE.READER_TM)
+            {
+                try
+                {
+                    Reader.SetSerialTransport("tcp", SerialTransportTCP.CreateSerialReader);
+                    mReaderTM = Reader.Create(string.Format("tcp://{0}", mIp));
+                    mReaderTM.TagRead += tagsReportedTM;
+
+                    mReaderTM.Connect();
+
+                    configTM(mPower);
+
+                    re = true;
+                }
+                catch (Exception)
+                {
+                    re = false;
+                }
+            }
+
+            return re;
+        }
+        public void disConnect()
+        {
+            if (mReaderType == READER_TYPE.READER_IMP)
+            {
+                mReaderIMP.Disconnect();
+            }
+            if (mReaderType == READER_TYPE.READER_TM)
+            {
+                mReaderTM.Destroy();
+            }
+
+        }
+        public void configIMP(double power = 28, int searchMode = 1, ushort session = 2)
+        {
+            try
+            {
+                Settings settings = mReaderIMP.QueryDefaultSettings();
+                settings.Report.Mode = ReportMode.Individual;
+                settings.Report.IncludeAntennaPortNumber = true;
+                settings.Report.IncludePeakRssi = true;
+                switch (searchMode)
+                {
+                    case 1:
+                        settings.SearchMode = SearchMode.DualTarget;
+                        break;
+                    case 2:
+                        settings.SearchMode = SearchMode.SingleTarget;
+                        break;
+                }
+                settings.Session = session;
+                settings.Antennas.EnableAll();
+                settings.Antennas.TxPowerInDbm = power;
+                mReaderIMP.ApplySettings(settings);
+            }
+            catch (Exception)
+            {
+            }
+        }
+        public void configTM(double power = 3000)
+        {
+            int[] antennaList = { 1, 2, 3, 4 }; //选择天线1,2,3,4
+
+            mReaderTM.ParamSet("/reader/region/id", Reader.Region.NA);
+
+            SimpleReadPlan plan = new SimpleReadPlan(antennaList, TagProtocol.GEN2, null, null, 1000); //设置天线和协议
+            mReaderTM.ParamSet("/reader/read/plan", plan);
+
+            //场景配置,用于隧道机
+            Gen2.LinkFrequency blf = Gen2.LinkFrequency.LINK320KHZ;
+            mReaderTM.ParamSet("/reader/gen2/BLF", blf);
+
+            Gen2.Tari tari = Gen2.Tari.TARI_6_25US;
+            mReaderTM.ParamSet("/reader/gen2/tari", tari);
+
+            Gen2.TagEncoding tagncoding = Gen2.TagEncoding.FM0;
+            mReaderTM.ParamSet("/reader/gen2/tagEncoding", tagncoding);
+
+            Gen2.Session session = Gen2.Session.S1;
+            mReaderTM.ParamSet("/reader/gen2/session", session);
+
+            Gen2.Target target = Gen2.Target.A;
+            mReaderTM.ParamSet("/reader/gen2/target", target);
+
+            //500~3150
+            mReaderTM.ParamSet("/reader/radio/readPower", (int)(power));
+        }
+        public void startRead()
+        {
+            try
+            {
+                if (mReaderType == READER_TYPE.READER_IMP)
+                {
+                    mReaderIMP.Start();
+                }
+                if (mReaderType == READER_TYPE.READER_TM)
+                {
+                    mReaderTM.StartReading();
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+        public void stopRead()
+        {
+            try
+            {
+                if (mReaderType == READER_TYPE.READER_IMP)
+                {
+                    mReaderIMP.Stop();
+                }
+                if (mReaderType == READER_TYPE.READER_TM)
+                {
+                    mReaderTM.StopReading();
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+    }
+
+
 }

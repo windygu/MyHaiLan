@@ -1183,7 +1183,8 @@ namespace HLAPKChannelMachine
                         UpdateUIControl(InventoryControlType.HU_LABEL, boxno);
                     }
 
-                    reader.StartInventory(0, 0, 0);
+                    //reader.StartInventory(0, 0, 0);
+                    startTarReader();
                     isInventory = true;
                     lastReadTime = DateTime.Now;
 
@@ -1294,7 +1295,8 @@ namespace HLAPKChannelMachine
                 {
                     UpdateUIControl(InventoryControlType.STATUS_LABEL, "停止扫描");
                     isInventory = false;
-                    reader.StopInventory();
+                    //reader.StopInventory();
+                    stopTarReader();
                     CheckResult checkResult = CheckData();
                     playSound(checkResult);
                     UploadPKBoxInfo upbi = GetCurrentUploadPKBox(checkResult.InventoryResult, checkResult.Message);

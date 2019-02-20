@@ -61,6 +61,9 @@ namespace HLAYKChannelMachine
                 return;
             }
 #endif
+            SysConfig.loadReaderType();
+            SysConfig.loadReaderTmPower();
+            SysConfig.loadReaderTmIp();
 
             if (AutoUpdate.Update(SoftwareType.大通道机移库装箱系统))
             {

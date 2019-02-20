@@ -64,6 +64,10 @@ namespace HLABoxCheckChannelMachine
             }
 #endif
 
+            SysConfig.loadReaderType();
+            SysConfig.loadReaderTmPower();
+            SysConfig.loadReaderTmIp();
+
             if (AutoUpdate.Update(SoftwareType.箱复核))
             {
                 SAPDataService.Init();

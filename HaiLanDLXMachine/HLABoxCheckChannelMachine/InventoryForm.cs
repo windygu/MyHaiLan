@@ -193,7 +193,8 @@ namespace HLABoxCheckChannelMachine
                     mCurBoxNo = boxNoList.Dequeue();
                 }
 
-                reader.StartInventory(0, 0, 0);
+                //reader.StartInventory(0, 0, 0);
+                startTarReader();
                 isInventory = true;
                 lastReadTime = DateTime.Now;
 
@@ -296,7 +297,8 @@ namespace HLABoxCheckChannelMachine
                     lblWorkStatus.Text = "停止扫描";
                 }));
                 isInventory = false;
-                reader.StopInventory();
+                //reader.StopInventory();
+                stopTarReader();
                 CheckResult cre = CheckData();
 
                 playSound(cre.InventoryResult);
@@ -390,10 +392,18 @@ namespace HLABoxCheckChannelMachine
         private void btnPause_Click(object sender, EventArgs e)
         {
             Pause();
-            StopInventory();
+            stopMyReader();
             closeMachine();
         }
-
+        void stopMyReader()
+        {
+            if (isInventory)
+            {
+                isInventory = false;
+                //reader.StopInventory();
+                stopTarReader();
+            }
+        }
         List<CTagDetail> getTags()
         {
             List<CTagDetail> re = new List<CTagDetail>();

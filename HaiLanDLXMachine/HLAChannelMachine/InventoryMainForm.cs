@@ -829,7 +829,8 @@ namespace HLAChannelMachine
                     lblInventoryResult.Text = "";
                 }));
 
-                reader.StartInventory(0, 0, 0);
+                //reader.StartInventory(0, 0, 0);
+                startTarReader();
                 lastReadTime = DateTime.Now;
                 isInventory = true;
 
@@ -856,7 +857,8 @@ namespace HLAChannelMachine
             try
             {
                 this.isInventory = false;
-                reader.StopInventory();
+                //reader.StopInventory();
+                stopTarReader();
 
                 this.Invoke(new Action(() =>
                 {
@@ -1976,7 +1978,8 @@ namespace HLAChannelMachine
                 return;
 
             this.isInventory = false;
-            reader.StopInventory();
+            //reader.StopInventory();
+            stopTarReader();
 
             this.Invoke(new Action(() =>
             {

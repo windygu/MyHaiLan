@@ -8,6 +8,12 @@ using ThingMagic;
 
 namespace HLACommonLib.Model
 {
+    public enum READER_TYPE
+    {
+        Unknow,
+        READER_IMP,
+        READER_TM,
+    }
     public class CBarQty
     {
         public string barcd;

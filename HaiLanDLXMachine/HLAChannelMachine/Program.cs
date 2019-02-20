@@ -67,6 +67,9 @@ namespace HLAChannelMachine
                 return;
             }
 #endif
+            SysConfig.loadReaderType();
+            SysConfig.loadReaderTmPower();
+            SysConfig.loadReaderTmIp();
 
             if (AutoUpdate.Update(SoftwareType.大通道机交货软件))
             {

@@ -61,6 +61,11 @@ namespace HLAPKChannelMachine
                 return;
             }
 #endif
+
+            SysConfig.loadReaderType();
+            SysConfig.loadReaderTmPower();
+            SysConfig.loadReaderTmIp();
+
             if (AutoUpdate.Update(SoftwareType.大通道机平库发货软件))
             {
                 SAPDataService.Init();
