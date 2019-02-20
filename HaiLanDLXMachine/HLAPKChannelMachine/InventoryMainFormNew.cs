@@ -1787,11 +1787,21 @@ namespace HLAPKChannelMachine
                 btnStop.Enabled = false;
                 btnStart.Text = "开始";
 
-                StopInventory();
+                //StopInventory();
+                stopMyReader();
+
                 closeMachine();
             }
         }
-
+        void stopMyReader()
+        {
+            if (isInventory)
+            {
+                isInventory = false;
+                //reader.StopInventory();
+                stopTarReader();
+            }
+        }
         private void Start()
         {
             btnGetData.Enabled = false;

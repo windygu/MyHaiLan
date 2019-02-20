@@ -60,7 +60,7 @@ namespace HLACommonView.Views
             InitializeComponent();
             mIgnoreEpcs = SAPDataService.getIngnoreEpcs();
         }
-        public void startReader()
+        public void startTarReader()
         {
             if (SysConfig.mReaderType == READER_TYPE.READER_IMP)
                 reader.StartInventory(0, 0, 0);
@@ -68,7 +68,7 @@ namespace HLACommonView.Views
                 mReaderTM.StartReading();
 
         }
-        public void stopReader()
+        public void stopTarReader()
         {
             if (SysConfig.mReaderType == READER_TYPE.READER_IMP)
                 reader.StopInventory();

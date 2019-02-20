@@ -74,7 +74,7 @@ namespace HLAYKChannelMachine
 
                 lastReadTime = DateTime.Now;
                 //reader.StartInventory(0, 0, 0);
-                startReader();
+                startTarReader();
                 isInventory = true;
             }
         }
@@ -85,7 +85,7 @@ namespace HLAYKChannelMachine
             {
                 isInventory = false;
                 //reader.StopInventory();
-                stopReader();
+                stopTarReader();
             }
         }
         public override void StopInventory()
@@ -100,7 +100,7 @@ namespace HLAYKChannelMachine
                     }));
                     isInventory = false;
                     //reader.StopInventory();
-                    stopReader();
+                    stopTarReader();
 
                     CheckResult checkResult = CheckData();
 
